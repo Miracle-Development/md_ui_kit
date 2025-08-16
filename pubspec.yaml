@@ -1,0 +1,26 @@
+name: md_ui_kit
+description: "Miracle Development UI Kit"
+publish_to: 'none'
+version: 1.0.0
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_svg: ^2.0.7
+  storybook_flutter: ^0.14.1
+  logger: ^2.1.0
+  package_info_plus: ^4.2.0
+  dio: ^5.4.3+1
+  shared_preferences: ^2.2.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  build_runner: ^2.4.7
+
+flutter:
+  uses-material-design: true
