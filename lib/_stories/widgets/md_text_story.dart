@@ -16,7 +16,7 @@ class MdTextStory extends StatelessWidget {
 
     final Color color = knobs.options(
       label: 'Цвет текста',
-      initial: Colors.red,
+      initial: Colors.black,
       options: const [
         Option(
           label: 'Черный',

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:md_ui_kit/stories/md_text_story/md_text_story.dart';
+import 'package:md_ui_kit/_core/theme.dart';
+import 'package:md_ui_kit/_stories/screens/counter_screen_story.dart';
+import 'package:md_ui_kit/_stories/widgets/md_text_story.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
 void main() {
@@ -13,9 +15,8 @@ class StorybookApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF141218),
-      ),
+      theme: AppTheme.light,
+      // darkTheme: AppTheme.dark, // Uncomment to use the dark theme
       home: Directionality(
         textDirection: TextDirection.ltr,
         child: Material(
@@ -26,8 +27,13 @@ class StorybookApp extends StatelessWidget {
               return Center(child: child);
             },
             stories: [
+              // Screens
               Story(
-                name: 'Widgets/Text',
+                name: 'Screens/Counter',
+                builder: (context) => CounterScreenStory(knobs: context.knobs),
+              ),
+              Story(
+                name: 'Text', // Widgets/Text to create a folderable structure
                 builder: (context) => MdTextStory(knobs: context.knobs),
               ),
             ],
