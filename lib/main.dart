@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:md_ui_kit/_core/theme.dart';
 import 'package:md_ui_kit/_stories/screens/counter_screen_story.dart';
 import 'package:md_ui_kit/_stories/widgets/md_text_story.dart';
+import 'package:md_ui_kit/widgets/md_initial_wave.dart';
 import 'package:md_ui_kit/widgets/wave_logo.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
@@ -35,13 +36,17 @@ class StorybookApp extends StatelessWidget {
               ),
               // Wave
               Story(
-                name:
-                    'Wave/MdText',
+                name: 'Wave/MdText',
                 builder: (context) => MdTextStory(knobs: context.knobs),
               ),
+
               Story(
                 name: 'Wave/WaveLogo',
                 builder: (context) => const WaveLogo(),
+              ),
+              Story(
+                name: 'Wave/MdInitialWave',
+                builder: (context) => const MdInitialWave(),
               ),
             ],
           ),
