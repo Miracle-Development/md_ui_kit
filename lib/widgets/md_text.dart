@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 // MdTextTheme хранит в себе возможные цвета текста
-// OptionalTodo: добавить метод CopyWith (ну мб понадобиться когда-нибудь)
 @immutable
 class MdTextTheme extends ThemeExtension<MdTextTheme> {
   const MdTextTheme({
@@ -66,7 +65,7 @@ class MdTextTheme extends ThemeExtension<MdTextTheme> {
       Theme.of(context).extension<MdTextTheme>() ?? fallback;
 }
 
-// MdText — текстовый виджет
+/// MdText — текстовый виджет
 class MdText extends StatelessWidget {
   const MdText(
     this.text, {
@@ -98,6 +97,10 @@ class MdText extends StatelessWidget {
       style: style,
     );
   }
+
+  static const MdTextPreset title = MdTextPreset(type: MdTextType.title);
+  static const MdTextPreset subtitle = MdTextPreset(type: MdTextType.subtitle);
+  static const MdTextPreset caption = MdTextPreset(type: MdTextType.caption);
 
   static TextStyle _buildTextStyle(
     BuildContext context,
@@ -150,4 +153,52 @@ enum MdTextColor {
   negativeColor,
   disabledColor,
   brandColor,
+}
+
+class MdTextPreset {
+  const MdTextPreset({
+    required this.type,
+    this.weight = MdTextWeight.regular,
+    this.color = MdTextColor.defaultColor,
+  });
+
+  final MdTextType type;
+  final MdTextWeight weight;
+  final MdTextColor color;
+
+  // Быстрые модификаторы
+  MdTextPreset get bold => copyWith(weight: MdTextWeight.bold);
+  MdTextPreset get regular => copyWith(weight: MdTextWeight.regular);
+
+  MdTextPreset copyWith({
+    MdTextType? type,
+    MdTextWeight? weight,
+    MdTextColor? color,
+  }) {
+    return MdTextPreset(
+      type: type ?? this.type,
+      weight: weight ?? this.weight,
+      color: color ?? this.color,
+    );
+  }
+
+  // Делаем пресет вызываемым как функцию, возвращает MdText
+  MdText call(
+    String text, {
+    Key? key,
+    TextAlign? textAlign,
+    int? maxLines,
+    TextOverflow? overflow,
+  }) {
+    return MdText(
+      text,
+      key: key,
+      type: type,
+      weight: weight,
+      color: color,
+      textAlign: textAlign,
+      maxLines: maxLines,
+      overflow: overflow,
+    );
+  }
 }

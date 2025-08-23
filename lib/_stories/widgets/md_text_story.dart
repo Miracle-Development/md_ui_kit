@@ -2,67 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 import 'package:md_ui_kit/widgets/md_text.dart';
 
-// Стори для нашего макета текста
-
 class MdTextStory extends StatelessWidget {
   const MdTextStory({super.key, required this.knobs});
-
   final KnobsBuilder knobs;
 
   @override
   Widget build(BuildContext context) {
-    // Всякие разные опция для кастомизации
-    final text = knobs.text(
-      label: 'title',
+    final textData = knobs.text(
+      label: 'text',
       initial: 'This is text example',
     );
 
-    final type = knobs.options<MdTextType>(
+    // Селект типа
+    final presetBase = knobs.options<MdTextPreset>(
       label: 'type',
-      initial: MdTextType.title,
-      options: const [
-        Option(label: 'title (24)', value: MdTextType.title),
-        Option(label: 'subtitle (16)', value: MdTextType.subtitle),
-        Option(label: 'caption (14)', value: MdTextType.caption),
+      initial: MdText.caption,
+      options: [
+        const Option(label: 'title (24)', value: MdText.title),
+        const Option(label: 'subtitle (16)', value: MdText.subtitle),
+        const Option(label: 'caption (14)', value: MdText.caption),
       ],
     );
 
-    final weight = knobs.options<MdTextWeight>(
-      label: 'weight',
-      initial: MdTextWeight.regular,
-      options: const [
-        Option(label: 'regular', value: MdTextWeight.regular),
-        Option(label: 'bold', value: MdTextWeight.bold),
-      ],
-    );
-
+    // Селект цвета
     final color = knobs.options<MdTextColor>(
       label: 'color',
       initial: MdTextColor.defaultColor,
       options: const [
-        Option(label: 'textDefaultColor', value: MdTextColor.defaultColor),
-        Option(label: 'textSubtitleColor', value: MdTextColor.subtitleColor),
-        Option(label: 'textPositiveColor', value: MdTextColor.positiveColor),
-        Option(label: 'textNegativeColor', value: MdTextColor.negativeColor),
-        Option(label: 'textDisabledColor', value: MdTextColor.disabledColor),
-        Option(label: 'textBrandColor', value: MdTextColor.brandColor),
+        Option(label: 'default', value: MdTextColor.defaultColor),
+        Option(label: 'subtitle', value: MdTextColor.subtitleColor),
+        Option(label: 'positive', value: MdTextColor.positiveColor),
+        Option(label: 'negative', value: MdTextColor.negativeColor),
+        Option(label: 'disabled', value: MdTextColor.disabledColor),
+        Option(label: 'brand', value: MdTextColor.brandColor),
       ],
     );
 
-    // Отображение самого виджета
+    // Флажок насыщенности
+    final isBold = knobs.boolean(label: 'Bold');
+
+    final preset =
+        (isBold ? presetBase.bold : presetBase).copyWith(color: color);
+
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          MdText(
-            text,
-            type: type,
-            weight: weight,
-            color: color,
-          ),
-        ],
-      ),
+      child: preset(textData),
     );
   }
 }
