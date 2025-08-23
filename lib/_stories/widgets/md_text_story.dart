@@ -8,13 +8,13 @@ class MdTextStory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textData = knobs.text(
+    final text = knobs.text(
       label: 'text',
       initial: 'This is text example',
     );
 
     // Селект типа
-    final presetBase = knobs.options<MdTextPreset>(
+    final widgetType = knobs.options<MdTextPreset>(
       label: 'type',
       initial: MdText.caption,
       options: [
@@ -24,18 +24,18 @@ class MdTextStory extends StatelessWidget {
       ],
     );
 
-    // Селект вейта
-    final weight = knobs.options<MdTextWeight>(
-      label: 'weight',
-      initial: MdTextWeight.regular,
-      options: const [
-        Option(label: 'regular', value: MdTextWeight.regular),
-        Option(label: 'bold', value: MdTextWeight.bold),
+    // Селект вейта (динамический)
+    final widgetWeightPreset = knobs.options<MdTextPreset>(
+      label: 'weight (${widgetType.type.name})',
+      initial: widgetType.regular,
+      options: [
+        Option(label: 'regular', value: widgetType.regular),
+        Option(label: 'bold', value: widgetType.bold),
       ],
     );
 
     // Селект цвета
-    final color = knobs.options<MdTextColor>(
+    final widgetColor = knobs.options<MdTextColor>(
       label: 'color',
       initial: MdTextColor.defaultColor,
       options: const [
@@ -48,10 +48,7 @@ class MdTextStory extends StatelessWidget {
       ],
     );
 
-    final widget =
-        presetBase.copyWith(weight: weight).copyWith(color: color)(textData);
-    return Center(
-      child: widget,
-    );
+    final widget = widgetWeightPreset.copyWith(color: widgetColor)(text);
+    return Center(child: widget);
   }
 }
