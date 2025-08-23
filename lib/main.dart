@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:md_ui_kit/_core/theme.dart';
 import 'package:md_ui_kit/_stories/screens/counter_screen_story.dart';
 import 'package:md_ui_kit/_stories/widgets/md_text_story.dart';
+import 'package:md_ui_kit/widgets/wave_logo.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
 void main() {
@@ -27,16 +28,20 @@ class StorybookApp extends StatelessWidget {
               return Center(child: child);
             },
             stories: [
-              // Screens
+              // Other
               Story(
-                name: 'Screens/Counter',
+                name: 'Other/Counter',
                 builder: (context) => CounterScreenStory(knobs: context.knobs),
               ),
-              // Отображние нашего макета в сторибуке
+              // Wave
               Story(
                 name:
-                    'Widgets/MdText', // Widgets/Text to create a folderable structure
+                    'Wave/MdText',
                 builder: (context) => MdTextStory(knobs: context.knobs),
+              ),
+              Story(
+                name: 'Wave/WaveLogo',
+                builder: (context) => const WaveLogo(),
               ),
             ],
           ),
