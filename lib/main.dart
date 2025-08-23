@@ -32,8 +32,10 @@ class StorybookApp extends StatelessWidget {
                 name: 'Screens/Counter',
                 builder: (context) => CounterScreenStory(knobs: context.knobs),
               ),
+              // Отображние нашего макета в сторибуке
               Story(
-                name: 'Text', // Widgets/Text to create a folderable structure
+                name:
+                    'Widgets/MdText', // Widgets/Text to create a folderable structure
                 builder: (context) => MdTextStory(knobs: context.knobs),
               ),
             ],
