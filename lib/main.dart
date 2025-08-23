@@ -16,7 +16,7 @@ class StorybookApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      // darkTheme: AppTheme.dark, // Uncomment to use the dark theme
+      darkTheme: AppTheme.dark, // Comment to not use the dark theme
       home: Directionality(
         textDirection: TextDirection.ltr,
         child: Material(
@@ -32,8 +32,10 @@ class StorybookApp extends StatelessWidget {
                 name: 'Screens/Counter',
                 builder: (context) => CounterScreenStory(knobs: context.knobs),
               ),
+              // Отображние нашего макета в сторибуке
               Story(
-                name: 'Text', // Widgets/Text to create a folderable structure
+                name:
+                    'Widgets/MdText', // Widgets/Text to create a folderable structure
                 builder: (context) => MdTextStory(knobs: context.knobs),
               ),
             ],
