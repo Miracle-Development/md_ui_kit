@@ -1,15 +1,15 @@
 name: md_ui_kit
 description: "Miracle Development UI Kit"
-publish_to: 'none'
-version: 1.1.0
+publish_to: "none"
+version: 1.2.0
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  flutter_svg: ^2.0.7
+  flutter_svg: ^2.2.0
   storybook_flutter: ^0.14.1
   logger: ^2.1.0
   package_info_plus: ^4.2.0
@@ -25,3 +25,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+assets:
+  - assets/fonts/
+  - assets/icons/logo/wave.svg
