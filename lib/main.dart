@@ -28,17 +28,17 @@ class StorybookApp extends StatelessWidget {
               return Center(child: child);
             },
             stories: [
-              // Other Screens
+              // Other
               Story(
-                name: 'Screens/Counter',
+                name: 'Other/Counter',
                 builder: (context) => CounterScreenStory(knobs: context.knobs),
               ),
-              // Other Widgets
+              // Wave
               Story(
-                name: 'Text', // Widgets/Text to create a folderable structure
+                name:
+                    'Wave/MdText',
                 builder: (context) => MdTextStory(knobs: context.knobs),
               ),
-              // Wave
               Story(
                 name: 'Wave/WaveLogo',
                 builder: (context) => const WaveLogo(),
