@@ -24,6 +24,16 @@ class MdTextStory extends StatelessWidget {
       ],
     );
 
+    // Селект вейта
+    final weight = knobs.options<MdTextWeight>(
+      label: 'weight',
+      initial: MdTextWeight.regular,
+      options: const [
+        Option(label: 'regular', value: MdTextWeight.regular),
+        Option(label: 'bold', value: MdTextWeight.bold),
+      ],
+    );
+
     // Селект цвета
     final color = knobs.options<MdTextColor>(
       label: 'color',
@@ -38,14 +48,10 @@ class MdTextStory extends StatelessWidget {
       ],
     );
 
-    // Флажок насыщенности
-    final isBold = knobs.boolean(label: 'Bold');
-
-    final preset =
-        (isBold ? presetBase.bold : presetBase).copyWith(color: color);
-
+    final widget =
+        presetBase.copyWith(weight: weight).copyWith(color: color)(textData);
     return Center(
-      child: preset(textData),
+      child: widget,
     );
   }
 }
