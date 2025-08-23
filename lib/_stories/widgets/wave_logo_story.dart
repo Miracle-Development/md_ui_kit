@@ -6,7 +6,6 @@ class WaveLogoStory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Ваш виджет тут
     return const WaveLogo();
   }
 }

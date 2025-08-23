@@ -39,7 +39,6 @@ class StorybookApp extends StatelessWidget {
                 name: 'Wave/MdText',
                 builder: (context) => MdTextStory(knobs: context.knobs),
               ),
-
               Story(
                 name: 'Wave/WaveLogo',
                 builder: (context) => const WaveLogo(),
@@ -48,7 +47,7 @@ class StorybookApp extends StatelessWidget {
                 name: 'Wave/MdInitialWave',
                 builder: (context) => const MdInitialWave(),
               ),
-            ],
+            ]..sort((a, b) => a.name.compareTo(b.name)),
           ),
         ),
       ),
