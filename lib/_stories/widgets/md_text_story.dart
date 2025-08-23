@@ -3,52 +3,83 @@ import 'package:storybook_flutter/storybook_flutter.dart';
 import 'package:md_ui_kit/widgets/md_text.dart';
 
 class MdTextStory extends StatelessWidget {
-  const MdTextStory({super.key, required this.knobs});
+  const MdTextStory({
+    super.key,
+    required this.knobs,
+  });
+
   final KnobsBuilder knobs;
 
   @override
   Widget build(BuildContext context) {
     final text = knobs.text(
-      label: 'text',
+      label: 'Text',
       initial: 'This is text example',
     );
 
-    // Селект типа
-    final widgetType = knobs.options<MdTextPreset>(
-      label: 'type',
-      initial: MdText.caption,
+    // Type options
+    final textType = knobs.options<MdTextType>(
+      label: 'Type',
+      initial: MdTextType.title,
       options: [
-        const Option(label: 'title (24)', value: MdText.title),
-        const Option(label: 'subtitle (16)', value: MdText.subtitle),
-        const Option(label: 'caption (14)', value: MdText.caption),
+        const Option(label: 'Title (24)', value: MdTextType.title),
+        const Option(label: 'Subtitle (16)', value: MdTextType.subtitle),
+        const Option(label: 'Caption (14)', value: MdTextType.caption),
       ],
     );
 
-    // Селект вейта (динамический)
-    final widgetWeightPreset = knobs.options<MdTextPreset>(
-      label: 'weight (${widgetType.type.name})',
-      initial: widgetType.regular,
-      options: [
-        Option(label: 'regular', value: widgetType.regular),
-        Option(label: 'bold', value: widgetType.bold),
-      ],
-    );
-
-    // Селект цвета
-    final widgetColor = knobs.options<MdTextColor>(
-      label: 'color',
-      initial: MdTextColor.defaultColor,
+    // Weight options
+    final textWeight = knobs.options<MdTextWeight>(
+      label: 'Weight',
+      initial: MdTextWeight.bold,
       options: const [
-        Option(label: 'default', value: MdTextColor.defaultColor),
-        Option(label: 'subtitle', value: MdTextColor.subtitleColor),
-        Option(label: 'positive', value: MdTextColor.positiveColor),
-        Option(label: 'negative', value: MdTextColor.negativeColor),
-        Option(label: 'disabled', value: MdTextColor.disabledColor),
-        Option(label: 'brand', value: MdTextColor.brandColor),
+        Option(
+          label: 'regular',
+          value: MdTextWeight.regular,
+        ),
+        Option(label: 'bold', value: MdTextWeight.bold),
       ],
     );
 
-    final widget = widgetWeightPreset.copyWith(color: widgetColor)(text);
-    return Center(child: widget);
+    // Color options
+    final textColor = knobs.options<MdTextColor>(
+      label: 'Color',
+      initial: MdTextColor.brandColor,
+      options: const [
+        Option(
+          label: 'default',
+          value: MdTextColor.defaultColor,
+        ),
+        Option(
+          label: 'subtitle',
+          value: MdTextColor.subtitleColor,
+        ),
+        Option(
+          label: 'positive',
+          value: MdTextColor.positiveColor,
+        ),
+        Option(
+          label: 'negative',
+          value: MdTextColor.negativeColor,
+        ),
+        Option(
+          label: 'disabled',
+          value: MdTextColor.disabledColor,
+        ),
+        Option(
+          label: 'brand',
+          value: MdTextColor.brandColor,
+        ),
+      ],
+    );
+
+    return Center(
+      child: MdText(
+        text,
+        type: textType,
+        weight: textWeight,
+        color: textColor,
+      ),
+    );
   }
 }
