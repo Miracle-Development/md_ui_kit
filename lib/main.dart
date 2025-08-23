@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:md_ui_kit/_core/theme.dart';
 import 'package:md_ui_kit/_stories/screens/counter_screen_story.dart';
 import 'package:md_ui_kit/_stories/widgets/md_text_story.dart';
+import 'package:md_ui_kit/widgets/md_initial_wave.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
 void main() {
@@ -35,6 +36,11 @@ class StorybookApp extends StatelessWidget {
               Story(
                 name: 'Text', // Widgets/Text to create a folderable structure
                 builder: (context) => MdTextStory(knobs: context.knobs),
+              ),
+              Story(
+                name:
+                    'Wave/MdInitialWave', // Widgets/Text to create a folderable structure
+                builder: (context) => const MdInitialWave(),
               ),
             ],
           ),
