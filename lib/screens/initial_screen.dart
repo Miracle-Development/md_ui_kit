@@ -7,7 +7,13 @@ import 'package:md_ui_kit/widgets/wave_logo.dart';
 class InitialScreen extends StatefulWidget {
   const InitialScreen({
     super.key,
+    this.screenWidth,
+    this.screenHeight,
+    this.wavePositionedBottom = 235,
   });
+  final double wavePositionedBottom;
+  final double? screenWidth;
+  final double? screenHeight;
 
   @override
   State<InitialScreen> createState() => _InitialScreenState();
@@ -68,7 +74,9 @@ class _InitialScreenState extends State<InitialScreen>
                 ),
               ),
               Positioned(
-                bottom: 235 * (height / width),
+                bottom: widget.wavePositionedBottom *
+                    ((widget.screenHeight ?? height) /
+                        (widget.screenWidth ?? width)),
                 left: 0,
                 right: 0,
                 child: const MdInitialWave(),
