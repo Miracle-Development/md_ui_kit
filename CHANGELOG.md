@@ -1,3 +1,7 @@
+## [1.5.0]
+
+- [wave-3] Добавлен компонент GradientScaffoldWrapper и шейдеры для BlurredCircle
+
 ## [1.4.1]
 
 - [no-task] Добавлена сортировка виджетов в Storybook
