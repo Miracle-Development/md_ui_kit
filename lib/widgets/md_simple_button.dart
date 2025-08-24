@@ -1,219 +1,207 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 
-@immutable
-class MdSimpleButtomTheme extends ThemeExtension<MdSimpleButtomTheme> {
-  const MdSimpleButtomTheme(
-      {required this.buttonMainDefaultBg,
-      required this.buttonMainDefaultText,
-      required this.buttonMainHoverBg,
-      required this.buttonMainHoverText,
-      required this.buttonMainPressedBg,
-      required this.buttonMainPressedText,
-      required this.buttonAltDefaultBg,
-      required this.buttonAltDefaultText,
-      required this.buttonAltHoverBg,
-      required this.buttonAltHoverText,
-      required this.buttonAltPressedBg,
-      required this.buttonAltPressedText,
-      required this.buttonAltShadow,
-      required this.buttonDisabledBg,
-      required this.buttonDisabledText,
-      required this.buttonErrorDefaultBg,
-      required this.buttonErrorDefaultText,
-      required this.buttonErrorHoverBg,
-      required this.buttonErrorHoverText,
-      required this.buttonErrorPressedBg,
-      required this.buttonErrorPressedText,
-      required this.buttonInactiveDefaultBg,
-      required this.buttonInactiveDefaultText,
-      required this.buttonInactiveHoverBg,
-      required this.buttonInactiveHoverText,
-      required this.buttonInactivePressedBg,
-      required this.buttonInactivePressedText});
+// Палитры для 4 типов кнопок + disabled.
+class WaveSimpleButtonColors {
+  WaveSimpleButtonColors._();
 
-  final Color buttonMainDefaultBg;
-  final Color buttonMainDefaultText;
-  final Color buttonMainHoverBg;
-  final Color buttonMainHoverText;
-  final Color buttonMainPressedBg;
-  final Color buttonMainPressedText;
+  // main
+  static const _Palette main = _Palette(
+      defaultBg: Color.fromRGBO(67, 70, 243, 1),
+      defaultText: Color.fromRGBO(220, 218, 255, 1),
+      hoverBg: Color.fromRGBO(53, 56, 233, 1),
+      hoverText: Color.fromRGBO(192, 189, 255, 1),
+      pressedBg: Color.fromRGBO(41, 44, 224, 1),
+      pressedText: Color.fromRGBO(186, 182, 251, 1));
 
-  final Color buttonAltDefaultBg;
-  final Color buttonAltDefaultText;
-  final Color buttonAltHoverBg;
-  final Color buttonAltHoverText;
-  final Color buttonAltPressedBg;
-  final Color buttonAltPressedText;
-  final Color buttonAltShadow;
+  // alternative
+  static const _Palette alternative = _Palette(
+    defaultBg: Color.fromRGBO(220, 218, 255, 1),
+    defaultText: Color.fromRGBO(48, 51, 212, 1),
+    hoverBg: Color.fromRGBO(181, 178, 229, 1),
+    hoverText: Color.fromRGBO(46, 48, 184, 1),
+    pressedBg: Color.fromRGBO(157, 153, 229, 1),
+    pressedText: Color.fromRGBO(39, 42, 190, 1),
+    shadow: Color.fromRGBO(0, 0, 0, 0.25),
+  );
 
-  final Color buttonErrorDefaultBg;
-  final Color buttonErrorDefaultText;
-  final Color buttonErrorHoverBg;
-  final Color buttonErrorHoverText;
-  final Color buttonErrorPressedBg;
-  final Color buttonErrorPressedText;
+  // error
+  static const _Palette error = _Palette(
+    defaultBg: Color.fromRGBO(223, 222, 251, 1),
+    defaultText: Color.fromRGBO(109, 42, 42, 1),
+    hoverBg: Color.fromRGBO(204, 178, 185, 1),
+    hoverText: Color.fromRGBO(94, 33, 33, 1),
+    pressedBg: Color.fromRGBO(224, 82, 84, 1),
+    pressedText: Color.fromRGBO(223, 222, 251, 1),
+  );
 
-  final Color buttonInactiveDefaultBg;
-  final Color buttonInactiveDefaultText;
-  final Color buttonInactiveHoverBg;
-  final Color buttonInactiveHoverText;
-  final Color buttonInactivePressedBg;
-  final Color buttonInactivePressedText;
+  // inactive
+  static const _Palette inactive = _Palette(
+      defaultBg: Color.fromRGBO(220, 218, 255, 1),
+      defaultText: Color.fromRGBO(93, 93, 111, 1),
+      hoverBg: Color.fromRGBO(188, 186, 223, 1),
+      hoverText: Color.fromRGBO(87, 87, 104, 1),
+      pressedBg: Color.fromRGBO(150, 148, 185, 1),
+      pressedText: Color.fromRGBO(223, 222, 251, 1));
 
-  final Color buttonDisabledBg;
-  final Color buttonDisabledText;
+  // disabled
+  static const Color disabledBg = Color.fromRGBO(116, 115, 140, 1);
+  static const Color disabledText = Color.fromRGBO(235, 235, 238, 1);
 
-  static const MdSimpleButtomTheme fallback = MdSimpleButtomTheme(
-      buttonMainDefaultBg: Color.fromRGBO(67, 70, 243, 1),
-      buttonMainDefaultText: Color.fromRGBO(220, 218, 255, 1),
-      buttonMainHoverBg: Color.fromRGBO(53, 56, 233, 1),
-      buttonMainHoverText: Color.fromRGBO(192, 189, 255, 1),
-      buttonMainPressedBg: Color.fromRGBO(41, 44, 224, 1),
-      buttonMainPressedText: Color.fromRGBO(186, 182, 251, 1),
-      buttonAltDefaultBg: Color.fromRGBO(220, 218, 255, 1),
-      buttonAltDefaultText: Color.fromRGBO(48, 51, 212, 1),
-      buttonAltHoverBg: Color.fromRGBO(181, 178, 229, 1),
-      buttonAltHoverText: Color.fromRGBO(46, 48, 184, 1),
-      buttonAltPressedBg: Color.fromRGBO(157, 153, 229, 1),
-      buttonAltPressedText: Color.fromRGBO(39, 42, 190, 1),
-      buttonAltShadow: Color.fromRGBO(0, 0, 0, 0.25),
-      buttonDisabledBg: Color.fromRGBO(116, 115, 140, 1),
-      buttonDisabledText: Color.fromRGBO(235, 235, 238, 1),
-      buttonErrorDefaultBg: Color.fromRGBO(223, 222, 251, 1),
-      buttonErrorDefaultText: Color.fromRGBO(109, 42, 42, 1),
-      buttonErrorHoverBg: Color.fromRGBO(204, 178, 185, 1),
-      buttonErrorHoverText: Color.fromRGBO(94, 33, 33, 1),
-      buttonErrorPressedBg: Color.fromRGBO(224, 82, 84, 1),
-      buttonErrorPressedText: Color.fromRGBO(223, 222, 251, 1),
-      buttonInactiveDefaultBg: Color.fromRGBO(220, 218, 255, 1),
-      buttonInactiveDefaultText: Color.fromRGBO(93, 93, 111, 1),
-      buttonInactiveHoverBg: Color.fromRGBO(188, 186, 223, 1),
-      buttonInactiveHoverText: Color.fromRGBO(87, 87, 104, 1),
-      buttonInactivePressedBg: Color.fromRGBO(150, 148, 185, 1),
-      buttonInactivePressedText: Color.fromRGBO(223, 222, 251, 1));
-
-  @override
-  MdSimpleButtomTheme copyWith({
-    Color? buttonMainDefaultBg,
-    Color? buttonMainDefaultText,
-    Color? buttonMainHoverBg,
-    Color? buttonMainHoverText,
-    Color? buttonMainPressedBg,
-    Color? buttonMainPressedText,
-    Color? buttonAltDefaultBg,
-    Color? buttonAltDefaultText,
-    Color? buttonAltHoverBg,
-    Color? buttonAltHoverText,
-    Color? buttonAltPressedBg,
-    Color? buttonAltPressedText,
-    Color? buttonAltShadow,
-    Color? buttonErrorDefaultBg,
-    Color? buttonErrorDefaultText,
-    Color? buttonErrorHoverBg,
-    Color? buttonErrorHoverText,
-    Color? buttonErrorPressedBg,
-    Color? buttonErrorPressedText,
-    Color? buttonInactiveDefaultBg,
-    Color? buttonInactiveDefaultText,
-    Color? buttonInactiveHoverBg,
-    Color? buttonInactiveHoverText,
-    Color? buttonInactivePressedBg,
-    Color? buttonInactivePressedText,
-    Color? buttonDisabledBg,
-    Color? buttonDisabledText,
-  }) {
-    return MdSimpleButtomTheme(
-      buttonMainDefaultBg: buttonMainDefaultBg ?? this.buttonMainDefaultBg,
-      buttonMainDefaultText:
-          buttonMainDefaultText ?? this.buttonMainDefaultText,
-      buttonMainHoverBg: buttonMainHoverBg ?? this.buttonMainHoverBg,
-      buttonMainHoverText: buttonMainHoverText ?? this.buttonMainHoverText,
-      buttonMainPressedBg: buttonMainPressedBg ?? this.buttonMainPressedBg,
-      buttonMainPressedText:
-          buttonMainPressedText ?? this.buttonMainPressedText,
-      buttonAltDefaultBg: buttonAltDefaultBg ?? this.buttonAltDefaultBg,
-      buttonAltDefaultText: buttonAltDefaultText ?? this.buttonAltDefaultText,
-      buttonAltHoverBg: buttonAltHoverBg ?? this.buttonAltHoverBg,
-      buttonAltHoverText: buttonAltHoverText ?? this.buttonAltHoverText,
-      buttonAltPressedBg: buttonAltPressedBg ?? this.buttonAltPressedBg,
-      buttonAltPressedText: buttonAltPressedText ?? this.buttonAltPressedText,
-      buttonAltShadow: buttonAltShadow ?? this.buttonAltShadow,
-      buttonErrorDefaultBg: buttonErrorDefaultBg ?? this.buttonErrorDefaultBg,
-      buttonErrorDefaultText:
-          buttonErrorDefaultText ?? this.buttonErrorDefaultText,
-      buttonErrorHoverBg: buttonErrorHoverBg ?? this.buttonErrorHoverBg,
-      buttonErrorHoverText: buttonErrorHoverText ?? this.buttonErrorHoverText,
-      buttonErrorPressedBg: buttonErrorPressedBg ?? this.buttonErrorPressedBg,
-      buttonErrorPressedText:
-          buttonErrorPressedText ?? this.buttonErrorPressedText,
-      buttonInactiveDefaultBg:
-          buttonInactiveDefaultBg ?? this.buttonInactiveDefaultBg,
-      buttonInactiveDefaultText:
-          buttonInactiveDefaultText ?? this.buttonInactiveDefaultText,
-      buttonInactiveHoverBg:
-          buttonInactiveHoverBg ?? this.buttonInactiveHoverBg,
-      buttonInactiveHoverText:
-          buttonInactiveHoverText ?? this.buttonInactiveHoverText,
-      buttonInactivePressedBg:
-          buttonInactivePressedBg ?? this.buttonInactivePressedBg,
-      buttonInactivePressedText:
-          buttonInactivePressedText ?? this.buttonInactivePressedText,
-      buttonDisabledBg: buttonDisabledBg ?? this.buttonDisabledBg,
-      buttonDisabledText: buttonDisabledText ?? this.buttonDisabledText,
-    );
+  static _Palette paletteFor(WaveSimpleButtonType type) {
+    switch (type) {
+      case WaveSimpleButtonType.main:
+        return main;
+      case WaveSimpleButtonType.alternative:
+        return alternative;
+      case WaveSimpleButtonType.error:
+        return error;
+      case WaveSimpleButtonType.inactive:
+        return inactive;
+    }
   }
-
-  @override
-  ThemeExtension<MdSimpleButtomTheme> lerp(
-      ThemeExtension<MdSimpleButtomTheme>? other, double t) {
-    if (other is! MdSimpleButtomTheme) return this;
-    Color lerp(Color a, Color b) => Color.lerp(a, b, t)!;
-    return MdSimpleButtomTheme(
-      buttonMainDefaultBg: lerp(buttonMainDefaultBg, other.buttonMainDefaultBg),
-      buttonMainDefaultText:
-          lerp(buttonMainDefaultText, other.buttonMainDefaultText),
-      buttonMainHoverBg: lerp(buttonMainHoverBg, other.buttonMainHoverBg),
-      buttonMainHoverText: lerp(buttonMainHoverText, other.buttonMainHoverText),
-      buttonMainPressedBg: lerp(buttonMainPressedBg, other.buttonMainPressedBg),
-      buttonMainPressedText:
-          lerp(buttonMainPressedText, other.buttonMainPressedText),
-      buttonAltDefaultBg: lerp(buttonAltDefaultBg, other.buttonAltDefaultBg),
-      buttonAltDefaultText:
-          lerp(buttonAltDefaultText, other.buttonAltDefaultText),
-      buttonAltHoverBg: lerp(buttonAltHoverBg, other.buttonAltHoverBg),
-      buttonAltHoverText: lerp(buttonAltHoverText, other.buttonAltHoverText),
-      buttonAltPressedBg: lerp(buttonAltPressedBg, other.buttonAltPressedBg),
-      buttonAltPressedText:
-          lerp(buttonAltPressedText, other.buttonAltPressedText),
-      buttonAltShadow: lerp(buttonAltShadow, other.buttonAltShadow),
-      buttonErrorDefaultBg:
-          lerp(buttonErrorDefaultBg, other.buttonErrorDefaultBg),
-      buttonErrorDefaultText:
-          lerp(buttonErrorDefaultText, other.buttonErrorDefaultText),
-      buttonErrorHoverBg: lerp(buttonErrorHoverBg, other.buttonErrorHoverBg),
-      buttonErrorHoverText:
-          lerp(buttonErrorHoverText, other.buttonErrorHoverText),
-      buttonErrorPressedBg:
-          lerp(buttonErrorPressedBg, other.buttonErrorPressedBg),
-      buttonErrorPressedText:
-          lerp(buttonErrorPressedText, other.buttonErrorPressedText),
-      buttonInactiveDefaultBg:
-          lerp(buttonInactiveDefaultBg, other.buttonInactiveDefaultBg),
-      buttonInactiveDefaultText:
-          lerp(buttonInactiveDefaultText, other.buttonInactiveDefaultText),
-      buttonInactiveHoverBg:
-          lerp(buttonInactiveHoverBg, other.buttonInactiveHoverBg),
-      buttonInactiveHoverText:
-          lerp(buttonInactiveHoverText, other.buttonInactiveHoverText),
-      buttonInactivePressedBg:
-          lerp(buttonInactivePressedBg, other.buttonInactivePressedBg),
-      buttonInactivePressedText:
-          lerp(buttonInactivePressedText, other.buttonInactivePressedText),
-      buttonDisabledBg: lerp(buttonDisabledBg, other.buttonDisabledBg),
-      buttonDisabledText: lerp(buttonDisabledText, other.buttonDisabledText),
-    );
-  }
-
-  static MdSimpleButtomTheme of(BuildContext context) =>
-      Theme.of(context).extension<MdSimpleButtomTheme>() ?? fallback;
 }
+
+class _Palette {
+  const _Palette({
+    required this.defaultBg,
+    required this.defaultText,
+    required this.hoverBg,
+    required this.hoverText,
+    required this.pressedBg,
+    required this.pressedText,
+    this.shadow,
+  });
+
+  final Color defaultBg;
+  final Color defaultText;
+  final Color hoverBg;
+  final Color hoverText;
+  final Color pressedBg;
+  final Color pressedText;
+  final Color? shadow;
+}
+
+// Кнопка принимает любой child. Если child не задан, отрисует label дефолтным стилем из макета (Play, 14, bold).
+class MdSimpleButton extends StatefulWidget {
+  const MdSimpleButton({
+    super.key,
+    this.child,
+    this.label,
+    this.onPressed,
+    this.enabled = true,
+    this.type = WaveSimpleButtonType.main,
+  }) : assert(child != null || label != null,
+            'Either child or label must be provided');
+
+  final Widget? child;
+  final String? label;
+
+  final VoidCallback? onPressed;
+  final bool enabled;
+  final WaveSimpleButtonType type;
+
+  @override
+  State<MdSimpleButton> createState() => _MdSimpleButtonState();
+}
+
+class _MdSimpleButtonState extends State<MdSimpleButton> {
+  bool _hover = false;
+  bool _pressed = false;
+
+  _BtnState get _state {
+    if (!widget.enabled || widget.onPressed == null) return _BtnState.disabled;
+    if (_pressed) return _BtnState.pressed;
+    if (_hover) return _BtnState.hover;
+    return _BtnState.normal;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = WaveSimpleButtonColors.paletteFor(widget.type);
+
+    // цвета по состоянию
+    final Color bg, text;
+    final Color? shadow;
+    switch (_state) {
+      case _BtnState.normal:
+        bg = p.defaultBg;
+        text = p.defaultText;
+        shadow = p.shadow;
+        break;
+      case _BtnState.hover:
+        bg = p.hoverBg;
+        text = p.hoverText;
+        shadow = p.shadow;
+        break;
+      case _BtnState.pressed:
+        bg = p.pressedBg;
+        text = p.pressedText;
+        shadow = p.shadow;
+        break;
+      case _BtnState.disabled:
+        bg = WaveSimpleButtonColors.disabledBg;
+        text = WaveSimpleButtonColors.disabledText;
+        shadow = null;
+        break;
+    }
+
+    final child = widget.child ??
+        Text(
+          widget.label!,
+          style: TextStyle(
+            fontFamily: 'Play',
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            height: 1.2,
+            color: text,
+          ),
+        );
+
+    // Поч не обычный контейнер? Потому что без него, как я понял, не получается сделать плавную анимашку onHover и тд
+    final decorated = AnimatedContainer(
+      duration: const Duration(milliseconds: 120),
+      curve: Curves.easeInOut,
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(12),
+            bottomRight: Radius.circular(24),
+            bottomLeft: Radius.circular(12)),
+        boxShadow: shadow == null
+            ? null
+            : const [
+                BoxShadow(
+                  color: Color.fromRGBO(0, 0, 0, 0.25),
+                ),
+              ],
+      ),
+      child: Center(child: child),
+    );
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: (widget.enabled && widget.onPressed != null)
+            ? widget.onPressed
+            : null,
+        onHover: (v) => setState(() => _hover = v), // сработает только с мышью
+        onHighlightChanged: (v) => setState(() => _pressed = v),
+        // дропаем стандартные эффекты
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        enableFeedback: false,
+        child: decorated,
+      ),
+    );
+  }
+}
+
+// енамчики
+
+enum WaveSimpleButtonType { main, alternative, error, inactive }
+
+enum _BtnState { normal, hover, pressed, disabled }
