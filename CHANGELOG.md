@@ -1,3 +1,7 @@
+## [2.0.0]
+
+- Добавлен файл для экспорта виджетов и экранов в библиотеку md_ui_kit
+
 ## [1.6.0]
 
 - [wave-4] Добавлен компонент GradientScaffoldWrapperAnimated и экран InitialScreen
