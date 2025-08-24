@@ -6,6 +6,6 @@ class WaveLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset('icons/logo/wave.svg');
+    return SvgPicture.asset('assets/icons/logo/wave.svg');
   }
 }

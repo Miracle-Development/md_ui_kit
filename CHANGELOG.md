@@ -1,3 +1,8 @@
+## [1.6.0]
+
+- [wave-4] Добавлен компонент GradientScaffoldWrapperAnimated и экран InitialScreen
+- Добавлена возможность сборки под Android-устройства, установлены необходимые параметры для запуска
+
 ## [1.5.0]
 
 - [wave-3] Добавлен компонент GradientScaffoldWrapper и шейдеры для BlurredCircle
