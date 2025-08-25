@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:md_ui_kit/_core/theme.dart';
 import 'package:md_ui_kit/_stories/screens/counter_screen_story.dart';
+import 'package:md_ui_kit/_stories/screens/initial_screen_story.dart';
+import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_animated_story.dart';
+import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_story.dart';
 import 'package:md_ui_kit/_stories/widgets/md_text_story.dart';
 import 'package:md_ui_kit/widgets/md_initial_wave.dart';
 import 'package:md_ui_kit/widgets/wave_logo.dart';
@@ -8,6 +11,8 @@ import 'package:storybook_flutter/storybook_flutter.dart';
 import 'package:md_ui_kit/_stories/widgets/md_simple_button_story.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const StorybookApp());
 }
 
@@ -51,6 +56,19 @@ class StorybookApp extends StatelessWidget {
               Story(
                 name: 'Wave/MdInitialWave',
                 builder: (context) => const MdInitialWave(),
+              ),
+              Story(
+                name: 'Wave/GradientScaffoldWrapper',
+                builder: (context) => const GradientScaffoldWrapperStory(),
+              ),
+              Story(
+                name: 'Wave/GradientScaffoldWrapperAnimated',
+                builder: (context) =>
+                    const GradientScaffoldWrapperAnimatedStory(),
+              ),
+              Story(
+                name: 'Wave/InitialScreen',
+                builder: (context) => const InitialScreenStory(),
               ),
             ]..sort((a, b) => a.name.compareTo(b.name)),
           ),
