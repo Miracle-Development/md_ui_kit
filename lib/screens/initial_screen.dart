@@ -9,11 +9,13 @@ class InitialScreen extends StatefulWidget {
     super.key,
     this.screenWidth,
     this.screenHeight,
+    this.waitingDuration = 2000,
     this.wavePositionedBottom = 235,
   });
   final double wavePositionedBottom;
   final double? screenWidth;
   final double? screenHeight;
+  final int? waitingDuration;
 
   @override
   State<InitialScreen> createState() => _InitialScreenState();
@@ -34,7 +36,7 @@ class _InitialScreenState extends State<InitialScreen>
     )..forward();
 
     // запуск проявления через 1.5 сек
-    Future.delayed(const Duration(milliseconds: 1500), () {
+    Future.delayed(Duration(milliseconds: widget.waitingDuration!), () {
       if (mounted) {
         setState(() {
           _showTitle = true;
