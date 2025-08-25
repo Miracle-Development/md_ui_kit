@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 
-// Кнопка принимает любой child. Если child не задан, отрисует label дефолтным стилем из макета (Play, 14, bold).
 class MdSimpleButton extends StatefulWidget {
   const MdSimpleButton({
     super.key,
