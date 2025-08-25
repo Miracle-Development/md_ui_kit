@@ -33,7 +33,7 @@ class _AnimatedImageRevealState extends State<_AnimatedImageReveal>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
-    )..forward();
+    );
 
     firstAnim = CurvedAnimation(
       parent: _controller,
@@ -44,6 +44,10 @@ class _AnimatedImageRevealState extends State<_AnimatedImageReveal>
       parent: _controller,
       curve: const Interval(0.2, 0.7, curve: Curves.fastOutSlowIn),
     );
+
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      if (mounted) _controller.forward();
+    });
   }
 
   @override

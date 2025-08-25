@@ -26,7 +26,7 @@ class _GradientScaffoldWrapperAnimatedState
     )..forward();
 
     // запуск проявления через 1.5 сек
-    Future.delayed(const Duration(milliseconds: 1200), () {
+    Future.delayed(const Duration(milliseconds: 3000), () {
       if (mounted) {
         setState(() {
           _showCircles = true;
