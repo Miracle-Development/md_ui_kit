@@ -2,6 +2,134 @@
 
 import 'package:flutter/material.dart';
 
+// Кнопка принимает любой child. Если child не задан, отрисует label дефолтным стилем из макета (Play, 14, bold).
+class MdSimpleButton extends StatefulWidget {
+  const MdSimpleButton({
+    super.key,
+    this.label,
+    this.onPressed,
+    this.enabled = true,
+    this.type = WaveSimpleButtonType.main,
+  });
+  final String? label;
+
+  final VoidCallback? onPressed;
+  final bool enabled;
+  final WaveSimpleButtonType type;
+
+  @override
+  State<MdSimpleButton> createState() => _MdSimpleButtonState();
+}
+
+class _MdSimpleButtonState extends State<MdSimpleButton> {
+  bool _hover = false;
+  bool _pressed = false;
+
+  _BtnState get _state {
+    if (!widget.enabled || widget.onPressed == null) return _BtnState.disabled;
+    if (_pressed) return _BtnState.pressed;
+    if (_hover) return _BtnState.hover;
+    return _BtnState.normal;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = WaveSimpleButtonColors.paletteFor(widget.type);
+
+    // цвета по состоянию
+    final Color bg, text;
+    final Color? shadow;
+    switch (_state) {
+      case _BtnState.normal:
+        bg = p.defaultBg;
+        text = p.defaultText;
+        shadow = p.shadow;
+        break;
+      case _BtnState.hover:
+        bg = p.hoverBg;
+        text = p.hoverText;
+        shadow = p.shadow;
+        break;
+      case _BtnState.pressed:
+        bg = p.pressedBg;
+        text = p.pressedText;
+        shadow = p.shadow;
+        break;
+      case _BtnState.disabled:
+        bg = WaveSimpleButtonColors.disabledBg;
+        text = WaveSimpleButtonColors.disabledText;
+        shadow = null;
+        break;
+    }
+
+    // внутренний текст
+    final child = Text(
+      widget.label!,
+      style: TextStyle(
+        fontFamily: 'Play',
+        fontSize: 14,
+        fontWeight: FontWeight.w700,
+        height: 1.2,
+        color: text,
+      ),
+    );
+
+    final decorated = AnimatedContainer(
+      duration: const Duration(milliseconds: 120),
+      curve: Curves.easeInOut,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      constraints:
+          const BoxConstraints(minHeight: 50, minWidth: 156, maxHeight: 50),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(12),
+          bottomRight: Radius.circular(24),
+          bottomLeft: Radius.circular(12),
+        ),
+        boxShadow: shadow == null
+            ? null
+            : const [
+                BoxShadow(
+                  color: Color.fromRGBO(0, 0, 0, 0.25),
+                  offset: Offset(0, 4),
+                  blurRadius: 12,
+                ),
+              ],
+      ),
+      child: Center(child: child),
+    );
+
+    return MouseRegion(
+      cursor: (widget.enabled && widget.onPressed != null)
+          ? SystemMouseCursors.click
+          : SystemMouseCursors.basic,
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() {
+        _hover = false;
+        _pressed = false;
+      }),
+      child: GestureDetector(
+        onTapDown: (widget.enabled && widget.onPressed != null)
+            ? (_) => setState(() => _pressed = true)
+            : null,
+        onTapUp: (widget.enabled && widget.onPressed != null)
+            ? (_) {
+                setState(() => _pressed = false);
+                widget.onPressed?.call();
+              }
+            : null,
+        onTapCancel: () => setState(() => _pressed = false),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [decorated],
+        ),
+      ),
+    );
+  }
+}
+
 // Палитры для 4 типов кнопок + disabled.
 class WaveSimpleButtonColors {
   WaveSimpleButtonColors._();
@@ -81,123 +209,6 @@ class _Palette {
   final Color pressedBg;
   final Color pressedText;
   final Color? shadow;
-}
-
-// Кнопка принимает любой child. Если child не задан, отрисует label дефолтным стилем из макета (Play, 14, bold).
-class MdSimpleButton extends StatefulWidget {
-  const MdSimpleButton({
-    super.key,
-    this.child,
-    this.label,
-    this.onPressed,
-    this.enabled = true,
-    this.type = WaveSimpleButtonType.main,
-  }) : assert(child != null || label != null,
-            'Either child or label must be provided');
-
-  final Widget? child;
-  final String? label;
-
-  final VoidCallback? onPressed;
-  final bool enabled;
-  final WaveSimpleButtonType type;
-
-  @override
-  State<MdSimpleButton> createState() => _MdSimpleButtonState();
-}
-
-class _MdSimpleButtonState extends State<MdSimpleButton> {
-  bool _hover = false;
-  bool _pressed = false;
-
-  _BtnState get _state {
-    if (!widget.enabled || widget.onPressed == null) return _BtnState.disabled;
-    if (_pressed) return _BtnState.pressed;
-    if (_hover) return _BtnState.hover;
-    return _BtnState.normal;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final p = WaveSimpleButtonColors.paletteFor(widget.type);
-
-    // цвета по состоянию
-    final Color bg, text;
-    final Color? shadow;
-    switch (_state) {
-      case _BtnState.normal:
-        bg = p.defaultBg;
-        text = p.defaultText;
-        shadow = p.shadow;
-        break;
-      case _BtnState.hover:
-        bg = p.hoverBg;
-        text = p.hoverText;
-        shadow = p.shadow;
-        break;
-      case _BtnState.pressed:
-        bg = p.pressedBg;
-        text = p.pressedText;
-        shadow = p.shadow;
-        break;
-      case _BtnState.disabled:
-        bg = WaveSimpleButtonColors.disabledBg;
-        text = WaveSimpleButtonColors.disabledText;
-        shadow = null;
-        break;
-    }
-
-    final child = widget.child ??
-        Text(
-          widget.label!,
-          style: TextStyle(
-            fontFamily: 'Play',
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-            height: 1.2,
-            color: text,
-          ),
-        );
-
-    // Поч не обычный контейнер? Потому что без него, как я понял, не получается сделать плавную анимашку onHover и тд
-    final decorated = AnimatedContainer(
-      duration: const Duration(milliseconds: 120),
-      curve: Curves.easeInOut,
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(12),
-            bottomRight: Radius.circular(24),
-            bottomLeft: Radius.circular(12)),
-        boxShadow: shadow == null
-            ? null
-            : const [
-                BoxShadow(
-                  color: Color.fromRGBO(0, 0, 0, 0.25),
-                ),
-              ],
-      ),
-      child: Center(child: child),
-    );
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: (widget.enabled && widget.onPressed != null)
-            ? widget.onPressed
-            : null,
-        onHover: (v) => setState(() => _hover = v), // сработает только с мышью
-        onHighlightChanged: (v) => setState(() => _pressed = v),
-        // дропаем стандартные эффекты
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        enableFeedback: false,
-        child: decorated,
-      ),
-    );
-  }
 }
 
 // енамчики
