@@ -1,7 +1,7 @@
 name: md_ui_kit
 description: "Miracle Development UI Kit"
 publish_to: "none"
-version: 2.0.3
+version: 2.1.0
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -33,6 +33,8 @@ flutter:
     - assets/fonts/
     - assets/icons/logo/wave.svg
     - assets/icons/initial_wave/
+    - assets/icons/code/code_default.png
+    - assets/icons/code/code_pressed.png
 
   fonts:
     - family: Play

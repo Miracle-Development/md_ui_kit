@@ -4,6 +4,7 @@ import 'package:md_ui_kit/_stories/screens/counter_screen_story.dart';
 import 'package:md_ui_kit/_stories/screens/initial_screen_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_animated_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_story.dart';
+import 'package:md_ui_kit/_stories/widgets/md_text_button_story.dart';
 import 'package:md_ui_kit/_stories/widgets/md_text_story.dart';
 import 'package:md_ui_kit/widgets/md_initial_wave.dart';
 import 'package:md_ui_kit/widgets/wave_logo.dart';
@@ -43,6 +44,10 @@ class StorybookApp extends StatelessWidget {
               Story(
                 name: 'Wave/MdText',
                 builder: (context) => MdTextStory(knobs: context.knobs),
+              ),
+              Story(
+                name: 'Wave/MdTextButton',
+                builder: (context) => MdTextButtonStory(knobs: context.knobs),
               ),
               Story(
                 name: 'Wave/WaveLogo',
