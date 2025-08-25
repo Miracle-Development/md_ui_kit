@@ -53,8 +53,8 @@ class StorybookApp extends StatelessWidget {
                 builder: (context) => const MdInitialWave(),
               ),
               Story(
-                name: 'Wave/GradientScaffoldWrapper',
-                builder: (context) => const GradientScaffoldWrapperStory(),
+                name: 'Wave/GradientBackground',
+                builder: (context) => const GradientBackgroundStory(),
               ),
               Story(
                 name: 'Wave/GradientScaffoldWrapperAnimated',

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:md_ui_kit/widgets/gradient_scaffold_wrapper.dart';
+import 'package:md_ui_kit/widgets/gradient_background.dart';
 
 class GradientScaffoldWrapperAnimated extends StatefulWidget {
   const GradientScaffoldWrapperAnimated({super.key, required this.child});

@@ -1,3 +1,7 @@
+## [2.0.4]
+
+- Компонент GradientScaffoldWrapper заменен на GradientBackground
+
 ## [2.0.3]
 
 - Откат изменений [2.0.2]

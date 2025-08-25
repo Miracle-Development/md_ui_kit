@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:md_ui_kit/widgets/gradient_scaffold_wrapper.dart';
+import 'package:md_ui_kit/widgets/gradient_background.dart';
 
-class GradientScaffoldWrapperStory extends StatelessWidget {
-  const GradientScaffoldWrapperStory({super.key});
+class GradientBackgroundStory extends StatelessWidget {
+  const GradientBackgroundStory({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const GradientScaffoldWrapper(
+    return const GradientBackground(
       child: Center(
         child: Text(
           'Widget goes here',
