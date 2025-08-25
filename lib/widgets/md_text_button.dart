@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 @immutable
 class MdTextButtonTheme extends ThemeExtension<MdTextButtonTheme> {
@@ -57,22 +58,19 @@ enum _BtnState { normal, hover, pressed, disabled }
 class MdTextButton extends StatefulWidget {
   const MdTextButton({
     super.key,
-    this.child,
-    this.label,
+    this.label = "test-peer",
     this.onPressed,
     this.enabled = true,
-  }) : assert(child != null || label != null,
-            'Either child or label must be provided');
+  });
 
-  final Widget? child;
-  final String? label;
+  final String label;
 
   final VoidCallback? onPressed;
   final bool enabled;
 
-  static const String _iconAssetDefault = 'assets/icons/code/code_default.png';
-  static const String _iconAssetPressed = 'assets/icons/code/code_pressed.png';
-  static const double _iconSize = 24;
+  static const String _iconAssetDefault = 'assets/icons/code/code_default.svg';
+  static const String _iconAssetPressed = 'assets/icons/code/code_pressed.svg';
+  static const double _iconSize = 32;
 
   @override
   State<MdTextButton> createState() => _MdTextButtonState();
@@ -115,17 +113,16 @@ class _MdTextButtonState extends State<MdTextButton> {
       _BtnState.disabled => t.disabledColor,
     };
 
-    final Widget baseText = widget.child ??
-        Text(
-          widget.label!,
-          style: TextStyle(
-            fontFamily: 'Play',
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-            height: 1.2,
-            color: color,
-          ),
-        );
+    final Widget baseText = Text(
+      widget.label,
+      style: TextStyle(
+        fontFamily: 'Play',
+        fontSize: 24,
+        fontWeight: FontWeight.w700,
+        height: 1.2,
+        color: color,
+      ),
+    );
 
     final String iconAsset = _state == _BtnState.pressed
         ? MdTextButton._iconAssetPressed
@@ -133,7 +130,7 @@ class _MdTextButtonState extends State<MdTextButton> {
 
     final Widget trailing = AnimatedSwitcher(
       duration: const Duration(milliseconds: 120),
-      child: Image.asset(
+      child: SvgPicture.asset(
         iconAsset,
         width: MdTextButton._iconSize,
         height: MdTextButton._iconSize,
@@ -145,7 +142,7 @@ class _MdTextButtonState extends State<MdTextButton> {
       mainAxisSize: MainAxisSize.min,
       children: [
         baseText,
-        const SizedBox(width: 10),
+        const SizedBox(width: 12),
         trailing,
       ],
     );
@@ -161,27 +158,31 @@ class _MdTextButtonState extends State<MdTextButton> {
 
     return Material(
       color: Colors.transparent,
-      child: InkWell(
-        onTap: (widget.enabled && widget.onPressed != null)
-            ? () {
-                setState(() => _pressed = true);
-                widget.onPressed?.call();
-                _pressedTimer?.cancel();
-                _pressedTimer = Timer(const Duration(seconds: 1), () {
-                  if (!mounted) return;
-                  setState(() => _pressed = false);
-                });
-              }
-            : null,
-        onHover: (v) => setState(() => _hover = v),
-        onHighlightChanged: (v) {
-          if (v) setState(() => _pressed = true);
-        },
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        enableFeedback: false,
-        child: decorated,
+      child: SizedBox(
+        width: 197,
+        height: 28,
+        child: InkWell(
+          onTap: (widget.enabled && widget.onPressed != null)
+              ? () {
+                  setState(() => _pressed = true);
+                  widget.onPressed?.call();
+                  _pressedTimer?.cancel();
+                  _pressedTimer = Timer(const Duration(seconds: 1), () {
+                    if (!mounted) return;
+                    setState(() => _pressed = false);
+                  });
+                }
+              : null,
+          onHover: (v) => setState(() => _hover = v),
+          onHighlightChanged: (v) {
+            if (v) setState(() => _pressed = true);
+          },
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          enableFeedback: false,
+          child: decorated,
+        ),
       ),
     );
   }
