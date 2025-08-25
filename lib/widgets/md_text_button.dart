@@ -58,15 +58,21 @@ enum _BtnState { normal, hover, pressed, disabled }
 class MdTextButton extends StatefulWidget {
   const MdTextButton({
     super.key,
-    this.label = "test-peer",
+    this.label = 'test-peer',
     this.onPressed,
     this.enabled = true,
+    this.horizontalPadding = 8,
+    this.verticalPadding = 2,
+    this.iconGap = 12,
   });
 
   final String label;
-
   final VoidCallback? onPressed;
   final bool enabled;
+
+  final double horizontalPadding;
+  final double verticalPadding;
+  final double iconGap;
 
   static const String _iconAssetDefault = 'assets/icons/code/code_default.svg';
   static const String _iconAssetPressed = 'assets/icons/code/code_pressed.svg';
@@ -105,7 +111,6 @@ class _MdTextButtonState extends State<MdTextButton> {
   Widget build(BuildContext context) {
     final t = MdTextButtonTheme.of(context);
 
-    // цвет текста/иконки по состоянию
     final Color color = switch (_state) {
       _BtnState.normal => t.defaultColor,
       _BtnState.hover => t.hoverColor,
@@ -113,7 +118,7 @@ class _MdTextButtonState extends State<MdTextButton> {
       _BtnState.disabled => t.disabledColor,
     };
 
-    final Widget baseText = Text(
+    final text = Text(
       widget.label,
       style: TextStyle(
         fontFamily: 'Play',
@@ -128,61 +133,60 @@ class _MdTextButtonState extends State<MdTextButton> {
         ? MdTextButton._iconAssetPressed
         : MdTextButton._iconAssetDefault;
 
-    final Widget trailing = AnimatedSwitcher(
+    final trailing = AnimatedSwitcher(
       duration: const Duration(milliseconds: 120),
       child: SvgPicture.asset(
         iconAsset,
+        key: ValueKey(iconAsset),
         width: MdTextButton._iconSize,
         height: MdTextButton._iconSize,
-        color: color,
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       ),
-    );
-
-    final content = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        baseText,
-        const SizedBox(width: 12),
-        trailing,
-      ],
     );
 
     final decorated = AnimatedContainer(
       duration: const Duration(milliseconds: 120),
       curve: Curves.easeInOut,
-      decoration: const BoxDecoration(
-        color: Colors.transparent,
+      padding: EdgeInsets.symmetric(
+        horizontal: widget.horizontalPadding,
+        vertical: widget.verticalPadding,
       ),
-      child: Center(child: content),
+      decoration: const BoxDecoration(color: Colors.transparent),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          text,
+          SizedBox(width: widget.iconGap),
+          trailing,
+        ],
+      ),
     );
 
-    return Material(
-      color: Colors.transparent,
-      child: SizedBox(
-        width: 197,
-        height: 28,
-        child: InkWell(
-          onTap: (widget.enabled && widget.onPressed != null)
-              ? () {
-                  setState(() => _pressed = true);
-                  widget.onPressed?.call();
-                  _pressedTimer?.cancel();
-                  _pressedTimer = Timer(const Duration(seconds: 1), () {
-                    if (!mounted) return;
-                    setState(() => _pressed = false);
-                  });
-                }
-              : null,
-          onHover: (v) => setState(() => _hover = v),
-          onHighlightChanged: (v) {
-            if (v) setState(() => _pressed = true);
-          },
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          enableFeedback: false,
-          child: decorated,
-        ),
+    final enabled = widget.enabled && widget.onPressed != null;
+
+    return MouseRegion(
+      cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() {
+        _hover = false;
+        _pressed = false;
+      }),
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTapDown: enabled ? (_) => setState(() => _pressed = true) : null,
+        onTapUp: enabled
+            ? (_) {
+                _pressedTimer?.cancel();
+                setState(() => _pressed = true);
+                widget.onPressed?.call();
+                _pressedTimer = Timer(const Duration(seconds: 1), () {
+                  if (!mounted) return;
+                  setState(() => _pressed = false);
+                });
+              }
+            : null,
+        onTapCancel: () => setState(() => _pressed = false),
+        child: decorated,
       ),
     );
   }
