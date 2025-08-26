@@ -1,4 +1,5 @@
 import 'dart:ui' as ui;
+import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 
@@ -102,22 +103,55 @@ class _CirclePainter extends CustomPainter {
 
     // порядок uniforms должен совпадать с шейдером:
 
-    shader.setFloat(0, resWpx); // uResolution.x
-    shader.setFloat(1, resHpx); // uResolution.y
-    shader.setFloat(2, centerXpx); // uCenter.x
-    shader.setFloat(3, centerYpx); // uCenter.y
-    shader.setFloat(4, radiusPx); // uRadius
-    shader.setFloat(5, blurPx); // uBlur
-    shader.setFloat(6, r); // uR
-    shader.setFloat(7, g); // uG
-    shader.setFloat(8, b); // uB
-    shader.setFloat(9, a); // uA
+    // shader.setFloat(0, resWpx); // uResolution.x
+    // shader.setFloat(1, resHpx); // uResolution.y
+    // shader.setFloat(2, centerXpx); // uCenter.x
+    // shader.setFloat(3, centerYpx); // uCenter.y
+    // shader.setFloat(4, radiusPx); // uRadius
+    // shader.setFloat(5, blurPx); // uBlur
+    // shader.setFloat(6, r); // uR
+    // shader.setFloat(7, g); // uG
+    // shader.setFloat(8, b); // uB
+    // shader.setFloat(9, a); // uA
 
-    // Добавляем dither amplitude (uDitherAmp)
+    // // Добавляем dither amplitude (uDitherAmp)
     const double base = 1.5 / 255.0; // начни с ~0.0059
     const double maxAmp = 6.0 / 255.0; // например 0.0235
-    shader.setFloat(10, base);
-    shader.setFloat(11, maxAmp);
+    // shader.setFloat(10, base);
+    // shader.setFloat(11, maxAmp);
+
+    final floats = <double>[
+      resWpx, // 0
+      resHpx, // 1
+      centerXpx, // 2
+      centerYpx, // 3
+      radiusPx, // 4
+      blurPx, // 5
+      r, // 6
+      g, // 7
+      b, // 8
+      a, // 9
+      base, // 10 (optional dither base)
+      maxAmp, // 11 (optional dither max)
+    ];
+
+    int supportedUniformCount = 0;
+    for (var i = 0; i < floats.length; i++) {
+      try {
+        shader.setFloat(i, floats[i]);
+        supportedUniformCount++;
+      } on RangeError {
+        // shader не имеет этого индекса -> закончить
+        assert(() {
+          developer.log(
+              'FragmentShader supports only $supportedUniformCount floats; '
+              'skipping from index $i onwards',
+              name: 'shaders');
+          return true;
+        }());
+        break;
+      }
+    }
 
     final paintObj = Paint()..shader = shader;
     canvas.drawRect(Offset.zero & size, paintObj);
