@@ -56,7 +56,6 @@ class _BlurredCircleState extends State<BlurredCircle> {
             blur: widget.blur,
             color: widget.color,
             dpr: dpr,
-            fragCoordIsLogical: fragIsLogicalFlag,
           ),
         );
       },
@@ -73,7 +72,6 @@ class _CirclePainter extends CustomPainter {
     required this.blur,
     required this.color,
     required this.dpr,
-    required this.fragCoordIsLogical,
   });
 
   final ui.FragmentShader shader;
@@ -83,7 +81,6 @@ class _CirclePainter extends CustomPainter {
   final double blur;
   final Color color;
   final double dpr;
-  final double fragCoordIsLogical;
 
   @override
   void paint(Canvas canvas, Size size) {
