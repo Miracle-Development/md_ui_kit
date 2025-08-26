@@ -6,21 +6,17 @@ precision highp float;
 // uResCenter:
 //  x = resLogical_w (logical px), y = resLogical_h (logical px),
 //  z = centerX_logical (px), w = centerY_logical (px)
-uniform vec4 uResCenter; // indices 0..3
+uniform vec4 uResCenter; // 0..3
 
 // uParams:
 //  x = radius_logical (px), y = blur_logical (px), z = ditherBase, w = ditherMax
-uniform vec4 uParams;    // indices 4..7
+uniform vec4 uParams;    // 4..7
 
 // uColor: r,g,b,a (0..1)
-uniform vec4 uColor;     // indices 8..11
+uniform vec4 uColor;     // 8..11
 
 // device pixel ratio (physical / logical)
-uniform float uDpr;      // index 12
-
-// флаг: 1.0 если FlutterFragCoord возвращает логические пиксели (например Web),
-//       0.0 если возвращает физические пиксели (обычно desktop/mobile).
-uniform float uFragCoordIsLogical; // index 13
+uniform float uDpr;      // 12
 
 out vec4 fragColor;
 
@@ -62,17 +58,24 @@ float bayer4(vec2 pos) {
   return (float(val) + jitter) / 16.0;
 }
 
+float alphaProfileFor(vec2 fragLogical, vec2 centerLogical, float radiusLogical, float blurLogical) {
+  float dist = distance(fragLogical, centerLogical);
+  float edge0 = radiusLogical;
+  float edge1 = radiusLogical + max(blurLogical, 0.0);
+  return 1.0 - smootherstep(edge0, edge1, dist);
+}
+
 void main() {
-  // raw frag coord (может быть phys или logical, в зависимости от backend)
+  // raw coord от движка (может быть физическим или логическим)
   vec2 fragRaw = FlutterFragCoord().xy;
 
-  // приводим к логическим пикселям: если fragRaw физический — делим на dpr, иначе оставляем
-  vec2 fragLogical = mix(fragRaw / max(uDpr, 1e-6), fragRaw, clamp(uFragCoordIsLogical, 0.0, 1.0));
+  // два варианта логических координат:
+  //vec2 fragLogicalA = fragRaw / max(uDpr, 1e-6); // если fragRaw физические(px)
+  vec2 fragLogicalB = fragRaw;                   // если fragRaw уже логические(px)
 
-  // затем работаем в логических пикселях
+  // параметры в логических пикселях, переданные из Dart
   vec2 resLogical = vec2(uResCenter.x, uResCenter.y);
   vec2 centerLogical = uResCenter.zw;
-
   float radiusLogical = uParams.x;
   float blurLogical = uParams.y;
   float uDitherBase = uParams.z;
@@ -83,37 +86,36 @@ void main() {
   float uB = uColor.z;
   float uA = uColor.w;
 
-  // расстояние в логических пикселях (одинаковая шкала по X и Y => круг)
-  float dist = distance(fragLogical, centerLogical);
+  // считаем профиль alpha для обоих кандидатов
+  //float alphaA = alphaProfileFor(fragLogicalA, centerLogical, radiusLogical, blurLogical);
+  float alphaB = alphaProfileFor(fragLogicalB, centerLogical, radiusLogical, blurLogical);
 
-  float edge0 = radiusLogical;
-  float edge1 = radiusLogical + max(blurLogical, 0.0);
-  float alphaProfile = 1.0 - smootherstep(edge0, edge1, dist);
+  // градиенты (используются для адаптивного dithering). Берём градиент по варианту A и B и усредняем их — это нормально.
+  //vec2 onePxA = vec2(1.0, 1.0); // шаг в логических пикселях — 1.0
+  //float alphaAx = alphaProfileFor(fragLogicalA + vec2(1.0, 0.0), centerLogical, radiusLogical, blurLogical);
+  //float alphaAy = alphaProfileFor(fragLogicalA + vec2(0.0, 1.0), centerLogical, radiusLogical, blurLogical);
+  //float gradA = length(vec2(abs(alphaA - alphaAx), abs(alphaA - alphaAy)));
 
-  if (alphaProfile <= 0.0005) {
-    fragColor = vec4(0.0);
-    return;
-  }
+  float alphaBx = alphaProfileFor(fragLogicalB + vec2(1.0, 0.0), centerLogical, radiusLogical, blurLogical);
+  float alphaBy = alphaProfileFor(fragLogicalB + vec2(0.0, 1.0), centerLogical, radiusLogical, blurLogical);
+  float gradB = length(vec2(abs(alphaB - alphaBx), abs(alphaB - alphaBy)));
 
-  // градиент по соседним логическим пикселям (шаг 1 logical px)
-  float distX = distance(fragLogical + vec2(1.0, 0.0), centerLogical);
-  float alphaX = 1.0 - smootherstep(edge0, edge1, distX);
-  float distY = distance(fragLogical + vec2(0.0, 1.0), centerLogical);
-  float alphaY = 1.0 - smootherstep(edge0, edge1, distY);
+  //float grad = max(gradA, gradB);
 
-  float gradAlphaX = abs(alphaProfile - alphaX);
-  float gradAlphaY = abs(alphaProfile - alphaY);
-  float grad = length(vec2(gradAlphaX, gradAlphaY));
   float eps = 1e-4;
-  float adapt = (0.02 / (grad + eps));
+  float adapt = (0.02 / (gradB + eps)); // grad
   float amp = clamp(uDitherBase * adapt, 0.0, uDitherMax);
 
-  // для бетер/рандома используем fragRaw (привязан к пиксельной сетке)
+  // dither: используем fragRaw чтобы быть привязанным к пиксельной сетке
   float b = bayer4(fragRaw);
   float r = rand01(fragRaw * 1.37);
   float dither = (b - 0.5) * amp + (r - 0.5) * (amp * 0.35);
 
-  float outA = clamp(uA * alphaProfile + dither, 0.0, 1.0);
-  vec3 color = vec3(uR, uG, uB) * outA;
-  fragColor = vec4(color, outA);
+  // финальная альфа — берём максимум (выбирается правильный интерпретатор координат)
+  //float outA_A = clamp(uA * alphaA + dither, 0.0, 1.0);
+  float outA_B = clamp(uA * alphaB + dither, 0.0, 1.0);
+  //float outA = max(outA_A, outA_B);
+
+  vec3 color = vec3(uR, uG, uB) * outA_B; // outA
+  fragColor = vec4(color, outA_B); // outA
 }
