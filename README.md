@@ -39,6 +39,26 @@ rm -rf ios/Flutter/flutter_export_environment.sh`
 * `cd ios`
 * `pod install --repo-update`
 
+Global code (run from `lib` folder): 
+`
+fvm flutter clean                                       
+rm -rf ios/Pods
+rm -rf ios/.symlinks
+rm -rf ios/Flutter/Flutter.framework
+rm -rf ios/Flutter/Flutter.podspec
+rm -rf ios/Flutter/App.framework
+rm -rf ios/Flutter/Generated.xcconfig
+rm -rf ios/Flutter/app.flx
+rm -rf ios/Flutter/app.zip
+rm -rf ios/Flutter/flutter_assets
+rm -rf ios/Flutter/flutter_export_environment.sh
+rm -rf Podfile.lock Pods
+fvm flutter pub get
+cd ios
+pod install --repo-update
+cd ../
+`
+
 #### To update package
 * `pod update <Firebase/Messaging>`
 

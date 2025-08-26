@@ -1,6 +1,8 @@
+// lib/widgets/blurred_circle.dart
 import 'dart:ui' as ui;
 import 'dart:developer' as developer;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 class BlurredCircle extends StatefulWidget {
@@ -13,10 +15,10 @@ class BlurredCircle extends StatefulWidget {
     required this.color,
   });
 
-  final Alignment alignment; // позиция относительно экрана
-  final Offset offset; // дополнительный сдвиг
-  final double radius;
-  final double blur;
+  final Alignment alignment; // logical px
+  final Offset offset; // logical px
+  final double radius; // logical px (передавать желаемый радиус)
+  final double blur; // logical px
   final Color color;
 
   @override
@@ -34,6 +36,9 @@ class _BlurredCircleState extends State<BlurredCircle> {
 
   @override
   Widget build(BuildContext context) {
+    final double dpr = MediaQuery.of(context).devicePixelRatio;
+    final double fragIsLogicalFlag = kIsWeb ? 1.0 : 0.0;
+
     return FutureBuilder<ui.FragmentProgram>(
       future: _program,
       builder: (context, snapshot) {
@@ -44,12 +49,14 @@ class _BlurredCircleState extends State<BlurredCircle> {
         return CustomPaint(
           size: Size.infinite,
           painter: _CirclePainter(
-            shader,
+            shader: shader,
             alignment: widget.alignment,
             offset: widget.offset,
             radius: widget.radius,
             blur: widget.blur,
             color: widget.color,
+            dpr: dpr,
+            fragCoordIsLogical: fragIsLogicalFlag,
           ),
         );
       },
@@ -58,13 +65,15 @@ class _BlurredCircleState extends State<BlurredCircle> {
 }
 
 class _CirclePainter extends CustomPainter {
-  _CirclePainter(
-    this.shader, {
+  _CirclePainter({
+    required this.shader,
     required this.alignment,
     required this.offset,
     required this.radius,
     required this.blur,
     required this.color,
+    required this.dpr,
+    required this.fragCoordIsLogical,
   });
 
   final ui.FragmentShader shader;
@@ -73,90 +82,81 @@ class _CirclePainter extends CustomPainter {
   final double radius;
   final double blur;
   final Color color;
+  final double dpr;
+  final double fragCoordIsLogical;
 
   @override
   void paint(Canvas canvas, Size size) {
-    // devicePixelRatio — для web/desktop это может быть 1.0 или >1
-    final double dpr = ui.window.devicePixelRatio;
+    // logical coordinates (size уже в logical px)
+    final Offset centerLogical = alignment.alongSize(size) + offset;
+    final double wLogical = size.width;
+    final double hLogical = size.height;
 
-    // центр в логических пикселях
-    final Offset centerPxLogical = alignment.alongSize(size) + offset;
+    // radius и blur оставляем в логических пикселях — как их передали
+    final double radiusLogical = radius;
+    final double blurLogical = blur;
 
-    // переводим в физические пиксели
-    final double centerXpx = centerPxLogical.dx * dpr;
-    final double centerYpx = centerPxLogical.dy * dpr;
-
-    // физическая резолюция полотна
-    final double resWpx = size.width * dpr;
-    final double resHpx = size.height * dpr;
-
-    // радиус и blur в физич пикселях
-    final double radiusPx = radius * dpr;
-    final double blurPx = blur * dpr;
-
-    // color -> components
-    final int argb = color.value; // 0xAARRGGBB
+    // color components
+    final int argb = color.value;
     final double a = ((argb >> 24) & 0xFF) / 255.0;
     final double r = ((argb >> 16) & 0xFF) / 255.0;
     final double g = ((argb >> 8) & 0xFF) / 255.0;
     final double b = (argb & 0xFF) / 255.0;
 
+    const double ditherBase = 1.5 / 255.0;
+    const double ditherMax = 6.0 / 255.0;
+
     // порядок uniforms должен совпадать с шейдером:
-
-    // shader.setFloat(0, resWpx); // uResolution.x
-    // shader.setFloat(1, resHpx); // uResolution.y
-    // shader.setFloat(2, centerXpx); // uCenter.x
-    // shader.setFloat(3, centerYpx); // uCenter.y
-    // shader.setFloat(4, radiusPx); // uRadius
-    // shader.setFloat(5, blurPx); // uBlur
-    // shader.setFloat(6, r); // uR
-    // shader.setFloat(7, g); // uG
-    // shader.setFloat(8, b); // uB
-    // shader.setFloat(9, a); // uA
-
-    // // Добавляем dither amplitude (uDitherAmp)
-    const double base = 1.5 / 255.0; // начни с ~0.0059
-    const double maxAmp = 6.0 / 255.0; // например 0.0235
-    // shader.setFloat(10, base);
-    // shader.setFloat(11, maxAmp);
-
     final floats = <double>[
-      resWpx, // 0
-      resHpx, // 1
-      centerXpx, // 2
-      centerYpx, // 3
-      radiusPx, // 4
-      blurPx, // 5
-      r, // 6
-      g, // 7
-      b, // 8
-      a, // 9
-      base, // 10 (optional dither base)
-      maxAmp, // 11 (optional dither max)
+      // uResCenter: resLogical.w, resLogical.h, centerX_logical, centerY_logical
+      wLogical, // 0
+      hLogical, // 1
+      centerLogical.dx, // 2
+      centerLogical.dy, // 3
+
+      // uParams: radius_logical, blur_logical, ditherBase, ditherMax
+      radiusLogical, // 4
+      blurLogical, // 5
+      ditherBase, // 6
+      ditherMax, // 7
+
+      // uColor
+      r, // 8
+      g, // 9
+      b, // 10
+      a, // 11
+
+      // uDpr
+      dpr, // 12
+
+      // uFragCoordIsLogical
+      fragCoordIsLogical, // 13
     ];
 
-    int supportedUniformCount = 0;
+    int written = 0;
     for (var i = 0; i < floats.length; i++) {
       try {
         shader.setFloat(i, floats[i]);
-        supportedUniformCount++;
+        written++;
       } on RangeError {
-        // shader не имеет этого индекса -> закончить
         assert(() {
           developer.log(
-              'FragmentShader supports only $supportedUniformCount floats; '
-              'skipping from index $i onwards',
-              name: 'shaders');
+            'FragmentShader supports only $written floats on this platform; skipping remaining ${floats.length - i} floats.',
+            name: 'shaders',
+          );
           return true;
         }());
         break;
       }
     }
 
+    developer.log(
+        'size=$size dpr=$dpr centerLogical=$centerLogical radius=$radiusLogical fragIsLogical=$fragCoordIsLogical');
+
     final paintObj = Paint()..shader = shader;
     canvas.drawRect(Offset.zero & size, paintObj);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant _CirclePainter oldDelegate) => true;
 }
