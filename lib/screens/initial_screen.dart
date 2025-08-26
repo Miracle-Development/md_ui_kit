@@ -54,47 +54,39 @@ class _InitialScreenState extends State<InitialScreen>
     final height = MediaQuery.of(context).size.height;
 
     return GradientScaffoldWrapperAnimated(
-      child: SafeArea(
-        child: SizedBox.expand(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              AnimatedOpacity(
-                opacity: _showTitle ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 800),
-                curve: Curves.easeInOut,
-                child: const Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: WaveLogo(),
-                    ),
-                  ],
-                ),
-              ),
-              Positioned(
-                bottom: widget.wavePositionedBottom *
-                    ((widget.screenHeight ?? height) /
-                        (widget.screenWidth ?? width)),
-                left: 0,
-                right: 0,
-                child: const MdInitialWave(),
-              ),
-              Positioned(
-                bottom: 60,
-                child: AnimatedOpacity(
-                  opacity: _showTitle ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 800),
-                  curve: Curves.easeInOut,
-                  child: const MdText(
-                    'peer-to-peer chat&calls',
-                    type: MdTextType.caption,
-                  ),
-                ),
-              ),
-            ],
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned(
+            top: 20,
+            child: AnimatedOpacity(
+              opacity: _showTitle ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 800),
+              curve: Curves.easeInOut,
+              child: const WaveLogo(),
+            ),
           ),
-        ),
+          Positioned(
+            bottom: widget.wavePositionedBottom *
+                ((widget.screenHeight ?? height) /
+                    (widget.screenWidth ?? width)),
+            left: 0,
+            right: 0,
+            child: const MdInitialWave(),
+          ),
+          Positioned(
+            bottom: 60,
+            child: AnimatedOpacity(
+              opacity: _showTitle ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 800),
+              curve: Curves.easeInOut,
+              child: const MdText(
+                'peer-to-peer chat&calls',
+                type: MdTextType.caption,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

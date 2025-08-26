@@ -1,3 +1,7 @@
+## [2.0.5]
+
+- Компонент GradientScaffoldWrapperAnimated разбит на раздельные компоненты
+
 ## [2.0.4]
 
 - Компонент GradientScaffoldWrapper заменен на GradientBackground
@@ -29,7 +33,7 @@
 
 ## [1.4.1]
 
-- [no-task] Добавлена сортировка виджетов в Storybook
+- Добавлена сортировка виджетов в Storybook
 
 ## [1.4.0]
 
