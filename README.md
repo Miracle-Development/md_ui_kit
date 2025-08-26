@@ -23,6 +23,7 @@
 
 ## XCode build
 
+#### Step-by-step code (run one after one from `lib` folder):
 * `fvm flutter clean                                       
 rm -rf ios/Pods
 rm -rf ios/.symlinks
@@ -39,7 +40,7 @@ rm -rf ios/Flutter/flutter_export_environment.sh`
 * `cd ios`
 * `pod install --repo-update`
 
-Global code (run from `lib` folder): 
+#### Global code (run from `lib` folder):
 `
 fvm flutter clean                                       
 rm -rf ios/Pods
@@ -59,10 +60,10 @@ pod install --repo-update
 cd ../
 `
 
-#### To update package
+#### To update package:
 * `pod update <Firebase/Messaging>`
 
-#### To update gems/pods
+#### To update gems/pods:
 * `gem install cocoapods`
 
 ## Добавление Golden Tests
