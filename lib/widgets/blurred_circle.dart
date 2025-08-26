@@ -128,9 +128,6 @@ class _CirclePainter extends CustomPainter {
 
       // uDpr
       dpr, // 12
-
-      // uFragCoordIsLogical
-      fragCoordIsLogical, // 13
     ];
 
     int written = 0;
@@ -150,8 +147,10 @@ class _CirclePainter extends CustomPainter {
       }
     }
 
-    developer.log(
-        'size=$size dpr=$dpr centerLogical=$centerLogical radius=$radiusLogical fragIsLogical=$fragCoordIsLogical');
+    // TODO: разобраться с логическими/физическими координатами на iOS/Android
+    // developer.log(
+    //   'size=$size dpr=$dpr centerLogical=$centerLogical radius=$radiusLogical fragIsLogical=$fragCoordIsLogical',
+    // );
 
     final paintObj = Paint()..shader = shader;
     canvas.drawRect(Offset.zero & size, paintObj);
