@@ -10,8 +10,8 @@ class WaveText extends StatelessWidget {
     this.waveColor = WaveTextColor.defaultColor,
     this.color,
     this.textAlign,
-    this.maxLines,
-    this.overflow,
+    this.maxLines = 1,
+    this.overflow = TextOverflow.ellipsis,
   }) : assert(color != null || waveColor != null);
 
   final String text;
@@ -69,8 +69,6 @@ class WaveText extends StatelessWidget {
       fontFamily: 'Play',
       fontSize: size,
       fontWeight: fontWeight,
-      height: 1.2,
-      letterSpacing: weight == WaveTextWeight.bold ? 0.2 : 0.0,
       color: color ?? resolvedColor,
     );
   }

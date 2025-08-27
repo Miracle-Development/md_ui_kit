@@ -8,29 +8,21 @@ class WaveTextButton extends StatefulWidget {
   const WaveTextButton({
     super.key,
     this.label = 'test-peer',
-    this.child,
     this.onPressed,
-    this.enabled = true,
     this.horizontalPadding = 8,
     this.verticalPadding = 2,
     this.iconGap = 12,
-    this.iconDefaultAsset = 'assets/icons/code/code_default.svg',
-    this.iconPressedAsset = 'assets/icons/code/code_pressed.svg',
     this.iconSize = 32,
   });
 
   final String label;
-  final Widget? child;
 
   final VoidCallback? onPressed;
-  final bool enabled;
 
   final double horizontalPadding;
   final double verticalPadding;
   final double iconGap;
 
-  final String iconDefaultAsset;
-  final String iconPressedAsset;
   final double iconSize;
 
   @override
@@ -38,115 +30,70 @@ class WaveTextButton extends StatefulWidget {
 }
 
 class _WaveTextButtonState extends State<WaveTextButton> {
-  bool _hover = false;
+  bool _hovered = false;
   bool _pressed = false;
-  Timer? _pressedTimer;
 
-  _BtnState get _state {
-    if (!widget.enabled || widget.onPressed == null) return _BtnState.disabled;
-    if (_pressed) return _BtnState.pressed;
-    if (_hover) return _BtnState.hover;
-    return _BtnState.normal;
-  }
+  final iconDefaultAsset = 'assets/icons/copy/copy_default.svg';
+  final iconPressedAsset = 'assets/icons/copy/copy_pressed.svg';
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    _pressedTimer?.cancel();
-    super.dispose();
-  }
-
-  Color _resolveColor(_BtnState s) {
-    switch (s) {
-      case _BtnState.normal:
-        return MdColors.textButtonDefault;
-      case _BtnState.hover:
-        return MdColors.textButtonHover;
-      case _BtnState.pressed:
-        return MdColors.textButtonPressed;
-      case _BtnState.disabled:
-        return MdColors.textButtonDisabled;
+  Color _resolveColor() {
+    if (_pressed) {
+      return MdColors.textButtonPressed;
     }
+    if (_hovered) {
+      return MdColors.textButtonHover;
+    }
+    return MdColors.textButtonDefault;
+  }
+
+  Future<void> _onTapUpPressed() async {
+    setState(() => _pressed = true);
+    await Future<void>.delayed(const Duration(seconds: 1));
+    setState(() => _pressed = false);
   }
 
   @override
   Widget build(BuildContext context) {
-    final enabled = widget.enabled && widget.onPressed != null;
-    final color = _resolveColor(_state);
+    final enabled = widget.onPressed != null;
+    final color = _resolveColor();
 
-    final String iconAsset = _state == _BtnState.pressed
-        ? widget.iconPressedAsset
-        : widget.iconDefaultAsset;
+    final iconAsset = _pressed ? iconPressedAsset : iconDefaultAsset;
 
     return MouseRegion(
-      cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
-      onEnter: (_) => setState(() => _hover = true),
-      onExit: (_) => setState(() {
-        _hover = false;
-        _pressed = false;
-      }),
+      cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.forbidden,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
       child: GestureDetector(
-        behavior: HitTestBehavior.translucent,
         onTapDown: enabled ? (_) => setState(() => _pressed = true) : null,
-        onTapUp: enabled
-            ? (_) {
-                _pressedTimer?.cancel();
-                setState(() => _pressed = true);
-                widget.onPressed?.call();
-                _pressedTimer = Timer(const Duration(seconds: 1), () {
-                  if (!mounted) return;
-                  setState(() => _pressed = false);
-                });
-              }
-            : null,
+        onTapUp: enabled ? (_) => _onTapUpPressed() : null,
         onTapCancel: () => setState(() => _pressed = false),
-        child: AbsorbPointer(
-          absorbing: !enabled,
-          child: DefaultTextStyle.merge(
-            style: TextStyle(
-              color: color,
-              fontFamily: 'Play',
-              fontWeight: FontWeight.w700,
-              height: 1.2,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: widget.horizontalPadding,
-                    vertical: widget.verticalPadding,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      widget.child ??
-                          WaveText(
-                            widget.label,
-                            type: WaveTextType.title,
-                            weight: WaveTextWeight.bold,
-                            color: WaveTextColor.inherit,
-                          ),
-                      SizedBox(width: widget.iconGap),
-                      AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 100),
-                        child: SvgPicture.asset(
-                          iconAsset,
-                          key: ValueKey(iconAsset),
-                          width: widget.iconSize,
-                          height: widget.iconSize,
-                          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-                        ),
-                      )
-                    ],
-                  ),
+        onTap: widget.onPressed,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: widget.horizontalPadding,
+            vertical: widget.verticalPadding,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: WaveText(
+                  widget.label,
+                  weight: WaveTextWeight.bold,
+                  color: color,
                 ),
-              ],
-            ),
+              ),
+              SizedBox(width: widget.iconGap),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: SvgPicture.asset(
+                  iconAsset,
+                  width: widget.iconSize,
+                  height: widget.iconSize,
+                  colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                ),
+              )
+            ],
           ),
         ),
       ),
@@ -154,4 +101,4 @@ class _WaveTextButtonState extends State<WaveTextButton> {
   }
 }
 
-enum _BtnState { normal, hover, pressed, disabled }
+enum WaveTextButtonType { main, hovered, pressed, disabled }
