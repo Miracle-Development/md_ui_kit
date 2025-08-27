@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:md_ui_kit/_core/theme.dart';
 import 'package:md_ui_kit/_stories/screens/counter_screen_story.dart';
 import 'package:md_ui_kit/_stories/screens/initial_screen_story.dart';
+import 'package:md_ui_kit/_stories/widgets/blurred_circle_story.dart';
+import 'package:md_ui_kit/_stories/widgets/gradient_background_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_animated_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_text_story.dart';
@@ -24,7 +26,7 @@ class StorybookApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      // darkTheme: AppTheme.dark, // Uncomment to use the dark theme
+      darkTheme: AppTheme.dark, // Uncomment to use the dark theme
       home: Directionality(
         textDirection: TextDirection.ltr,
         child: Material(
@@ -57,8 +59,18 @@ class StorybookApp extends StatelessWidget {
                 builder: (context) => const MdInitialWave(),
               ),
               Story(
+                name: 'Wave/BlurredCircle',
+                builder: (context) => BlurredCircleStory(knobs: context.knobs),
+              ),
+              Story(
+                name: 'Wave/GradientBackground',
+                builder: (context) =>
+                    GradientBackgroundStory(knobs: context.knobs),
+              ),
+              Story(
                 name: 'Wave/GradientScaffoldWrapper',
-                builder: (context) => const GradientScaffoldWrapperStory(),
+                builder: (context) =>
+                    GradientScaffoldWrapperStory(knobs: context.knobs),
               ),
               Story(
                 name: 'Wave/GradientScaffoldWrapperAnimated',
