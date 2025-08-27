@@ -41,6 +41,7 @@
 
 ## [1.5.0]
 
+- [wave-9] Добавлен компонент MdSimpleButton
 - [wave-3] Добавлен компонент GradientScaffoldWrapper и шейдеры для BlurredCircle
 
 ## [1.4.1]

@@ -5,7 +5,8 @@ export 'widgets/blurred_circle.dart';
 export 'widgets/gradient_background.dart';
 export 'widgets/gradient_scaffold_wrapper.dart';
 export 'widgets/gradient_scaffold_wrapper_animated.dart';
-export 'widgets/md_text.dart';
+export 'widgets/wave_text.dart';
+export 'widgets/wave_button.dart';
 export 'widgets/md_initial_wave.dart';
 export 'widgets/wave_logo.dart';
 // Экраны
