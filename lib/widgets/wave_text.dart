@@ -53,7 +53,6 @@ class WaveText extends StatelessWidget {
       WaveTextWeight.bold => FontWeight.w700,
     };
 
-    // nullable: если inherit — оставляем null и цвет придёт из DefaultTextStyle
     final Color? resolvedColor = switch (waveColor) {
       WaveTextColor.inherit => null,
       WaveTextColor.defaultColor => MdColors.textDefaultColor,
@@ -71,7 +70,7 @@ class WaveText extends StatelessWidget {
       fontWeight: fontWeight,
       height: 1.2,
       letterSpacing: weight == WaveTextWeight.bold ? 0.2 : 0.0,
-      color: resolvedColor,
+      color: color ?? resolvedColor,
     );
   }
 }

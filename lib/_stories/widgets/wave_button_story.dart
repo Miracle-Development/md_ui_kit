@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:md_ui_kit/md_ui_kit.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 import 'package:md_ui_kit/widgets/wave_button.dart';
 
@@ -18,9 +19,9 @@ class WaveButtonStory extends StatelessWidget {
       initial: WaveButtonType.main,
       options: const [
         Option(label: 'main', value: WaveButtonType.main),
-        // Option(label: 'alternative', value: WaveButtonType.alternative),
-        // Option(label: 'error', value: WaveButtonType.error),
-        // Option(label: 'inactive', value: WaveButtonType.inactive),
+        Option(label: 'alternative', value: WaveButtonType.alternative),
+        Option(label: 'error', value: WaveButtonType.error),
+        Option(label: 'inactive', value: WaveButtonType.inactive),
       ],
     );
 
@@ -28,9 +29,6 @@ class WaveButtonStory extends StatelessWidget {
     final enabled = knobs.boolean(label: 'Enabled', initial: true);
 
     return WaveButton(
-      type: type,
-      onPressed: enabled ? () {} : null,
-      label: label,
-    );
+        type: type, onPressed: enabled ? () {} : null, label: label);
   }
 }

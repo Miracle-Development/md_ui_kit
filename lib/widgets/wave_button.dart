@@ -6,7 +6,6 @@ class WaveButton extends StatefulWidget {
   const WaveButton({
     super.key,
     this.label,
-    this.child,
     this.onPressed,
     this.type = WaveButtonType.main,
     this.padding = const EdgeInsets.symmetric(horizontal: 32, vertical: 11),
@@ -17,12 +16,9 @@ class WaveButton extends StatefulWidget {
       bottomLeft: Radius.circular(12),
     ),
     this.showShadow = true,
-  }) : assert(
-          label != null || child != null,
-        );
+  }) : assert(label != null);
 
   final String? label;
-  final Widget? child;
 
   final VoidCallback? onPressed;
   final WaveButtonType type;
@@ -39,11 +35,33 @@ class _WaveButtonState extends State<WaveButton> {
   bool _hover = false;
   bool _pressed = false;
 
+  List<Color> _resolveTextAndButtonColors(bool enabled) {
+    Color textColor;
+    Color buttonColor;
+
+    if (enabled) {
+      if (_pressed) {
+        textColor = widget.type.textPressedColor;
+        buttonColor = widget.type.buttonPressedColor;
+      } else if (_hover) {
+        textColor = widget.type.textHoveredColor;
+        buttonColor = widget.type.buttonHoveredColor;
+      } else {
+        textColor = widget.type.textDefaultColor;
+        buttonColor = widget.type.buttonDefaultColor;
+      }
+    } else {
+      textColor = MdColors.buttonDisabledText;
+      buttonColor = MdColors.buttonDisabledBg;
+    }
+
+    return [buttonColor, textColor];
+  }
+
   @override
   Widget build(BuildContext context) {
     final enabled = widget.onPressed != null;
-    const disabledTextColor = MdColors.buttonDisabledText;
-    const disabledButtonColor = MdColors.buttonDisabledBg;
+    final colors = _resolveTextAndButtonColors(enabled);
 
     return MouseRegion(
       cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.forbidden,
@@ -58,13 +76,7 @@ class _WaveButtonState extends State<WaveButton> {
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeInOut,
           decoration: BoxDecoration(
-            color: enabled
-                ? _pressed
-                    ? widget.type.buttonPressedColor
-                    : _hover
-                        ? widget.type.buttonHoveredColor
-                        : widget.type.buttonDefaultColor
-                : disabledButtonColor,
+            color: colors[0],
             borderRadius: widget.radius,
             boxShadow: !widget.type.hasShadow
                 ? null
@@ -81,17 +93,10 @@ class _WaveButtonState extends State<WaveButton> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (widget.child != null) widget.child!,
                 if (widget.label != null)
                   WaveText(
                     widget.label!,
-                    color: enabled
-                        ? _pressed
-                            ? widget.type.textPressedColor
-                            : _hover
-                                ? widget.type.textHoveredColor
-                                : widget.type.textDefaultColor
-                        : disabledTextColor,
+                    color: colors[1],
                     weight: WaveTextWeight.bold,
                   ),
               ],
@@ -103,103 +108,6 @@ class _WaveButtonState extends State<WaveButton> {
   }
 }
 
-// ({Color bg, Color text, bool shadow}) _colorsFor(_BtnState s) {
-//   switch (widget.type) {
-//     case WaveButtonType.main:
-//       return switch (s) {
-//         _BtnState.normal => (
-//             bg: MdColors.buttonMainDefaultBg,
-//             text: MdColors.buttonMainDefaultText,
-//             shadow: true
-//           ),
-//         _BtnState.hover => (
-//             bg: MdColors.buttonMainHoverBg,
-//             text: MdColors.buttonMainHoverText,
-//             shadow: true
-//           ),
-//         _BtnState.pressed => (
-//             bg: MdColors.buttonMainPressedBg,
-//             text: MdColors.buttonMainPressedText,
-//             shadow: true
-//           ),
-//         _BtnState.disabled => (
-//             bg: MdColors.buttonDisabledBg,
-//             text: MdColors.buttonDisabledText,
-//             shadow: false
-//           ),
-//       };
-// case WaveButtonType.alternative:
-//   return switch (s) {
-//     _BtnState.normal => (
-//         bg: MdColors.buttonAltDefaultBg,
-//         text: MdColors.buttonAltDefaultText,
-//         shadow: true
-//       ),
-//     _BtnState.hover => (
-//         bg: MdColors.buttonAltHoverBg,
-//         text: MdColors.buttonAltHoverText,
-//         shadow: true
-//       ),
-//     _BtnState.pressed => (
-//         bg: MdColors.buttonAltPressedBg,
-//         text: MdColors.buttonAltPressedText,
-//         shadow: true
-//       ),
-//     _BtnState.disabled => (
-//         bg: MdColors.buttonDisabledBg,
-//         text: MdColors.buttonDisabledText,
-//         shadow: false
-//       ),
-//   };
-// case WaveButtonType.error:
-//   return switch (s) {
-//     _BtnState.normal => (
-//         bg: MdColors.buttonErrorDefaultBg,
-//         text: MdColors.buttonErrorDefaultText,
-//         shadow: true
-//       ),
-//     _BtnState.hover => (
-//         bg: MdColors.buttonErrorHoverBg,
-//         text: MdColors.buttonErrorHoverText,
-//         shadow: true
-//       ),
-//     _BtnState.pressed => (
-//         bg: MdColors.buttonErrorPressedBg,
-//         text: MdColors.buttonErrorPressedText,
-//         shadow: true
-//       ),
-//     _BtnState.disabled => (
-//         bg: MdColors.buttonDisabledBg,
-//         text: MdColors.buttonDisabledText,
-//         shadow: false
-//       ),
-//   };
-// case WaveButtonType.inactive:
-//   return switch (s) {
-//   _BtnState.normal => (
-//       bg: MdColors.buttonInactiveDefaultBg,
-//       text: MdColors.buttonInactiveDefaultText,
-//       shadow: false
-//     ),
-//   _BtnState.hover => (
-//       bg: MdColors.buttonInactiveHoverBg,
-//       text: MdColors.buttonInactiveHoverText,
-//       shadow: false
-//     ),
-//   _BtnState.pressed => (
-//       bg: MdColors.buttonInactivePressedBg,
-//       text: MdColors.buttonInactivePressedText,
-//       shadow: false
-//     ),
-//   _BtnState.disabled => (
-//       bg: MdColors.buttonDisabledBg,
-//       text: MdColors.buttonDisabledText,
-//       shadow: false
-//     ),
-// };
-//   }
-// }
-
 enum WaveButtonType {
   main(
     textDefaultColor: MdColors.buttonMainDefaultText,
@@ -209,10 +117,34 @@ enum WaveButtonType {
     buttonHoveredColor: MdColors.buttonMainHoverBg,
     buttonPressedColor: MdColors.buttonMainPressedBg,
     hasShadow: false,
+  ),
+  alternative(
+    textDefaultColor: MdColors.buttonAltDefaultText,
+    textHoveredColor: MdColors.buttonAltHoverText,
+    textPressedColor: MdColors.buttonAltPressedText,
+    buttonDefaultColor: MdColors.buttonAltDefaultBg,
+    buttonHoveredColor: MdColors.buttonAltHoverBg,
+    buttonPressedColor: MdColors.buttonAltPressedBg,
+    hasShadow: false,
+  ),
+  error(
+    textDefaultColor: MdColors.buttonErrorDefaultText,
+    textHoveredColor: MdColors.buttonErrorHoverText,
+    textPressedColor: MdColors.buttonErrorPressedText,
+    buttonDefaultColor: MdColors.buttonErrorDefaultBg,
+    buttonHoveredColor: MdColors.buttonErrorHoverBg,
+    buttonPressedColor: MdColors.buttonErrorPressedBg,
+    hasShadow: false,
+  ),
+  inactive(
+    textDefaultColor: MdColors.buttonInactiveDefaultText,
+    textHoveredColor: MdColors.buttonInactiveHoverText,
+    textPressedColor: MdColors.buttonInactivePressedText,
+    buttonDefaultColor: MdColors.buttonInactiveDefaultBg,
+    buttonHoveredColor: MdColors.buttonInactiveHoverBg,
+    buttonPressedColor: MdColors.buttonInactivePressedBg,
+    hasShadow: false,
   );
-  // alternative(),
-  // error(),
-  // inactive();
 
   const WaveButtonType({
     required this.textDefaultColor,
