@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:md_ui_kit/widgets/gradient_scaffold_wrapper_animated.dart';
 import 'package:md_ui_kit/widgets/md_initial_wave.dart';
-import 'package:md_ui_kit/widgets/md_text.dart';
+import 'package:md_ui_kit/widgets/wave_text.dart';
 import 'package:md_ui_kit/widgets/wave_logo.dart';
 
 class InitialScreen extends StatefulWidget {
@@ -86,9 +86,9 @@ class _InitialScreenState extends State<InitialScreen>
                   opacity: _showTitle ? 1.0 : 0.0,
                   duration: const Duration(milliseconds: 800),
                   curve: Curves.easeInOut,
-                  child: const MdText(
+                  child: const WaveText(
                     'peer-to-peer chat&calls',
-                    type: MdTextType.caption,
+                    type: WaveTextType.caption,
                   ),
                 ),
               ),

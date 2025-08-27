@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
-import 'package:md_ui_kit/widgets/md_text_button.dart';
+import 'package:md_ui_kit/widgets/wave_text_button.dart';
 
 class MdTextButtonStory extends StatelessWidget {
   const MdTextButtonStory({super.key, required this.knobs});
@@ -13,7 +13,7 @@ class MdTextButtonStory extends StatelessWidget {
     final label = knobs.text(label: 'Text', initial: 'test-peer');
 
     return Center(
-      child: MdTextButton(
+      child: WaveTextButton(
         label: label,
         onPressed: () {},
       ),
