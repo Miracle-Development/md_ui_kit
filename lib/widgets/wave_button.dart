@@ -5,7 +5,7 @@ import 'package:md_ui_kit/_core/colors.dart' show MdColors;
 class WaveButton extends StatefulWidget {
   const WaveButton({
     super.key,
-    this.label,
+    required this.label,
     this.onPressed,
     this.type = WaveButtonType.main,
     this.padding = const EdgeInsets.symmetric(horizontal: 32, vertical: 11),
@@ -16,9 +16,9 @@ class WaveButton extends StatefulWidget {
       bottomLeft: Radius.circular(12),
     ),
     this.showShadow = true,
-  }) : assert(label != null);
+  });
 
-  final String? label;
+  final String label;
 
   final VoidCallback? onPressed;
   final WaveButtonType type;
@@ -93,12 +93,11 @@ class _WaveButtonState extends State<WaveButton> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (widget.label != null)
-                  WaveText(
-                    widget.label!,
-                    color: colors[1],
-                    weight: WaveTextWeight.bold,
-                  ),
+                WaveText(
+                  widget.label,
+                  color: colors[1],
+                  weight: WaveTextWeight.bold,
+                ),
               ],
             ),
           ),
@@ -125,7 +124,7 @@ enum WaveButtonType {
     buttonDefaultColor: MdColors.buttonAltDefaultBg,
     buttonHoveredColor: MdColors.buttonAltHoverBg,
     buttonPressedColor: MdColors.buttonAltPressedBg,
-    hasShadow: false,
+    hasShadow: true,
   ),
   error(
     textDefaultColor: MdColors.buttonErrorDefaultText,
