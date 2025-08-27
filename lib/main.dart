@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:md_ui_kit/_core/precached_icons.dart';
 import 'package:md_ui_kit/_core/theme.dart';
 import 'package:md_ui_kit/_stories/screens/counter_screen_story.dart';
 import 'package:md_ui_kit/_stories/screens/initial_screen_story.dart';
@@ -7,6 +8,7 @@ import 'package:md_ui_kit/_stories/widgets/gradient_background_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_animated_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_text_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_text_button_story.dart';
 import 'package:md_ui_kit/widgets/md_initial_wave.dart';
 import 'package:md_ui_kit/widgets/wave_logo.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
@@ -23,6 +25,8 @@ class StorybookApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const PrecachedIcons().precache(context);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
@@ -46,6 +50,10 @@ class StorybookApp extends StatelessWidget {
               Story(
                 name: 'Wave/WaveText',
                 builder: (context) => WaveTextStory(knobs: context.knobs),
+              ),
+              Story(
+                name: 'Wave/WaveTextButton',
+                builder: (context) => MdTextButtonStory(knobs: context.knobs),
               ),
               Story(
                   name: 'Wave/WaveButton',

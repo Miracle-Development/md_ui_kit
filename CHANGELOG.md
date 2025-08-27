@@ -1,3 +1,11 @@
+## [2.2.0]
+
+- [wave-10] Добавлен компонент WaveTextButton
+
+## [2.1.0]
+
+- [wave-9] Добавлен компонент WaveSimpleButton
+
 ## [2.0.8]
 
 - [wave-24] Добавлена возможность включить логотип в статусбаре компонентов GradientBackground/GradientScaffoldWrapper

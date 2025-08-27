@@ -44,4 +44,10 @@ class MdColors {
   // Disabled
   static const Color buttonDisabledBg = Color.fromRGBO(116, 115, 140, 1);
   static const Color buttonDisabledText = Color.fromRGBO(235, 235, 238, 1);
+
+  /// WaveTextButton Colors
+  static const Color textButtonDefault = Color.fromRGBO(220, 218, 255, 1);
+  static const Color textButtonHover = Color.fromRGBO(177, 172, 255, 1);
+  static const Color textButtonPressed = Color.fromRGBO(67, 70, 243, 1);
+  static const Color textButtonDisabled = Color.fromRGBO(116, 115, 140, 1);
 }

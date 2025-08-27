@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:md_ui_kit/widgets/wave_text.dart';
 import 'package:md_ui_kit/_core/colors.dart' show MdColors;
 
-class WaveButton extends StatefulWidget {
-  const WaveButton({
+class WaveSimpleButton extends StatefulWidget {
+  const WaveSimpleButton({
     super.key,
     required this.label,
     this.onPressed,
@@ -28,11 +28,11 @@ class WaveButton extends StatefulWidget {
   final bool showShadow;
 
   @override
-  State<WaveButton> createState() => _WaveButtonState();
+  State<WaveSimpleButton> createState() => _WaveSimpleButtonState();
 }
 
-class _WaveButtonState extends State<WaveButton> {
-  bool _hover = false;
+class _WaveSimpleButtonState extends State<WaveSimpleButton> {
+  bool _hovered = false;
   bool _pressed = false;
 
   List<Color> _resolveTextAndButtonColors(bool enabled) {
@@ -43,7 +43,7 @@ class _WaveButtonState extends State<WaveButton> {
       if (_pressed) {
         textColor = widget.type.textPressedColor;
         buttonColor = widget.type.buttonPressedColor;
-      } else if (_hover) {
+      } else if (_hovered) {
         textColor = widget.type.textHoveredColor;
         buttonColor = widget.type.buttonHoveredColor;
       } else {
@@ -65,8 +65,8 @@ class _WaveButtonState extends State<WaveButton> {
 
     return MouseRegion(
       cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.forbidden,
-      onEnter: (_) => setState(() => _hover = true),
-      onExit: (_) => setState(() => _hover = false),
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
       child: GestureDetector(
         onTapDown: enabled ? (_) => setState(() => _pressed = true) : null,
         onTapUp: enabled ? (_) => setState(() => _pressed = false) : null,

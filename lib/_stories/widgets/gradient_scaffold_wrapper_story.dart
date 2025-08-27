@@ -44,9 +44,9 @@ class _GradientScaffoldWrapperStoryState
                     onTapUp: (_) => setState(() => _isPressed = false),
                     onTapDown: (_) => setState(() => _isPressed = true),
                     onTapCancel: () => setState(() => _isPressed = false),
-                    onTap: () => print('Tapped'),
+                    onTap: () {},
                     child: Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Text(
                         'Widget goes here',
                         style: TextStyle(
