@@ -78,7 +78,7 @@ class WaveTextStory extends StatelessWidget {
       text,
       type: textType,
       weight: textWeight,
-      color: textColor,
+      waveColor: textColor,
     );
   }
 }

@@ -18,9 +18,9 @@ class WaveButtonStory extends StatelessWidget {
       initial: WaveButtonType.main,
       options: const [
         Option(label: 'main', value: WaveButtonType.main),
-        Option(label: 'alternative', value: WaveButtonType.alternative),
-        Option(label: 'error', value: WaveButtonType.error),
-        Option(label: 'inactive', value: WaveButtonType.inactive),
+        // Option(label: 'alternative', value: WaveButtonType.alternative),
+        // Option(label: 'error', value: WaveButtonType.error),
+        // Option(label: 'inactive', value: WaveButtonType.inactive),
       ],
     );
 
@@ -29,7 +29,6 @@ class WaveButtonStory extends StatelessWidget {
 
     return WaveButton(
       type: type,
-      enabled: enabled,
       onPressed: enabled ? () {} : null,
       label: label,
     );

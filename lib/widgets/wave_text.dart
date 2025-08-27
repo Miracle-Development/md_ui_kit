@@ -7,23 +7,25 @@ class WaveText extends StatelessWidget {
     super.key,
     this.type = WaveTextType.title,
     this.weight = WaveTextWeight.regular,
-    this.color = WaveTextColor.defaultColor,
+    this.waveColor = WaveTextColor.defaultColor,
+    this.color,
     this.textAlign,
     this.maxLines,
     this.overflow,
-  });
+  }) : assert(color != null || waveColor != null);
 
   final String text;
   final WaveTextType type;
   final WaveTextWeight weight;
-  final WaveTextColor color;
+  final WaveTextColor? waveColor;
+  final Color? color;
   final TextAlign? textAlign;
   final int? maxLines;
   final TextOverflow? overflow;
 
   @override
   Widget build(BuildContext context) {
-    final style = _buildTextStyle(type, weight, color);
+    final style = _buildTextStyle(type, weight, waveColor, color);
     return Text(
       text,
       textAlign: textAlign,
@@ -36,7 +38,8 @@ class WaveText extends StatelessWidget {
   static TextStyle _buildTextStyle(
     WaveTextType type,
     WaveTextWeight weight,
-    WaveTextColor color,
+    WaveTextColor? waveColor,
+    Color? color,
   ) {
     final double size = switch (type) {
       WaveTextType.title => 24,
@@ -51,7 +54,7 @@ class WaveText extends StatelessWidget {
     };
 
     // nullable: если inherit — оставляем null и цвет придёт из DefaultTextStyle
-    final Color? resolvedColor = switch (color) {
+    final Color? resolvedColor = switch (waveColor) {
       WaveTextColor.inherit => null,
       WaveTextColor.defaultColor => MdColors.textDefaultColor,
       WaveTextColor.subtitleColor => MdColors.textSubtitleColor,
@@ -59,6 +62,7 @@ class WaveText extends StatelessWidget {
       WaveTextColor.negativeColor => MdColors.textNegativeColor,
       WaveTextColor.disabledColor => MdColors.textDisabledColor,
       WaveTextColor.brandColor => MdColors.textBrandColor,
+      null => color,
     };
 
     return TextStyle(
