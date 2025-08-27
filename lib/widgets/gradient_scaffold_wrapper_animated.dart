@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:md_ui_kit/widgets/gradient_scaffold_wrapper.dart';
+import 'package:md_ui_kit/widgets/blurred_circle.dart';
 
 class GradientScaffoldWrapperAnimated extends StatefulWidget {
-  const GradientScaffoldWrapperAnimated({super.key, required this.child});
+  const GradientScaffoldWrapperAnimated({
+    super.key,
+    required this.child,
+  });
+
   final Widget child;
 
   @override
@@ -53,51 +57,64 @@ class _GradientScaffoldWrapperAnimatedState
           ),
           child: Stack(
             children: [
-              SafeArea(child: widget.child),
+              /// Основной скролл-контент
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                      minWidth: constraints.maxWidth,
+                    ),
+                    child: SafeArea(child: widget.child),
+                  );
+                },
+              ),
 
               // плавное проявление кругов
               AnimatedOpacity(
                 opacity: _showCircles ? 1.0 : 0.0,
                 duration: const Duration(seconds: 1), // скорость проявления
                 curve: Curves.easeInOut,
-                child: Stack(
-                  children: [
-                    BlurredCircle(
-                      alignment: Alignment.topCenter,
-                      offset: const Offset(0, -100),
-                      radius: 128,
-                      blur: 100,
-                      color: const Color(0xFF1B2CE9).withAlpha(13),
-                    ),
-                    BlurredCircle(
-                      alignment: Alignment.centerRight,
-                      offset: const Offset(125, 0),
-                      radius: 183,
-                      blur: 400,
-                      color: const Color(0xFF7C41F3).withAlpha(20),
-                    ),
-                    BlurredCircle(
-                      alignment: Alignment.bottomLeft,
-                      offset: const Offset(65, -68),
-                      radius: 136,
-                      blur: 400,
-                      color: const Color(0xFF4145F3).withAlpha(13),
-                    ),
-                    BlurredCircle(
-                      alignment: Alignment.bottomLeft,
-                      offset: const Offset(106, 0),
-                      radius: 136,
-                      blur: 400,
-                      color: const Color(0xFF1B2CE9).withAlpha(13),
-                    ),
-                    BlurredCircle(
-                      alignment: Alignment.bottomLeft,
-                      offset: const Offset(31, -19),
-                      radius: 136,
-                      blur: 400,
-                      color: const Color(0xFF1B2CE9).withAlpha(13),
-                    ),
-                  ],
+                child: IgnorePointer(
+                  child: Stack(
+                    children: [
+                      BlurredCircle(
+                        alignment: Alignment.topCenter,
+                        offset: const Offset(0, -100),
+                        radius: 128,
+                        blur: 100,
+                        color: const Color(0xFF1B2CE9).withAlpha(13),
+                      ),
+                      BlurredCircle(
+                        alignment: Alignment.centerRight,
+                        offset: const Offset(125, 0),
+                        radius: 183,
+                        blur: 400,
+                        color: const Color(0xFF7C41F3).withAlpha(20),
+                      ),
+                      BlurredCircle(
+                        alignment: Alignment.bottomLeft,
+                        offset: const Offset(65, -68),
+                        radius: 136,
+                        blur: 400,
+                        color: const Color(0xFF4145F3).withAlpha(13),
+                      ),
+                      BlurredCircle(
+                        alignment: Alignment.bottomLeft,
+                        offset: const Offset(106, 0),
+                        radius: 136,
+                        blur: 400,
+                        color: const Color(0xFF1B2CE9).withAlpha(13),
+                      ),
+                      BlurredCircle(
+                        alignment: Alignment.bottomLeft,
+                        offset: const Offset(31, -19),
+                        radius: 136,
+                        blur: 400,
+                        color: const Color(0xFF1B2CE9).withAlpha(13),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
