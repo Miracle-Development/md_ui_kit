@@ -17,10 +17,18 @@ class _GradientScaffoldWrapperStoryState
   bool _isPressed = false;
   @override
   Widget build(BuildContext context) {
-    final showScroll =
-        context.knobs.boolean(label: 'Show Scroll', initial: false);
+    final showScroll = context.knobs.boolean(
+      label: 'Show Scroll',
+      initial: false,
+    );
+
+    final showLogo = context.knobs.boolean(
+      label: 'Show logo',
+      initial: true,
+    );
 
     return GradientScaffoldWrapper(
+      showLogo: showLogo,
       child: showScroll
           ? Column(
               children: [
