@@ -25,6 +25,7 @@ class WaveTextStory extends StatelessWidget {
         const Option(label: 'Title (24)', value: WaveTextType.title),
         const Option(label: 'Subtitle (16)', value: WaveTextType.subtitle),
         const Option(label: 'Caption (14)', value: WaveTextType.caption),
+        const Option(label: 'Badge (8)', value: WaveTextType.badge)
       ],
     );
 
@@ -70,6 +71,10 @@ class WaveTextStory extends StatelessWidget {
           label: 'brand',
           value: WaveTextColor.brandColor,
         ),
+        Option(
+          label: 'darkBrand',
+          value: WaveTextColor.darkBrandColor,
+        ),
       ],
     );
 
@@ -77,7 +82,7 @@ class WaveTextStory extends StatelessWidget {
       text,
       type: textType,
       weight: textWeight,
-      color: textColor,
+      waveColor: textColor,
     );
   }
 }

@@ -6,11 +6,12 @@ import 'package:md_ui_kit/_stories/widgets/blurred_circle_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_background_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_animated_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_story.dart';
-import 'package:md_ui_kit/_stories/widgets/wave_text_button_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_text_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_text_button_story.dart';
 import 'package:md_ui_kit/widgets/md_initial_wave.dart';
 import 'package:md_ui_kit/widgets/wave_logo.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_button_story.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,6 +52,9 @@ class StorybookApp extends StatelessWidget {
                 name: 'Wave/WaveTextButton',
                 builder: (context) => MdTextButtonStory(knobs: context.knobs),
               ),
+              Story(
+                  name: 'Wave/WaveButton',
+                  builder: (context) => WaveButtonStory(knobs: context.knobs)),
               Story(
                 name: 'Wave/WaveLogo',
                 builder: (context) => const WaveLogo(),
