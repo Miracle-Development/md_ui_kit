@@ -4,14 +4,20 @@ import 'package:storybook_flutter/storybook_flutter.dart';
 import 'package:md_ui_kit/widgets/wave_simple_button.dart';
 
 class WaveButtonStory extends StatelessWidget {
-  const WaveButtonStory({super.key, required this.knobs});
+  const WaveButtonStory({
+    super.key,
+    required this.knobs,
+  });
 
   final KnobsBuilder knobs;
 
   @override
   Widget build(BuildContext context) {
     // текст
-    final label = knobs.text(label: 'Text', initial: 'Connect');
+    final label = knobs.text(
+      label: 'Text',
+      initial: 'Connect',
+    );
 
     // тип кнопки
     final type = knobs.options<WaveButtonType>(
@@ -43,7 +49,7 @@ class WaveButtonStory extends StatelessWidget {
       initial: true,
     );
 
-    return WaveButton(
+    return WaveSimpleButton(
       type: type,
       onPressed: enabled ? () {} : null,
       label: label,
