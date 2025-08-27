@@ -37,7 +37,6 @@ class _BlurredCircleState extends State<BlurredCircle> {
   @override
   Widget build(BuildContext context) {
     final double dpr = MediaQuery.of(context).devicePixelRatio;
-    final double fragIsLogicalFlag = kIsWeb ? 1.0 : 0.0;
 
     return FutureBuilder<ui.FragmentProgram>(
       future: _program,

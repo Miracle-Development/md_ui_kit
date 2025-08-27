@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-
-import 'package:md_ui_kit/widgets/blurred_circle.dart';
+import 'package:md_ui_kit/md_ui_kit.dart';
 
 class GradientBackground extends StatelessWidget {
-  const GradientBackground({super.key});
+  const GradientBackground({super.key, required this.showLogo,});
 
+  final bool showLogo;
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +15,15 @@ class GradientBackground extends StatelessWidget {
         ),
         child: Stack(
           children: [
+            if (showLogo) const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: WaveLogo(),
+                ),
+              ],
+            ),
             BlurredCircle(
               alignment: Alignment.topCenter,
               offset: const Offset(0, -100),
@@ -56,5 +65,3 @@ class GradientBackground extends StatelessWidget {
     );
   }
 }
-
-
