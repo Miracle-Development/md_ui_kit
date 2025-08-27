@@ -4,11 +4,11 @@ import 'package:md_ui_kit/_stories/screens/counter_screen_story.dart';
 import 'package:md_ui_kit/_stories/screens/initial_screen_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_animated_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_story.dart';
-import 'package:md_ui_kit/_stories/widgets/md_text_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_text_story.dart';
 import 'package:md_ui_kit/widgets/md_initial_wave.dart';
 import 'package:md_ui_kit/widgets/wave_logo.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
-import 'package:md_ui_kit/_stories/widgets/md_simple_button_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_button_story.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,13 +42,12 @@ class StorybookApp extends StatelessWidget {
               ),
               // Wave
               Story(
-                name: 'Wave/MdText',
-                builder: (context) => MdTextStory(knobs: context.knobs),
+                name: 'Wave/WaveText',
+                builder: (context) => WaveTextStory(knobs: context.knobs),
               ),
               Story(
-                  name: 'Wave/MdSimpleButton',
-                  builder: (context) =>
-                      MdSimpleButtonStory(knobs: context.knobs)),
+                  name: 'Wave/WaveButton',
+                  builder: (context) => WaveButtonStory(knobs: context.knobs)),
               Story(
                 name: 'Wave/WaveLogo',
                 builder: (context) => const WaveLogo(),
