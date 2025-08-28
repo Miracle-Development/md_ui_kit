@@ -8,6 +8,7 @@ import 'package:md_ui_kit/_stories/widgets/gradient_background_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_animated_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_item_badge_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_nav_bar_item_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_text_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_text_button_story.dart';
 import 'package:md_ui_kit/widgets/md_initial_wave.dart';
@@ -63,6 +64,10 @@ class StorybookApp extends StatelessWidget {
                   name: 'Wave/WaveItemBadge',
                   builder: (context) =>
                       WaveItemBadgeStory(knobs: context.knobs)),
+              Story(
+                  name: 'Wave/WaveNavBarItem',
+                  builder: (context) =>
+                      WaveNavBarItemStory(knobs: context.knobs)),
               Story(
                 name: 'Wave/WaveLogo',
                 builder: (context) => const WaveLogo(),
