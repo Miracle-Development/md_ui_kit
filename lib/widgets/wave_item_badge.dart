@@ -3,7 +3,7 @@ import 'package:md_ui_kit/_core/colors.dart' show MdColors;
 import 'package:md_ui_kit/widgets/wave_text.dart';
 
 class WaveItemBadge extends StatefulWidget {
-  const WaveItemBadge({
+  WaveItemBadge({
     super.key,
     required this.label,
     this.style = WaveItemBadgeStyle.unselected,
@@ -14,7 +14,7 @@ class WaveItemBadge extends StatefulWidget {
   });
 
   final int? label;
-  final WaveItemBadgeStyle style;
+  WaveItemBadgeStyle style;
   final EdgeInsets padding;
   final BorderRadius borderRadius;
 

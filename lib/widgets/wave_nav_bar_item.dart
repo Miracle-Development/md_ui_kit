@@ -39,8 +39,8 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
       selected: widget.selected,
       hover: _hover,
     );
+    _resolveBadge();
     final Color iconAndTextColor = color;
-
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hover = true),
@@ -92,6 +92,14 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
       } else {
         return MdColors.navBarUnselectedColor;
       }
+    }
+  }
+
+  void _resolveBadge() {
+    if (widget.selected) {
+      widget.waveItemBadge.style = WaveItemBadgeStyle.selected;
+    } else {
+      widget.waveItemBadge.style = WaveItemBadgeStyle.unselected;
     }
   }
 }
