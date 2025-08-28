@@ -3,10 +3,10 @@ import 'package:md_ui_kit/_core/colors.dart' show MdColors;
 import 'package:md_ui_kit/widgets/wave_text.dart';
 
 class WaveItemBadge extends StatefulWidget {
-  WaveItemBadge({
+  const WaveItemBadge({
     super.key,
     required this.label,
-    this.style = WaveItemBadgeStyle.unselected,
+    this.state = WaveItemBadgeState.unselected,
     this.padding = const EdgeInsets.fromLTRB(4, 2, 4, 4),
     this.borderRadius = const BorderRadius.all(Radius.circular(4)),
     this.backgroundColor,
@@ -14,7 +14,7 @@ class WaveItemBadge extends StatefulWidget {
   });
 
   final int? label;
-  WaveItemBadgeStyle style;
+  final WaveItemBadgeState state;
   final EdgeInsets padding;
   final BorderRadius borderRadius;
 
@@ -28,20 +28,20 @@ class WaveItemBadge extends StatefulWidget {
 class _WaveItemBadgeState extends State<WaveItemBadge> {
   Color _resolveBg() {
     if (widget.backgroundColor != null) return widget.backgroundColor!;
-    switch (widget.style) {
-      case WaveItemBadgeStyle.unselected:
+    switch (widget.state) {
+      case WaveItemBadgeState.unselected:
         return MdColors.notificationsUnselectedBg;
-      case WaveItemBadgeStyle.selected:
+      case WaveItemBadgeState.selected:
         return MdColors.notificationsSelectedBg;
     }
   }
 
   Color _resolveText() {
     if (widget.foregroundColor != null) return widget.foregroundColor!;
-    switch (widget.style) {
-      case WaveItemBadgeStyle.unselected:
+    switch (widget.state) {
+      case WaveItemBadgeState.unselected:
         return MdColors.notificationsUnselectedText;
-      case WaveItemBadgeStyle.selected:
+      case WaveItemBadgeState.selected:
         return MdColors.notificationsSelectedText;
     }
   }
@@ -67,6 +67,7 @@ class _WaveItemBadgeState extends State<WaveItemBadge> {
             child: WaveText(
               widget.label! > 999 ? '999+' : widget.label!.toString(),
               type: WaveTextType.badge,
+              weight: WaveTextWeight.bold,
               color: fg,
             ),
           ),
@@ -76,4 +77,4 @@ class _WaveItemBadgeState extends State<WaveItemBadge> {
   }
 }
 
-enum WaveItemBadgeStyle { unselected, selected }
+enum WaveItemBadgeState { unselected, selected }

@@ -2,23 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:md_ui_kit/_core/colors.dart' show MdColors;
+import 'package:md_ui_kit/_core/precached_icons.dart';
 import 'package:md_ui_kit/widgets/wave_item_badge.dart';
 import 'package:md_ui_kit/widgets/wave_text.dart';
 
 class WaveNavBarItem extends StatefulWidget {
   const WaveNavBarItem({
     super.key,
-    required this.waveItemBadge,
-    required this.iconAsset,
+    required this.icon,
     required this.label,
     this.selected = false,
     this.onTap,
+    this.counter,
     this.iconSize = 32,
     this.gap = 10,
   });
 
-  final WaveItemBadge waveItemBadge;
-  final String iconAsset;
+  final int? counter;
+  final WaveNavBarIcon icon;
   final String label;
   final bool selected;
   final VoidCallback? onTap;
@@ -39,45 +40,52 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
       selected: widget.selected,
       hover: _hover,
     );
-    _resolveBadge();
-    final Color iconAndTextColor = color;
+
     return MouseRegion(
-      cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hover = true),
-      onExit: (_) => setState(() {
-        _hover = false;
-      }),
+      onExit: (_) => setState(() => _hover = false),
       child: GestureDetector(
-        behavior: HitTestBehavior.translucent,
+        onTap: widget.onTap,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Stack(
               clipBehavior: Clip.none,
               children: [
-                widget.iconAsset != 'assets/icons/navbar/mic_off.svg'
-                    ? SvgPicture.asset(widget.iconAsset,
-                        width: widget.iconSize,
-                        height: widget.iconSize,
-                        color: iconAndTextColor)
-                    : Stack(
+                widget.icon.isStack
+                    ? Stack(
                         children: [
-                          SvgPicture.asset(widget.iconAsset,
-                              width: widget.iconSize,
-                              height: widget.iconSize,
-                              color: iconAndTextColor),
                           SvgPicture.asset(
-                            'assets/icons/navbar/mic_off_line.svg',
+                            widget.icon.asset,
+                            width: widget.iconSize,
+                            height: widget.iconSize,
+                            colorFilter:
+                                ColorFilter.mode(color, BlendMode.srcIn),
+                          ),
+                          SvgPicture.asset(
+                            widget.icon.overlay!,
                             width: widget.iconSize,
                             height: widget.iconSize,
                           ),
                         ],
+                      )
+                    : SvgPicture.asset(
+                        widget.icon.asset,
+                        width: widget.iconSize,
+                        height: widget.iconSize,
+                        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
                       ),
-                if ((widget.waveItemBadge.label ?? 0) > 0)
+                if (widget.counter != null && widget.counter != 0)
                   Positioned(
-                      left: widget.iconSize - 6,
-                      top: -4,
-                      child: widget.waveItemBadge),
+                    left: widget.iconSize - 6,
+                    top: -4,
+                    child: WaveItemBadge(
+                      label: widget.counter,
+                      state: widget.selected
+                          ? WaveItemBadgeState.selected
+                          : WaveItemBadgeState.unselected,
+                    ),
+                  ),
               ],
             ),
             SizedBox(height: widget.gap),
@@ -98,25 +106,30 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
     required bool hover,
   }) {
     if (selected) {
-      if (hover) {
-        return MdColors.navBarSelectedHoverColor;
-      } else {
-        return MdColors.navBarSelectedColor;
-      }
+      return hover
+          ? MdColors.navBarSelectedHoverColor
+          : MdColors.navBarSelectedColor;
     } else {
-      if (hover) {
-        return MdColors.navBarUnselectedHoverColor;
-      } else {
-        return MdColors.navBarUnselectedColor;
-      }
+      return hover
+          ? MdColors.navBarUnselectedHoverColor
+          : MdColors.navBarUnselectedColor;
     }
   }
+}
 
-  void _resolveBadge() {
-    if (widget.selected) {
-      widget.waveItemBadge.style = WaveItemBadgeStyle.selected;
-    } else {
-      widget.waveItemBadge.style = WaveItemBadgeStyle.unselected;
-    }
-  }
+enum WaveNavBarIcon {
+  chat(PrecachedIcons.navBarChatIcon),
+  link(PrecachedIcons.navBarLinkIcon),
+  linkBreak(PrecachedIcons.navBarLinkBreakIcon),
+  micOn(PrecachedIcons.navBarMicOnIcon),
+  micOff(PrecachedIcons.navBarMicOnIcon,
+      overlay: PrecachedIcons.navBarMicOffLineIcon),
+  phone(PrecachedIcons.navBarPhoneIcon),
+  planet(PrecachedIcons.navBarPlanetIcon);
+
+  const WaveNavBarIcon(this.asset, {this.overlay});
+  final String asset;
+  final String? overlay;
+
+  bool get isStack => overlay != null;
 }

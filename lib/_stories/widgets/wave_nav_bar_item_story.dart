@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:md_ui_kit/widgets/wave_item_badge.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
 import 'package:md_ui_kit/widgets/wave_nav_bar_item.dart';
-import 'package:md_ui_kit/_core/precached_icons.dart';
 
 class WaveNavBarItemStory extends StatelessWidget {
   const WaveNavBarItemStory({super.key, required this.knobs});
@@ -21,25 +19,25 @@ class WaveNavBarItemStory extends StatelessWidget {
     final label = knobs.text(label: 'label', initial: 'Connection');
     final tapTogglesSelected = knobs.boolean(label: 'Selected', initial: true);
 
-    final iconAsset = knobs.options<String>(
+    final iconAsset = knobs.options<WaveNavBarIcon>(
       label: 'icon',
-      initial: PrecachedIcons.navBarLinkIcon,
+      initial: WaveNavBarIcon.chat,
       options: const [
-        Option(label: 'chat', value: PrecachedIcons.navBarChatIcon),
-        Option(label: 'link', value: PrecachedIcons.navBarLinkIcon),
-        Option(label: 'link break', value: PrecachedIcons.navBarLinkBreakIcon),
-        Option(label: 'mic on', value: PrecachedIcons.navBarMicOnIcon),
-        Option(label: 'mic off', value: PrecachedIcons.navBarMicOffIcon),
-        Option(label: 'phone', value: PrecachedIcons.navBarPhoneIcon),
-        Option(label: 'planet', value: PrecachedIcons.navBarPlanetIcon),
+        Option(label: 'chat', value: WaveNavBarIcon.chat),
+        Option(label: 'mic on', value: WaveNavBarIcon.micOn),
+        Option(label: 'mic off', value: WaveNavBarIcon.micOff),
+        Option(label: 'phone', value: WaveNavBarIcon.phone),
+        Option(label: 'planet', value: WaveNavBarIcon.planet),
+        Option(label: 'link', value: WaveNavBarIcon.link),
+        Option(label: 'link break', value: WaveNavBarIcon.linkBreak)
       ],
     );
 
     return WaveNavBarItem(
-      iconAsset: iconAsset,
       label: label,
-      waveItemBadge: WaveItemBadge(label: badgeLabel),
+      icon: iconAsset,
       selected: tapTogglesSelected,
+      counter: badgeLabel,
       onTap: () {},
     );
   }

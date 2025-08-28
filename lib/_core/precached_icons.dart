@@ -11,7 +11,6 @@ class PrecachedIcons {
   static const navBarLinkIcon = 'assets/icons/navbar/link.svg';
   static const navBarLinkBreakIcon = 'assets/icons/navbar/link_break.svg';
   static const navBarMicOnIcon = 'assets/icons/navbar/mic_on.svg';
-  static const navBarMicOffIcon = 'assets/icons/navbar/mic_off.svg';
   static const navBarMicOffLineIcon = 'assets/icons/navbar/mic_off_line.svg';
   static const navBarPhoneIcon = 'assets/icons/navbar/phone.svg';
   static const navBarPlanetIcon = 'assets/icons/navbar/planet.svg';
@@ -23,7 +22,6 @@ class PrecachedIcons {
         SvgAssetLoader(navBarLinkIcon),
         SvgAssetLoader(navBarLinkBreakIcon),
         SvgAssetLoader(navBarMicOnIcon),
-        SvgAssetLoader(navBarMicOffIcon),
         SvgAssetLoader(navBarPhoneIcon),
         SvgAssetLoader(navBarPlanetIcon),
       ];

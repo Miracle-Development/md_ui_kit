@@ -15,18 +15,18 @@ class WaveItemBadgeStory extends StatelessWidget {
       divisions: 1001,
     );
 
-    final style = knobs.options<WaveItemBadgeStyle>(
+    final style = knobs.options<WaveItemBadgeState>(
       label: 'Style',
-      initial: WaveItemBadgeStyle.unselected,
+      initial: WaveItemBadgeState.unselected,
       options: const [
-        Option(label: 'unselected', value: WaveItemBadgeStyle.unselected),
-        Option(label: 'selected', value: WaveItemBadgeStyle.selected),
+        Option(label: 'unselected', value: WaveItemBadgeState.unselected),
+        Option(label: 'selected', value: WaveItemBadgeState.selected),
       ],
     );
 
     return WaveItemBadge(
       label: label,
-      style: style,
+      state: style,
     );
   }
 }
