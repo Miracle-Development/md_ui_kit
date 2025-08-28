@@ -55,12 +55,29 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                SvgPicture.asset(widget.iconAsset,
-                    width: widget.iconSize,
-                    height: widget.iconSize,
-                    color: iconAndTextColor),
+                widget.iconAsset != 'assets/icons/navbar/mic_off.svg'
+                    ? SvgPicture.asset(widget.iconAsset,
+                        width: widget.iconSize,
+                        height: widget.iconSize,
+                        color: iconAndTextColor)
+                    : Stack(
+                        children: [
+                          SvgPicture.asset(widget.iconAsset,
+                              width: widget.iconSize,
+                              height: widget.iconSize,
+                              color: iconAndTextColor),
+                          SvgPicture.asset(
+                            'assets/icons/navbar/mic_off_line.svg',
+                            width: widget.iconSize,
+                            height: widget.iconSize,
+                          ),
+                        ],
+                      ),
                 if ((widget.waveItemBadge.label ?? 0) > 0)
-                  Positioned(right: -4, top: -4, child: widget.waveItemBadge),
+                  Positioned(
+                      left: widget.iconSize - 6,
+                      top: -4,
+                      child: widget.waveItemBadge),
               ],
             ),
             SizedBox(height: widget.gap),

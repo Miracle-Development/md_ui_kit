@@ -7,7 +7,7 @@ class WaveItemBadge extends StatefulWidget {
     super.key,
     required this.label,
     this.style = WaveItemBadgeStyle.unselected,
-    this.padding = const EdgeInsets.fromLTRB(4, 2, 4, 2),
+    this.padding = const EdgeInsets.fromLTRB(4, 2, 4, 4),
     this.borderRadius = const BorderRadius.all(Radius.circular(4)),
     this.backgroundColor,
     this.foregroundColor,
