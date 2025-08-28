@@ -13,7 +13,7 @@ class WaveItemBadge extends StatefulWidget {
     this.foregroundColor,
   });
 
-  final String? label;
+  final int? label;
   final WaveItemBadgeStyle style;
   final EdgeInsets padding;
   final BorderRadius borderRadius;
@@ -48,7 +48,7 @@ class _WaveItemBadgeState extends State<WaveItemBadge> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.label == null || widget.label == "") {
+    if (widget.label == null || widget.label == 0) {
       return const SizedBox();
     }
     final bg = _resolveBg();
@@ -60,7 +60,18 @@ class _WaveItemBadgeState extends State<WaveItemBadge> {
         color: bg,
         borderRadius: widget.borderRadius,
       ),
-      child: WaveText(widget.label!, type: WaveTextType.badge, color: fg),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: WaveText(
+              widget.label! > 999 ? '999+' : widget.label!.toString(),
+              type: WaveTextType.badge,
+              color: fg,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

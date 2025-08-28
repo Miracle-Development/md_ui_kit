@@ -8,7 +8,12 @@ class WaveItemBadgeStory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = knobs.text(label: 'Text', initial: '123456789');
+    final label = knobs.sliderInt(
+      label: 'Notification count',
+      initial: 1,
+      max: 1000,
+      divisions: 1001,
+    );
 
     final style = knobs.options<WaveItemBadgeStyle>(
       label: 'Style',
