@@ -8,7 +8,10 @@ class WaveSimpleButton extends StatefulWidget {
     required this.label,
     this.onPressed,
     this.type = WaveButtonType.main,
-    this.padding = const EdgeInsets.symmetric(horizontal: 32, vertical: 11),
+    this.padding = const EdgeInsets.symmetric(
+      horizontal: 32,
+      vertical: 11,
+    ),
     this.radius = const BorderRadius.only(
       topLeft: Radius.circular(24),
       topRight: Radius.circular(12),

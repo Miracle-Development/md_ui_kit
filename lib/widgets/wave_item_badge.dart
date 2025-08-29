@@ -6,16 +6,14 @@ class WaveItemBadge extends StatefulWidget {
   const WaveItemBadge({
     super.key,
     required this.label,
-    this.state = WaveItemBadgeState.unselected,
-    this.padding = const EdgeInsets.fromLTRB(4, 2, 4, 4),
+    this.type = WaveItemBadgeType.unselected,
     this.borderRadius = const BorderRadius.all(Radius.circular(4)),
     this.backgroundColor,
     this.foregroundColor,
   });
 
   final int? label;
-  final WaveItemBadgeState state;
-  final EdgeInsets padding;
+  final WaveItemBadgeType type;
   final BorderRadius borderRadius;
 
   final Color? backgroundColor;
@@ -28,20 +26,20 @@ class WaveItemBadge extends StatefulWidget {
 class _WaveItemBadgeState extends State<WaveItemBadge> {
   Color _resolveBg() {
     if (widget.backgroundColor != null) return widget.backgroundColor!;
-    switch (widget.state) {
-      case WaveItemBadgeState.unselected:
+    switch (widget.type) {
+      case WaveItemBadgeType.unselected:
         return MdColors.notificationsUnselectedBg;
-      case WaveItemBadgeState.selected:
+      case WaveItemBadgeType.selected:
         return MdColors.notificationsSelectedBg;
     }
   }
 
   Color _resolveText() {
     if (widget.foregroundColor != null) return widget.foregroundColor!;
-    switch (widget.state) {
-      case WaveItemBadgeState.unselected:
+    switch (widget.type) {
+      case WaveItemBadgeType.unselected:
         return MdColors.notificationsUnselectedText;
-      case WaveItemBadgeState.selected:
+      case WaveItemBadgeType.selected:
         return MdColors.notificationsSelectedText;
     }
   }
@@ -55,7 +53,7 @@ class _WaveItemBadgeState extends State<WaveItemBadge> {
     final fg = _resolveText();
 
     return Container(
-      padding: widget.padding,
+      height: 13,
       decoration: BoxDecoration(
         color: bg,
         borderRadius: widget.borderRadius,
@@ -63,12 +61,19 @@ class _WaveItemBadgeState extends State<WaveItemBadge> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Flexible(
-            child: WaveText(
-              widget.label! > 999 ? '999+' : widget.label!.toString(),
-              type: WaveTextType.badge,
-              weight: WaveTextWeight.bold,
-              color: fg,
+          Padding(
+            padding: const EdgeInsets.only(
+              bottom: 2,
+              left: 4,
+              right: 4,
+            ),
+            child: Flexible(
+              child: WaveText(
+                widget.label! > 999 ? '999+' : widget.label!.toString(),
+                type: WaveTextType.badge,
+                weight: WaveTextWeight.bold,
+                color: fg,
+              ),
             ),
           ),
         ],
@@ -77,4 +82,4 @@ class _WaveItemBadgeState extends State<WaveItemBadge> {
   }
 }
 
-enum WaveItemBadgeState { unselected, selected }
+enum WaveItemBadgeType { unselected, selected }

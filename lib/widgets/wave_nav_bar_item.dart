@@ -15,11 +15,11 @@ class WaveNavBarItem extends StatefulWidget {
     this.onTap,
     this.counter,
     this.iconSize = 32,
-    this.gap = 10,
+    this.gap = 0,
   });
 
   final int? counter;
-  final WaveNavBarIcon icon;
+  final NavBarIconType icon;
   final String label;
   final bool selected;
   final VoidCallback? onTap;
@@ -42,6 +42,7 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
     );
 
     return MouseRegion(
+      cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hover = true),
       onExit: (_) => setState(() => _hover = false),
       child: GestureDetector(
@@ -59,8 +60,10 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
                             widget.icon.asset,
                             width: widget.iconSize,
                             height: widget.iconSize,
-                            colorFilter:
-                                ColorFilter.mode(color, BlendMode.srcIn),
+                            colorFilter: ColorFilter.mode(
+                              color,
+                              BlendMode.srcIn,
+                            ),
                           ),
                           SvgPicture.asset(
                             widget.icon.overlay!,
@@ -73,17 +76,20 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
                         widget.icon.asset,
                         width: widget.iconSize,
                         height: widget.iconSize,
-                        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                        colorFilter: ColorFilter.mode(
+                          color,
+                          BlendMode.srcIn,
+                        ),
                       ),
                 if (widget.counter != null && widget.counter != 0)
                   Positioned(
-                    left: widget.iconSize - 6,
-                    top: -4,
+                    left: 22,
+                    top: -2.5,
                     child: WaveItemBadge(
                       label: widget.counter,
-                      state: widget.selected
-                          ? WaveItemBadgeState.selected
-                          : WaveItemBadgeState.unselected,
+                      type: widget.selected
+                          ? WaveItemBadgeType.selected
+                          : WaveItemBadgeType.unselected,
                     ),
                   ),
               ],
@@ -117,17 +123,23 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
   }
 }
 
-enum WaveNavBarIcon {
-  chat(PrecachedIcons.navBarChatIcon),
-  link(PrecachedIcons.navBarLinkIcon),
-  linkBreak(PrecachedIcons.navBarLinkBreakIcon),
-  micOn(PrecachedIcons.navBarMicOnIcon),
-  micOff(PrecachedIcons.navBarMicOnIcon,
-      overlay: PrecachedIcons.navBarMicOffLineIcon),
-  phone(PrecachedIcons.navBarPhoneIcon),
-  planet(PrecachedIcons.navBarPlanetIcon);
+enum NavBarIconType {
+  chat(asset: PrecachedIcons.navBarChatIcon),
+  link(asset: PrecachedIcons.navBarLinkIcon),
+  linkBreak(asset: PrecachedIcons.navBarLinkBreakIcon),
+  micOn(asset: PrecachedIcons.navBarMicOnIcon),
+  micOff(
+    asset: PrecachedIcons.navBarMicOnIcon,
+    overlay: PrecachedIcons.navBarMicOffLineIcon,
+  ),
+  phone(asset: PrecachedIcons.navBarPhoneIcon),
+  planet(asset: PrecachedIcons.navBarPlanetIcon);
 
-  const WaveNavBarIcon(this.asset, {this.overlay});
+  const NavBarIconType({
+    required this.asset,
+    this.overlay,
+  });
+
   final String asset;
   final String? overlay;
 
