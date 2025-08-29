@@ -64,7 +64,7 @@ class WaveTextStory extends StatelessWidget {
       options: const [
         Option(
           label: 'default',
-          value: WaveTextColor.defaultColor,
+          value: WaveTextColor.titleColor,
         ),
         Option(
           label: 'subtitle',

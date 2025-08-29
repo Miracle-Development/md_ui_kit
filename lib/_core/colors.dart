@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class MdColors {
   /// WaveText Colors
-  static const Color textDefaultColor = Color.fromRGBO(220, 218, 255, 1);
+  static const Color textTitleColor = Color.fromRGBO(220, 218, 255, 1);
   static const Color textSubtitleColor = Color.fromRGBO(174, 174, 207, 1);
   static const Color textPositiveColor = Color.fromRGBO(50, 130, 59, 1);
   static const Color textNegativeColor = Color.fromRGBO(130, 50, 50, 1);
