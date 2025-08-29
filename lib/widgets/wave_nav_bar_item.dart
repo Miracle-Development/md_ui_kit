@@ -33,20 +33,60 @@ class WaveNavBarItem extends StatefulWidget {
 
 class _WaveNavBarItemState extends State<WaveNavBarItem> {
   bool _hover = false;
+  bool _onTapDown = false;
+  double _scale = 1.0;
+  double _offsetY = 0.0;
+  double _offsetX = 0.0;
+  final Duration _animDuration = const Duration(milliseconds: 150);
+
+  void _handleTapDown(TapDownDetails details) {
+    setState(() {
+      _onTapDown = true;
+      _scale = 25.0 / 32.0;
+      _offsetY = 8.0;
+      _offsetX = 2.0;
+    });
+  }
+
+  void _handleTapUp(TapUpDetails details) {
+    setState(() {
+      _onTapDown = false;
+      _scale = 1.0;
+      _offsetY = -8.0;
+      _offsetX = 0.0;
+    });
+    Future.delayed(_animDuration, () {
+      if (mounted) {
+        setState(() {
+          _offsetY = 0.0;
+          _offsetX = 0.0;
+        });
+      }
+    });
+    widget.onTap;
+  }
+
+  void _handleTapCancel() {
+    setState(() {
+      _scale = 1.0;
+      _offsetY = 0.0;
+      _offsetX = 0.0;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final color = _resolveColors(
-      selected: widget.selected,
-      hover: _hover,
-    );
+        selected: widget.selected, hover: _hover, onTapDown: _onTapDown);
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hover = true),
       onExit: (_) => setState(() => _hover = false),
       child: GestureDetector(
-        onTap: widget.onTap,
+        onTapDown: _handleTapDown,
+        onTapUp: _handleTapUp,
+        onTapCancel: _handleTapCancel,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -54,31 +94,44 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
               clipBehavior: Clip.none,
               children: [
                 widget.icon.isStack
-                    ? Stack(
-                        children: [
-                          SvgPicture.asset(
-                            widget.icon.asset,
-                            width: widget.iconSize,
-                            height: widget.iconSize,
-                            colorFilter: ColorFilter.mode(
-                              color,
-                              BlendMode.srcIn,
+                    ? AnimatedContainer(
+                        duration: _animDuration,
+                        transform: Matrix4.identity()
+                          ..translate(_offsetX, _offsetY)
+                          ..scale(_scale),
+                        curve: Curves.easeIn,
+                        child: Stack(
+                          children: [
+                            SvgPicture.asset(
+                              widget.icon.asset,
+                              width: widget.iconSize,
+                              height: widget.iconSize,
+                              colorFilter: ColorFilter.mode(
+                                color,
+                                BlendMode.srcIn,
+                              ),
                             ),
+                            SvgPicture.asset(
+                              widget.icon.overlay!,
+                              width: widget.iconSize,
+                              height: widget.iconSize,
+                            ),
+                          ],
+                        ))
+                    : AnimatedContainer(
+                        duration: _animDuration,
+                        transform: Matrix4.identity()
+                          ..translate(_offsetX, _offsetY)
+                          ..scale(_scale),
+                        curve: Curves.easeOut,
+                        child: SvgPicture.asset(
+                          widget.icon.asset,
+                          width: widget.iconSize,
+                          height: widget.iconSize,
+                          colorFilter: ColorFilter.mode(
+                            color,
+                            BlendMode.srcIn,
                           ),
-                          SvgPicture.asset(
-                            widget.icon.overlay!,
-                            width: widget.iconSize,
-                            height: widget.iconSize,
-                          ),
-                        ],
-                      )
-                    : SvgPicture.asset(
-                        widget.icon.asset,
-                        width: widget.iconSize,
-                        height: widget.iconSize,
-                        colorFilter: ColorFilter.mode(
-                          color,
-                          BlendMode.srcIn,
                         ),
                       ),
                 if (widget.counter != null && widget.counter != 0)
@@ -110,8 +163,11 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
   Color _resolveColors({
     required bool selected,
     required bool hover,
+    required bool onTapDown,
   }) {
-    if (selected) {
+    if (onTapDown) {
+      return MdColors.navBarMiddleAnimationColor;
+    } else if (selected) {
       return hover
           ? MdColors.navBarSelectedHoverColor
           : MdColors.navBarSelectedColor;
