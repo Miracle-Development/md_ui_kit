@@ -2,6 +2,14 @@
 
 - [wave-27] Добавлен компонент WaveDivider
 
+## [2.4.0]
+
+- [wave-28] Добавлен компонент WaveStatus
+
+## [2.3.0]
+
+- [wave-18] Добавлен компонент WaveItemBadge
+
 ## [2.2.0]
 
 - [wave-10] Добавлен компонент WaveTextButton

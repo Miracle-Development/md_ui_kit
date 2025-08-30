@@ -7,7 +7,7 @@ class WaveText extends StatelessWidget {
     super.key,
     this.type = WaveTextType.title,
     this.weight = WaveTextWeight.regular,
-    this.waveColor = WaveTextColor.defaultColor,
+    this.waveColor = WaveTextColor.titleColor,
     this.color,
     this.textAlign,
     this.maxLines = 1,
@@ -55,7 +55,7 @@ class WaveText extends StatelessWidget {
 
     final Color? resolvedColor = switch (waveColor) {
       WaveTextColor.inherit => null,
-      WaveTextColor.defaultColor => MdColors.titleColor,
+      WaveTextColor.titleColor => MdColors.titleColor,
       WaveTextColor.subtitleColor => MdColors.subtitleColor,
       WaveTextColor.positiveColor => MdColors.positiveColor,
       WaveTextColor.negativeColor => MdColors.negativeColor,
@@ -80,7 +80,7 @@ enum WaveTextWeight { regular, bold }
 
 enum WaveTextColor {
   inherit,
-  defaultColor,
+  titleColor,
   subtitleColor,
   positiveColor,
   negativeColor,
