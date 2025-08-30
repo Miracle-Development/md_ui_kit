@@ -61,13 +61,13 @@ class _WaveItemBadgeState extends State<WaveItemBadge> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              bottom: 2,
-              left: 4,
-              right: 4,
-            ),
-            child: Flexible(
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                bottom: 2,
+                left: 4,
+                right: 4,
+              ),
               child: WaveText(
                 widget.label! > 999 ? '999+' : widget.label!.toString(),
                 type: WaveTextType.badge,

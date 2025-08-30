@@ -34,6 +34,7 @@ class WaveNavBarItem extends StatefulWidget {
 class _WaveNavBarItemState extends State<WaveNavBarItem> {
   bool _hover = false;
   bool _onTapDown = false;
+  bool _onTapUp = false;
   double _scale = 1.0;
   double _offsetY = 0.0;
   double _offsetX = 0.0;
@@ -42,18 +43,14 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
   void _handleTapDown(TapDownDetails details) {
     setState(() {
       _onTapDown = true;
-      _scale = 25.0 / 32.0;
-      _offsetY = 8.0;
-      _offsetX = 2.0;
+      _onTapUp = false;
     });
   }
 
   void _handleTapUp(TapUpDetails details) {
     setState(() {
       _onTapDown = false;
-      _scale = 1.0;
-      _offsetY = -8.0;
-      _offsetX = 0.0;
+      _onTapUp = true;
     });
     Future.delayed(_animDuration, () {
       if (mounted) {
@@ -63,21 +60,56 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
         });
       }
     });
-    widget.onTap;
   }
 
   void _handleTapCancel() {
     setState(() {
+      _onTapDown = false;
+      _onTapUp = false;
       _scale = 1.0;
       _offsetY = 0.0;
       _offsetX = 0.0;
     });
   }
 
+  Future<void> _handleTap() async {
+    setState(() {
+      _onTapDown = false;
+      _onTapUp = true;
+      _scale = 25.0 / 32.0;
+      _offsetY = 4;
+      _offsetX = 2.0;
+    });
+    await Future.delayed(_animDuration, () {
+      if (mounted) {
+        setState(() {
+          _scale = 1.0;
+          _offsetY = -8.0;
+          _offsetX = 0.0;
+        });
+      }
+    });
+    await Future.delayed(_animDuration, () {
+      if (mounted) {
+        setState(() {
+          _offsetY = 0.0;
+          _offsetX = 0.0;
+          _onTapDown = false;
+          _onTapUp = false;
+        });
+      }
+    });
+    widget.onTap;
+  }
+
   @override
   Widget build(BuildContext context) {
     final color = _resolveColors(
-        selected: widget.selected, hover: _hover, onTapDown: _onTapDown);
+      selected: widget.selected,
+      hover: _hover,
+      onTapDown: _onTapDown,
+      onTapUp: _onTapUp,
+    );
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -87,6 +119,7 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
         onTapDown: _handleTapDown,
         onTapUp: _handleTapUp,
         onTapCancel: _handleTapCancel,
+        onTap: _handleTap,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -164,18 +197,21 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
     required bool selected,
     required bool hover,
     required bool onTapDown,
+    required bool onTapUp,
   }) {
-    if (onTapDown) {
+    if (onTapDown || onTapUp) {
       return MdColors.navBarMiddleAnimationColor;
-    } else if (selected) {
+    }
+
+    if (selected) {
       return hover
           ? MdColors.navBarSelectedHoverColor
           : MdColors.navBarSelectedColor;
-    } else {
-      return hover
-          ? MdColors.navBarUnselectedHoverColor
-          : MdColors.navBarUnselectedColor;
     }
+
+    return hover
+        ? MdColors.navBarUnselectedHoverColor
+        : MdColors.navBarUnselectedColor;
   }
 }
 
