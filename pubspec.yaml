@@ -1,7 +1,7 @@
 name: md_ui_kit
 description: "Miracle Development UI Kit"
 publish_to: "none"
-version: 2.2.0
+version: 2.5.0
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
