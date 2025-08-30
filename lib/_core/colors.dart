@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class MdColors {
   /// WaveText Colors
-  static const Color textDefaultColor = Color.fromRGBO(220, 218, 255, 1);
+  static const Color textTitleColor = Color.fromRGBO(220, 218, 255, 1);
   static const Color textSubtitleColor = Color.fromRGBO(174, 174, 207, 1);
   static const Color textPositiveColor = Color.fromRGBO(50, 130, 59, 1);
   static const Color textNegativeColor = Color.fromRGBO(130, 50, 50, 1);
@@ -50,4 +50,23 @@ class MdColors {
   static const Color textButtonHover = Color.fromRGBO(177, 172, 255, 1);
   static const Color textButtonPressed = Color.fromRGBO(67, 70, 243, 1);
   static const Color textButtonDisabled = Color.fromRGBO(116, 115, 140, 1);
+
+  /// WaveNavBarItem Colors
+  static const Color navBarSelectedColor = Color.fromRGBO(220, 218, 255, 1);
+  static const Color navBarUnselectedColor = Color.fromRGBO(67, 70, 243, 1);
+  static const Color navBarSelectedHoverColor =
+      Color.fromRGBO(181, 178, 229, 1);
+  static const Color navBarUnselectedHoverColor =
+      Color.fromRGBO(53, 56, 233, 1);
+  static const Color navBarMiddleAnimationColor =
+      Color.fromRGBO(157, 153, 229, 1);
+
+  /// WaveItemBadge Colors
+  static const Color notificationsSelectedBg = Color.fromRGBO(67, 70, 243, 1);
+  static const Color notificationsUnselectedBg =
+      Color.fromRGBO(220, 218, 255, 1);
+  static const Color notificationsSelectedText =
+      Color.fromRGBO(220, 218, 255, 1);
+  static const Color notificationsUnselectedText =
+      Color.fromRGBO(67, 70, 243, 1);
 }

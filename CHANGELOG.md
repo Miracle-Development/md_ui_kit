@@ -1,3 +1,7 @@
+## [2.3.0]
+
+- [wave-18] Добавлен компонент WaveItemBadge
+
 ## [2.2.0]
 
 - [wave-10] Добавлен компонент WaveTextButton
