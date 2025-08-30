@@ -7,6 +7,7 @@ import 'package:md_ui_kit/_stories/widgets/blurred_circle_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_background_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_animated_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_status_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_item_badge_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_nav_bar_item_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_text_story.dart';
@@ -58,16 +59,17 @@ class StorybookApp extends StatelessWidget {
                 builder: (context) => MdTextButtonStory(knobs: context.knobs),
               ),
               Story(
-                  name: 'Wave/WaveButton',
-                  builder: (context) => WaveButtonStory(knobs: context.knobs)),
+                name: 'Wave/WaveButton',
+                builder: (context) => WaveButtonStory(knobs: context.knobs),
+              ),
               Story(
-                  name: 'Wave/WaveItemBadge',
-                  builder: (context) =>
-                      WaveItemBadgeStory(knobs: context.knobs)),
+                name: 'Wave/WaveItemBadge',
+                builder: (context) => WaveItemBadgeStory(knobs: context.knobs),
+              ),
               Story(
-                  name: 'Wave/WaveNavBarItem',
-                  builder: (context) =>
-                      WaveNavBarItemStory(knobs: context.knobs)),
+                name: 'Wave/WaveNavBarItem',
+                builder: (context) => WaveNavBarItemStory(knobs: context.knobs),
+              ),
               Story(
                 name: 'Wave/WaveLogo',
                 builder: (context) => const WaveLogo(),
@@ -99,6 +101,10 @@ class StorybookApp extends StatelessWidget {
                 name: 'Wave/InitialScreen',
                 builder: (context) => const InitialScreenStory(),
               ),
+              Story(
+                name: 'Wave/WaveStatus',
+                builder: (context) => WaveStatusStory(knobs: context.knobs),
+              )
             ]..sort((a, b) => a.name.compareTo(b.name)),
           ),
         ),
