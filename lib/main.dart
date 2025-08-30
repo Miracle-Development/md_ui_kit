@@ -7,6 +7,7 @@ import 'package:md_ui_kit/_stories/widgets/blurred_circle_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_background_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_animated_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_divider_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_text_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_text_button_story.dart';
 import 'package:md_ui_kit/widgets/md_initial_wave.dart';
@@ -89,6 +90,9 @@ class StorybookApp extends StatelessWidget {
                 name: 'Wave/InitialScreen',
                 builder: (context) => const InitialScreenStory(),
               ),
+              Story(
+                  name: 'Wave/WaveDivider',
+                  builder: (context) => WaveDividerStory(knobs: context.knobs))
             ]..sort((a, b) => a.name.compareTo(b.name)),
           ),
         ),

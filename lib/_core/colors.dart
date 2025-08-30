@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class MdColors {
   /// WaveText Colors
-  static const Color textDefaultColor = Color.fromRGBO(220, 218, 255, 1);
-  static const Color textSubtitleColor = Color.fromRGBO(174, 174, 207, 1);
-  static const Color textPositiveColor = Color.fromRGBO(50, 130, 59, 1);
-  static const Color textNegativeColor = Color.fromRGBO(130, 50, 50, 1);
-  static const Color textDisabledColor = Color.fromRGBO(113, 113, 136, 1);
-  static const Color textBrandColor = Color.fromRGBO(67, 70, 243, 1);
-  static const Color textDarkBrandColor = Color.fromRGBO(48, 51, 212, 1);
+  static const Color titleColor = Color.fromRGBO(220, 218, 255, 1);
+  static const Color subtitleColor = Color.fromRGBO(174, 174, 207, 1);
+  static const Color positiveColor = Color.fromRGBO(50, 130, 59, 1);
+  static const Color negativeColor = Color.fromRGBO(130, 50, 50, 1);
+  static const Color disabledColor = Color.fromRGBO(113, 113, 136, 1);
+  static const Color brandColor = Color.fromRGBO(67, 70, 243, 1);
+  static const Color darkBrandColor = Color.fromRGBO(48, 51, 212, 1);
 
   /// WaveButton Colors
   // Main
