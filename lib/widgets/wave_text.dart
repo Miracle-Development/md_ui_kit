@@ -55,13 +55,13 @@ class WaveText extends StatelessWidget {
 
     final Color? resolvedColor = switch (waveColor) {
       WaveTextColor.inherit => null,
-      WaveTextColor.defaultColor => MdColors.textDefaultColor,
-      WaveTextColor.subtitleColor => MdColors.textSubtitleColor,
-      WaveTextColor.positiveColor => MdColors.textPositiveColor,
-      WaveTextColor.negativeColor => MdColors.textNegativeColor,
-      WaveTextColor.disabledColor => MdColors.textDisabledColor,
-      WaveTextColor.brandColor => MdColors.textBrandColor,
-      WaveTextColor.darkBrandColor => MdColors.textDarkBrandColor,
+      WaveTextColor.defaultColor => MdColors.titleColor,
+      WaveTextColor.subtitleColor => MdColors.subtitleColor,
+      WaveTextColor.positiveColor => MdColors.positiveColor,
+      WaveTextColor.negativeColor => MdColors.negativeColor,
+      WaveTextColor.disabledColor => MdColors.disabledColor,
+      WaveTextColor.brandColor => MdColors.brandColor,
+      WaveTextColor.darkBrandColor => MdColors.darkBrandColor,
       null => color,
     };
 
