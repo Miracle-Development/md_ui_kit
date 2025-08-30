@@ -5,42 +5,69 @@ import 'package:md_ui_kit/widgets/wave_text.dart';
 class WaveStatus extends StatelessWidget {
   const WaveStatus({
     super.key,
-    required this.type,
+    required this.color,
+    required this.label,
+    this.iconSize = 12,
+    this.gap = 10,
+    this.height = 21,
   });
 
-  final WaveStatusType type;
+  final WaveStatusColor color;
+  final String label;
+
+  final double iconSize;
+  final double gap;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
+    if (label.trim().isEmpty) {
+      return SizedBox(
+        height: height,
+      );
+    }
     return SizedBox(
-        width: 203,
-        height: 21,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Transform.translate(
-              offset: const Offset(0, 1.5),
-              child: Icon(Icons.circle, color: type.color, size: 12),
+      height: height,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: SizedBox(
+              width: iconSize,
+              height: iconSize,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: color.color,
+                  shape: BoxShape.circle,
+                ),
+              ),
             ),
-            const SizedBox(width: 10),
-            WaveText(
-              type.label,
+          ),
+          SizedBox(width: gap),
+          Flexible(
+            child: WaveText(
+              label,
               type: WaveTextType.subtitle,
               weight: WaveTextWeight.bold,
-              color: type.color,
+              color: color.color,
             ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 }
 
-enum WaveStatusType {
-  failed(color: MdColors.negativeColor, label: "Failed to connect"),
-  success(color: MdColors.positiveColor, label: "Connected"),
-  process(color: MdColors.brandColor, label: "Connecting"),
-  done(color: MdColors.disabledColor, label: "Disconnected");
+enum WaveStatusColor {
+  titleColor(color: MdColors.titleColor),
+  subtitleColor(color: MdColors.subtitleColor),
+  positiveColor(color: MdColors.positiveColor),
+  negativeColor(color: MdColors.negativeColor),
+  disabledColor(color: MdColors.disabledColor),
+  brandColor(color: MdColors.brandColor),
+  darkBrandColor(color: MdColors.darkBrandColor);
 
-  const WaveStatusType({required this.color, required this.label});
+  const WaveStatusColor({required this.color});
   final Color color;
-  final String label;
 }

@@ -12,28 +12,44 @@ class WaveStatusStory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final type = knobs.options<WaveStatusType>(
-      label: 'Type',
-      initial: WaveStatusType.failed,
+    final label = knobs.text(
+      label: 'Text',
+      initial: 'Connected',
+    );
+    final type = knobs.options<WaveStatusColor>(
+      label: 'Color',
+      initial: WaveStatusColor.positiveColor,
       options: const [
         Option(
-          label: 'failed',
-          value: WaveStatusType.failed,
+          label: 'titleColor',
+          value: WaveStatusColor.titleColor,
         ),
         Option(
-          label: 'success',
-          value: WaveStatusType.success,
+          label: 'subtitleColor',
+          value: WaveStatusColor.subtitleColor,
         ),
         Option(
-          label: 'process',
-          value: WaveStatusType.process,
+          label: 'positiveColor',
+          value: WaveStatusColor.positiveColor,
         ),
         Option(
-          label: 'done',
-          value: WaveStatusType.done,
+          label: 'negativeColor',
+          value: WaveStatusColor.negativeColor,
+        ),
+        Option(
+          label: 'disabledColor',
+          value: WaveStatusColor.disabledColor,
+        ),
+        Option(
+          label: 'brandColor',
+          value: WaveStatusColor.brandColor,
+        ),
+        Option(
+          label: 'darkBrandColor',
+          value: WaveStatusColor.darkBrandColor,
         ),
       ],
     );
-    return WaveStatus(type: type);
+    return WaveStatus(color: type, label: label);
   }
 }
