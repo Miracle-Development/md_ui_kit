@@ -18,44 +18,46 @@ class WaveDividerStory extends StatelessWidget {
       initial: 'Or',
     );
 
-    final color = knobs.options<WaveDividerColor>(
-      label: 'Color',
-      initial: WaveDividerColor.titleColor,
+    final type = knobs.options<WaveDividerType>(
+      label: 'Type',
+      initial: WaveDividerType.title,
       options: const [
         Option(
-          label: 'titleColor',
-          value: WaveDividerColor.titleColor,
+          label: 'title',
+          value: WaveDividerType.title,
         ),
         Option(
-          label: 'subtitleColor',
-          value: WaveDividerColor.subtitleColor,
+          label: 'subtitle',
+          value: WaveDividerType.subtitle,
         ),
         Option(
-          label: 'positiveColor',
-          value: WaveDividerColor.positiveColor,
+          label: 'positive',
+          value: WaveDividerType.positive,
         ),
         Option(
-          label: 'negativeColor',
-          value: WaveDividerColor.negativeColor,
+          label: 'negative',
+          value: WaveDividerType.negative,
         ),
         Option(
-          label: 'disabledColor',
-          value: WaveDividerColor.disabledColor,
+          label: 'disabled',
+          value: WaveDividerType.disabled,
         ),
         Option(
-          label: 'brandColor',
-          value: WaveDividerColor.brandColor,
+          label: 'brand',
+          value: WaveDividerType.brand,
         ),
         Option(
-          label: 'darkBrandColor',
-          value: WaveDividerColor.darkBrandColor,
+          label: 'darkBrand',
+          value: WaveDividerType.darkBrand,
         ),
       ],
     );
 
-    return WaveDivider(
-      label: label,
-      color: color,
+    return Center(
+      child: WaveDivider(
+        label: label,
+        type: type,
+      ),
     );
   }
 }

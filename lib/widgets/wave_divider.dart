@@ -5,78 +5,73 @@ import 'package:md_ui_kit/widgets/wave_text.dart';
 class WaveDivider extends StatelessWidget {
   const WaveDivider({
     super.key,
-    required this.color,
-    this.label,
+    required this.type,
+    required this.label,
     this.gap = 10,
     this.thickness = 1,
     this.radius = 1,
   });
 
-  final WaveDividerColor color;
-  final String? label;
+  final WaveDividerType type;
+  final String label;
   final double gap;
   final double thickness;
   final double radius;
 
   @override
   Widget build(BuildContext context) {
-    final hasLabel = (label != null && label!.trim().isNotEmpty);
-
-    final line = Expanded(
-        child: SizedBox(
-      width: double.infinity,
-      height: thickness,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: color.color,
-          borderRadius: BorderRadius.circular(radius),
-        ),
-      ),
-    ));
-
-    if (!hasLabel) {
-      return Container(
-        width: double.infinity,
-        height: thickness,
-        decoration: BoxDecoration(
-          color: color.color,
-          borderRadius: BorderRadius.circular(radius),
-        ),
-      );
-    }
-
-    return SizedBox(
-      width: double.infinity,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          line,
-          SizedBox(width: gap),
-          Flexible(
-            child: WaveText(
-              label!,
-              type: WaveTextType.caption,
-              color: color.color,
-              weight: WaveTextWeight.bold,
-            ),
-          ),
-          SizedBox(width: gap),
-          line,
-        ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          double maxTextWidth = constraints.maxWidth * 0.8;
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Divider(
+                  color: type.color,
+                  thickness: 1,
+                  height: 1,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: gap),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxTextWidth),
+                  child: WaveText(
+                    label,
+                    textAlign: TextAlign.center,
+                    type: WaveTextType.caption,
+                    color: type.color,
+                    weight: WaveTextWeight.bold,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Divider(
+                  color: type.color,
+                  thickness: 1,
+                  height: 1,
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 }
 
-enum WaveDividerColor {
-  titleColor(color: MdColors.titleColor),
-  subtitleColor(color: MdColors.subtitleColor),
-  positiveColor(color: MdColors.positiveColor),
-  negativeColor(color: MdColors.negativeColor),
-  disabledColor(color: MdColors.disabledColor),
-  brandColor(color: MdColors.negativeColor),
-  darkBrandColor(color: MdColors.darkBrandColor);
+enum WaveDividerType {
+  title(color: MdColors.titleColor),
+  subtitle(color: MdColors.subtitleColor),
+  positive(color: MdColors.positiveColor),
+  negative(color: MdColors.negativeColor),
+  disabled(color: MdColors.disabledColor),
+  brand(color: MdColors.brandColor),
+  darkBrand(color: MdColors.darkBrandColor);
 
-  const WaveDividerColor({required this.color});
+  const WaveDividerType({required this.color});
   final Color color;
 }
