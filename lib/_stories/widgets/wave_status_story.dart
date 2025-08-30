@@ -16,40 +16,43 @@ class WaveStatusStory extends StatelessWidget {
       label: 'Text',
       initial: 'Connected',
     );
-    final type = knobs.options<WaveStatusColor>(
-      label: 'Color',
-      initial: WaveStatusColor.positiveColor,
+    final type = knobs.options<WaveStatusType>(
+      label: 'Type',
+      initial: WaveStatusType.positive,
       options: const [
         Option(
-          label: 'titleColor',
-          value: WaveStatusColor.titleColor,
+          label: 'title',
+          value: WaveStatusType.title,
         ),
         Option(
-          label: 'subtitleColor',
-          value: WaveStatusColor.subtitleColor,
+          label: 'subtitle',
+          value: WaveStatusType.subtitle,
         ),
         Option(
-          label: 'positiveColor',
-          value: WaveStatusColor.positiveColor,
+          label: 'positive',
+          value: WaveStatusType.positive,
         ),
         Option(
-          label: 'negativeColor',
-          value: WaveStatusColor.negativeColor,
+          label: 'negative',
+          value: WaveStatusType.negative,
         ),
         Option(
-          label: 'disabledColor',
-          value: WaveStatusColor.disabledColor,
+          label: 'disabled',
+          value: WaveStatusType.disabled,
         ),
         Option(
-          label: 'brandColor',
-          value: WaveStatusColor.brandColor,
+          label: 'brand',
+          value: WaveStatusType.brand,
         ),
         Option(
-          label: 'darkBrandColor',
-          value: WaveStatusColor.darkBrandColor,
+          label: 'darkBrand',
+          value: WaveStatusType.darkBrand,
         ),
       ],
     );
-    return WaveStatus(color: type, label: label);
+    return WaveStatus(
+      type: type,
+      label: label,
+    );
   }
 }
