@@ -3,61 +3,80 @@ import 'package:md_ui_kit/_core/colors.dart';
 import 'package:md_ui_kit/widgets/wave_text.dart';
 
 class WaveDivider extends StatelessWidget {
-  const WaveDivider({super.key, required this.label, required this.type});
+  const WaveDivider({
+    super.key,
+    required this.color,
+    this.label,
+    this.gap = 10,
+    this.thickness = 1,
+    this.radius = 1,
+  });
 
-  final WaveDividerType type;
-  final String label;
-  static const double gap = 10;
-  static const double width = 1;
-  static const double borderRadius = 1;
+  final WaveDividerColor color;
+  final String? label;
+  final double gap;
+  final double thickness;
+  final double radius;
 
   @override
   Widget build(BuildContext context) {
+    final hasLabel = (label != null && label!.trim().isNotEmpty);
+
+    final line = Expanded(
+        child: SizedBox(
+      width: double.infinity,
+      height: thickness,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: color.color,
+          borderRadius: BorderRadius.circular(radius),
+        ),
+      ),
+    ));
+
+    if (!hasLabel) {
+      return Container(
+        width: double.infinity,
+        height: thickness,
+        decoration: BoxDecoration(
+          color: color.color,
+          borderRadius: BorderRadius.circular(radius),
+        ),
+      );
+    }
+
     return SizedBox(
-      width: 323,
+      width: double.infinity,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(
-              child: Container(
-            height: width,
-            decoration: BoxDecoration(
-              color: type.color,
-              borderRadius: BorderRadius.circular(borderRadius),
+          line,
+          SizedBox(width: gap),
+          Flexible(
+            child: WaveText(
+              label!,
+              type: WaveTextType.caption,
+              color: color.color,
+              weight: WaveTextWeight.bold,
             ),
-          )),
-          const SizedBox(
-            width: gap,
           ),
-          WaveText(
-            label,
-            type: WaveTextType.caption,
-            color: type.color,
-            weight: WaveTextWeight.bold,
-          ),
-          const SizedBox(
-            width: gap,
-          ),
-          Expanded(
-              child: Container(
-            height: width,
-            decoration: BoxDecoration(
-              color: type.color,
-              borderRadius: BorderRadius.circular(borderRadius),
-            ),
-          )),
+          SizedBox(width: gap),
+          line,
         ],
       ),
     );
   }
 }
 
-enum WaveDividerType {
-  positive(color: MdColors.positiveColor),
-  negative(color: MdColors.negativeColor),
-  process(color: MdColors.brandColor),
-  done(color: MdColors.disabledColor);
+enum WaveDividerColor {
+  titleColor(color: MdColors.titleColor),
+  subtitleColor(color: MdColors.subtitleColor),
+  positiveColor(color: MdColors.positiveColor),
+  negativeColor(color: MdColors.negativeColor),
+  disabledColor(color: MdColors.disabledColor),
+  brandColor(color: MdColors.negativeColor),
+  darkBrandColor(color: MdColors.darkBrandColor);
 
-  const WaveDividerType({required this.color});
-
+  const WaveDividerColor({required this.color});
   final Color color;
 }
