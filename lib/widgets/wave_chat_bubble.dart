@@ -42,6 +42,10 @@ class WaveChatBubble extends StatelessWidget {
                           color: type.textColor,
                           maxLines: null,
                           overflow: TextOverflow.visible,
+                          textAlign:
+                              type == WaveChatBubbleType.bubbleMessageInfo
+                                  ? TextAlign.center
+                                  : null,
                         ),
                 ),
               ),
@@ -57,8 +61,8 @@ enum WaveChatBubbleType {
   bubbleMessageOther(
       padding: EdgeInsets.only(top: 8, right: 12, bottom: 8, left: 12),
       margin: EdgeInsets.only(left: 16, right: 48, bottom: 12),
-      bgColor: MdColors.brandColor,
-      textColor: Color.fromRGBO(255, 255, 255, 1),
+      bgColor: Color.fromRGBO(58, 89, 238, 1),
+      textColor: MdColors.chatBubbleColorOther,
       radius: BorderRadius.only(
           topLeft: Radius.circular(12),
           topRight: Radius.circular(6),
@@ -67,8 +71,8 @@ enum WaveChatBubbleType {
   bubbleMessageMe(
       padding: EdgeInsets.only(top: 8, right: 12, bottom: 8, left: 12),
       margin: EdgeInsets.only(left: 48, right: 16, bottom: 12),
-      bgColor: MdColors.brandColor,
-      textColor: Color.fromRGBO(255, 255, 255, 1),
+      bgColor: Color.fromRGBO(67, 70, 243, 1),
+      textColor: MdColors.chatBubbleColorMe,
       radius: BorderRadius.only(
           topLeft: Radius.circular(6),
           topRight: Radius.circular(12),
