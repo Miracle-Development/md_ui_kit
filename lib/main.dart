@@ -7,6 +7,7 @@ import 'package:md_ui_kit/_stories/widgets/blurred_circle_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_background_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_animated_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_chat_bubble_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_divider_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_status_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_item_badge_story.dart';
@@ -106,6 +107,10 @@ class StorybookApp extends StatelessWidget {
                 name: 'Wave/WaveDivider',
                 builder: (context) => WaveDividerStory(knobs: context.knobs),
               ),
+              Story(
+                  name: 'Wave/WaveChatBubble',
+                  builder: (context) =>
+                      WaveChatBubbleStory(knobs: context.knobs)),
               Story(
                 name: 'Wave/WaveStatus',
                 builder: (context) => WaveStatusStory(knobs: context.knobs),
