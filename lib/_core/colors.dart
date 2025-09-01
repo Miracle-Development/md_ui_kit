@@ -69,4 +69,10 @@ class MdColors {
       Color.fromRGBO(220, 218, 255, 1);
   static const Color notificationsUnselectedText =
       Color.fromRGBO(67, 70, 243, 1);
+
+  // Wave main color palette
+  static const backgroundColor = Color.fromRGBO(13, 13, 15, 1);
+  static const containerColor = Color.fromRGBO(17, 17, 30, 0.6);
+  static const brandFirstStrip = Color.fromRGBO(67, 70, 243, 1);
+  static const brandSecondStrip = Color.fromRGBO(48, 51, 212, 1);
 }
