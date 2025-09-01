@@ -8,8 +8,12 @@ class WaveInput extends StatefulWidget {
   const WaveInput({
     super.key,
     required this.type,
-    this.contentPadding =
-        const EdgeInsets.only(top: 10, right: 20, bottom: 10, left: 20),
+    this.contentPadding = const EdgeInsets.only(
+      top: 10,
+      right: 20,
+      bottom: 10,
+      left: 20,
+    ),
     this.enabled = true,
     this.hasError = false,
     this.controller,
@@ -81,13 +85,13 @@ class _WaveInputState extends State<WaveInput> {
 
       final icon = !obscure
           ? SvgPicture.asset(
-              PrecachedIcons.visible,
+              PrecachedIcons.inputOpenedEyeIcon,
               width: 25,
               height: 21,
               colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
             )
           : SvgPicture.asset(
-              PrecachedIcons.invisible,
+              PrecachedIcons.inputClosedEyeIcon,
               width: 25,
               height: 21,
               colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
@@ -104,20 +108,31 @@ class _WaveInputState extends State<WaveInput> {
     }
     const enabledBorder = OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(12)),
-      borderSide: BorderSide(color: MdColors.defaultBorderInputColor, width: 2),
+      borderSide: BorderSide(
+        color: MdColors.defaultBorderInputColor,
+        width: 2,
+      ),
     );
     const focusedBorder = OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(12)),
-      borderSide:
-          BorderSide(color: MdColors.selectedBorderInputColor, width: 2),
+      borderSide: BorderSide(
+        color: MdColors.selectedBorderInputColor,
+        width: 2,
+      ),
     );
     const errorBorder = OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(12)),
-      borderSide: BorderSide(color: MdColors.errorInputColor, width: 2),
+      borderSide: BorderSide(
+        color: MdColors.errorInputColor,
+        width: 2,
+      ),
     );
     const disabledBorder = OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(12)),
-      borderSide: BorderSide(color: MdColors.disabledInputColor, width: 2),
+      borderSide: BorderSide(
+        color: MdColors.disabledInputColor,
+        width: 2,
+      ),
     );
     final effectiveEnabledBorder =
         widget.hasError ? errorBorder : enabledBorder;

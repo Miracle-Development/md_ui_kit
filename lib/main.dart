@@ -35,7 +35,7 @@ class StorybookApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       //theme: AppTheme.light,
-      //darkTheme: AppTheme.dark, // Uncomment to use the dark theme
+      darkTheme: AppTheme.dark, // Uncomment to use the dark theme
       home: Directionality(
         textDirection: TextDirection.ltr,
         child: Material(
@@ -62,7 +62,8 @@ class StorybookApp extends StatelessWidget {
               ),
               Story(
                 name: 'Wave/WaveSimpleButton',
-                builder: (context) => WaveSimpleButtonStory(knobs: context.knobs),
+                builder: (context) =>
+                    WaveSimpleButtonStory(knobs: context.knobs),
               ),
               Story(
                 name: 'Wave/WaveItemBadge',
