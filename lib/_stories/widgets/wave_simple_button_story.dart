@@ -3,8 +3,8 @@ import 'package:md_ui_kit/md_ui_kit.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 import 'package:md_ui_kit/widgets/wave_simple_button.dart';
 
-class WaveButtonStory extends StatelessWidget {
-  const WaveButtonStory({
+class WaveSimpleButtonStory extends StatelessWidget {
+  const WaveSimpleButtonStory({
     super.key,
     required this.knobs,
   });

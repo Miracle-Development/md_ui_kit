@@ -79,4 +79,10 @@ class MdColors {
   static const Color disabledInputColor = Color.fromRGBO(52, 53, 91, 0.8);
   static const Color disabledTextInputColor = Color.fromRGBO(52, 53, 91, 0.9);
   static const Color errorInputColor = Color.fromRGBO(130, 50, 50, 0.8);
+
+  // Wave main color palette
+  static const backgroundColor = Color.fromRGBO(13, 13, 15, 1);
+  static const containerColor = Color.fromRGBO(17, 17, 30, 0.6);
+  static const brandFirstStrip = Color.fromRGBO(67, 70, 243, 1);
+  static const brandSecondStrip = Color.fromRGBO(48, 51, 212, 1);
 }
