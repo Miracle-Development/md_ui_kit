@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:md_ui_kit/_core/colors.dart' show MdColors;
 import 'package:md_ui_kit/_core/precached_icons.dart';
@@ -12,6 +13,7 @@ class WaveInput extends StatefulWidget {
     this.enabled = true,
     this.hasError = false,
     this.controller,
+    this.hintText,
   });
 
   final WaveInputType type;
@@ -19,59 +21,82 @@ class WaveInput extends StatefulWidget {
   final bool enabled;
   final bool hasError;
   final TextEditingController? controller;
+  final String? hintText;
 
   @override
   State<WaveInput> createState() => _WaveInputState();
 }
 
 class _WaveInputState extends State<WaveInput> {
-  bool obscure = false;
+  bool obscure = true;
+
+  @override
+  void didUpdateWidget(covariant WaveInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.type != widget.type) {
+      obscure = widget.type == WaveInputType.password ? true : false;
+    }
+  }
+
+  List<TextInputFormatter> _formattersFor(WaveInputType t) {
+    final denySpaces = FilteringTextInputFormatter.deny(RegExp(r'\s'));
+    switch (t) {
+      case WaveInputType.login:
+        return [
+          denySpaces,
+          FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z0-9_\.\-\+@/]")),
+        ];
+      case WaveInputType.password:
+        return [
+          denySpaces,
+          FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z0-9\?\!\,\.]")),
+        ];
+      case WaveInputType.code:
+        return [
+          denySpaces,
+          FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z\-]")),
+        ];
+    }
+  }
+
+  String _defaultHint(WaveInputType t) {
+    switch (t) {
+      case WaveInputType.login:
+        return 'mylogin';
+      case WaveInputType.password:
+        return 'password';
+      case WaveInputType.code:
+        return 'code';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final isPassword = widget.type == WaveInputType.password;
     Widget? suffixIcon;
-    if (widget.type == WaveInputType.password) {
-      final icon = obscure
-          ? Stack(
-              alignment: Alignment.center,
-              children: [
-                SvgPicture.asset(
-                  PrecachedIcons.visible,
-                  width: 32,
-                  height: 32,
-                  colorFilter: ColorFilter.mode(
-                      widget.enabled
-                          ? MdColors.defaultTextInputColor
-                          : MdColors.disabledInputColor,
-                      BlendMode.srcIn),
-                ),
-                SvgPicture.asset(
-                  PrecachedIcons.invisibleLine,
-                  width: 32,
-                  height: 32,
-                  colorFilter: ColorFilter.mode(
-                      widget.enabled
-                          ? MdColors.defaultTextInputColor
-                          : MdColors.disabledInputColor,
-                      BlendMode.srcIn),
-                ),
-              ],
+    if (isPassword) {
+      final iconColor = widget.enabled
+          ? MdColors.defaultTextInputColor
+          : MdColors.disabledInputColor;
+
+      final icon = !obscure
+          ? SvgPicture.asset(
+              PrecachedIcons.visible,
+              width: 25,
+              height: 21,
+              colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
             )
           : SvgPicture.asset(
-              PrecachedIcons.visible,
-              width: 32,
-              height: 32,
-              colorFilter: ColorFilter.mode(
-                  widget.enabled
-                      ? MdColors.defaultTextInputColor
-                      : MdColors.disabledInputColor,
-                  BlendMode.srcIn),
+              PrecachedIcons.invisible,
+              width: 25,
+              height: 21,
+              colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
             );
-
       suffixIcon = IconButton(
         onPressed:
             widget.enabled ? () => setState(() => obscure = !obscure) : null,
         icon: icon,
+        padding: EdgeInsets.zero,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         hoverColor: Colors.transparent,
@@ -99,14 +124,26 @@ class _WaveInputState extends State<WaveInput> {
     final effectiveFocusedBorder =
         widget.hasError ? errorBorder : focusedBorder;
 
+    final readOnly = !widget.enabled;
+
     return Theme(
       data: Theme.of(context).copyWith(
-          textSelectionTheme: const TextSelectionThemeData(
-              selectionColor: MdColors.selectionTextInputColor)),
+        textSelectionTheme: const TextSelectionThemeData(
+          selectionColor: MdColors.selectionTextInputColor,
+        ),
+      ),
       child: TextField(
         controller: widget.controller,
-        enabled: widget.enabled,
-        obscureText: obscure,
+        enabled: true,
+        readOnly: readOnly,
+        cursorHeight: 20,
+        inputFormatters: _formattersFor(widget.type),
+        keyboardType: switch (widget.type) {
+          WaveInputType.login => TextInputType.emailAddress,
+          WaveInputType.password => TextInputType.visiblePassword,
+          WaveInputType.code => TextInputType.text,
+        },
+        obscureText: isPassword && obscure,
         obscuringCharacter: '*',
         cursorColor: widget.enabled
             ? MdColors.defaultTextInputColor
@@ -119,13 +156,24 @@ class _WaveInputState extends State<WaveInput> {
           fontSize: 24,
           fontWeight: FontWeight.w700,
           fontFamily: 'Play',
+          letterSpacing: 1,
         ),
         decoration: InputDecoration(
           hoverColor: Colors.transparent,
           fillColor: Colors.transparent,
           contentPadding: widget.contentPadding,
-          enabledBorder: effectiveEnabledBorder,
-          focusedBorder: effectiveFocusedBorder,
+          hintText: widget.hintText ?? _defaultHint(widget.type),
+          hintStyle: const TextStyle(
+            color: MdColors.defaultTextInputColor,
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'Play',
+            letterSpacing: 1,
+          ),
+          enabledBorder:
+              widget.enabled ? effectiveEnabledBorder : disabledBorder,
+          focusedBorder:
+              widget.enabled ? effectiveFocusedBorder : disabledBorder,
           errorBorder: errorBorder,
           disabledBorder: disabledBorder,
           suffixIcon: suffixIcon,

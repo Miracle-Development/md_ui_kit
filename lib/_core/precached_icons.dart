@@ -14,8 +14,8 @@ class PrecachedIcons {
   static const navBarMicOffLineIcon = 'assets/icons/nav_bar/line_mic_off.svg';
   static const navBarPhoneIcon = 'assets/icons/nav_bar/phone.svg';
   static const navBarPlanetIcon = 'assets/icons/nav_bar/planet.svg';
-  static const visible = 'assets/icons/input/visible.svg';
-  static const invisibleLine = 'assets/icons/input/invisible_line.svg';
+  static const visible = 'assets/icons/input/OpenedEye.svg';
+  static const invisible = 'assets/icons/input/ClosedEye.svg';
 
   List<SvgAssetLoader> get iconsToPrecache => const [
         SvgAssetLoader(copyDefaultIcon),
@@ -28,7 +28,7 @@ class PrecachedIcons {
         SvgAssetLoader(navBarPhoneIcon),
         SvgAssetLoader(navBarPlanetIcon),
         SvgAssetLoader(visible),
-        SvgAssetLoader(invisibleLine),
+        SvgAssetLoader(invisible),
       ];
 
   void precache(BuildContext context) {
