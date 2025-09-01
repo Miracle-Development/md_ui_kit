@@ -12,6 +12,7 @@ export 'widgets/wave_divider.dart';
 export 'widgets/wave_status.dart';
 export 'widgets/wave_item_badge.dart';
 export 'widgets/wave_nav_bar_item.dart';
+export 'widgets/wave_input.dart';
 export 'widgets/md_initial_wave.dart';
 export 'widgets/wave_logo.dart';
 // Экраны
