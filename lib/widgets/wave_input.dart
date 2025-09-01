@@ -60,16 +60,30 @@ class _WaveInputState extends State<WaveInput> {
     switch (t) {
       case WaveInputType.login:
         {
-          final denySpaces = FilteringTextInputFormatter.deny(RegExp(r'\s'));
+          // Разрешённые символы
           final allowLoginChars =
               FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z0-9_.\-@]"));
-          final singleAt =
+          // Не больше одной @ и корректный префикс до неё
+          final singleAtWithPrefixRule =
               TextInputFormatter.withFunction((oldValue, newValue) {
-            final atCount = RegExp(r'@').allMatches(newValue.text).length;
-            return atCount <= 1 ? newValue : oldValue;
+            final text = newValue.text;
+            // если нет '@', то ок
+            final atCount = RegExp(r'@').allMatches(text).length;
+            if (atCount == 0) return newValue;
+            // больше одной '@', то не пускаем
+            if (atCount > 1) return oldValue;
+            // '@' в начале, то нельзя
+            final atIndex = text.indexOf('@');
+            if (atIndex == 0) return oldValue;
+
+            final prefix = text.substring(0, atIndex);
+            // должен быть хотя бы 1 символ, и все из [A-Za-z.\-]ы
+            final prefixOk = RegExp(r'^[A-Za-z.\-]+$').hasMatch(prefix);
+            if (!prefixOk) return oldValue;
+            return newValue;
           });
 
-          return [denySpaces, allowLoginChars, singleAt];
+          return [denySpaces, allowLoginChars, singleAtWithPrefixRule];
         }
       case WaveInputType.password:
         return [
