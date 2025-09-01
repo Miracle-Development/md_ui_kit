@@ -33,6 +33,19 @@ class WaveInput extends StatefulWidget {
 
 class _WaveInputState extends State<WaveInput> {
   bool obscure = true;
+  late final FocusNode _focus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _focus.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
 
   @override
   void didUpdateWidget(covariant WaveInput oldWidget) {
@@ -46,10 +59,18 @@ class _WaveInputState extends State<WaveInput> {
     final denySpaces = FilteringTextInputFormatter.deny(RegExp(r'\s'));
     switch (t) {
       case WaveInputType.login:
-        return [
-          denySpaces,
-          FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z0-9_\.\-\+@/]")),
-        ];
+        {
+          final denySpaces = FilteringTextInputFormatter.deny(RegExp(r'\s'));
+          final allowLoginChars =
+              FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z0-9_.\-@]"));
+          final singleAt =
+              TextInputFormatter.withFunction((oldValue, newValue) {
+            final atCount = RegExp(r'@').allMatches(newValue.text).length;
+            return atCount <= 1 ? newValue : oldValue;
+          });
+
+          return [denySpaces, allowLoginChars, singleAt];
+        }
       case WaveInputType.password:
         return [
           denySpaces,
@@ -138,7 +159,10 @@ class _WaveInputState extends State<WaveInput> {
         widget.hasError ? errorBorder : enabledBorder;
     final effectiveFocusedBorder =
         widget.hasError ? errorBorder : focusedBorder;
-
+    final hasCustomHint = (widget.hintText?.trim().isNotEmpty ?? false);
+    final String? effectiveHint = _focus.hasFocus
+        ? null
+        : (hasCustomHint ? widget.hintText : _defaultHint(widget.type));
     final readOnly = !widget.enabled;
 
     return Theme(
@@ -147,51 +171,59 @@ class _WaveInputState extends State<WaveInput> {
           selectionColor: MdColors.selectionTextInputColor,
         ),
       ),
-      child: TextField(
-        controller: widget.controller,
-        enabled: true,
-        readOnly: readOnly,
-        cursorHeight: 20,
-        inputFormatters: _formattersFor(widget.type),
-        keyboardType: switch (widget.type) {
-          WaveInputType.login => TextInputType.emailAddress,
-          WaveInputType.password => TextInputType.visiblePassword,
-          WaveInputType.code => TextInputType.text,
-        },
-        obscureText: isPassword && obscure,
-        obscuringCharacter: '*',
-        cursorColor: widget.enabled
-            ? MdColors.defaultTextInputColor
-            : MdColors.disabledInputColor,
-        textAlign: widget.type.textAlign,
-        style: TextStyle(
-          color: widget.enabled
+      child: SizedBox(
+        height: 48,
+        child: TextField(
+          focusNode: _focus,
+          controller: widget.controller,
+          enabled: true,
+          readOnly: readOnly,
+          cursorHeight: 20,
+          inputFormatters: _formattersFor(widget.type),
+          keyboardType: switch (widget.type) {
+            WaveInputType.login => TextInputType.emailAddress,
+            WaveInputType.password => TextInputType.visiblePassword,
+            WaveInputType.code => TextInputType.text,
+          },
+          obscureText: isPassword && obscure,
+          obscuringCharacter: '*',
+          cursorColor: widget.enabled
               ? MdColors.defaultTextInputColor
               : MdColors.disabledInputColor,
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
-          fontFamily: 'Play',
-          letterSpacing: 1,
-        ),
-        decoration: InputDecoration(
-          hoverColor: Colors.transparent,
-          fillColor: Colors.transparent,
-          contentPadding: widget.contentPadding,
-          hintText: widget.hintText ?? _defaultHint(widget.type),
-          hintStyle: const TextStyle(
-            color: MdColors.defaultTextInputColor,
+          textAlign: widget.type.textAlign,
+          style: TextStyle(
+            color: widget.enabled
+                ? MdColors.defaultTextInputColor
+                : MdColors.disabledInputColor,
             fontSize: 24,
             fontWeight: FontWeight.w700,
             fontFamily: 'Play',
             letterSpacing: 1,
           ),
-          enabledBorder:
-              widget.enabled ? effectiveEnabledBorder : disabledBorder,
-          focusedBorder:
-              widget.enabled ? effectiveFocusedBorder : disabledBorder,
-          errorBorder: errorBorder,
-          disabledBorder: disabledBorder,
-          suffixIcon: suffixIcon,
+          decoration: InputDecoration(
+            hoverColor: Colors.transparent,
+            fillColor: Colors.transparent,
+            contentPadding: widget.contentPadding,
+            hintText: effectiveHint,
+            hintStyle: const TextStyle(
+              color: MdColors.disabledTextInputColor,
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'Play',
+              letterSpacing: 1,
+            ),
+            enabledBorder:
+                widget.enabled ? effectiveEnabledBorder : disabledBorder,
+            focusedBorder:
+                widget.enabled ? effectiveFocusedBorder : disabledBorder,
+            errorBorder: errorBorder,
+            disabledBorder: disabledBorder,
+            suffixIcon: Padding(
+              padding: const EdgeInsetsGeometry.only(
+                  right: 20, top: 8, bottom: 8, left: 12),
+              child: suffixIcon,
+            ),
+          ),
         ),
       ),
     );
