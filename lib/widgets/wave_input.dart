@@ -86,14 +86,14 @@ class _WaveInputState extends State<WaveInput> {
       final icon = !obscure
           ? SvgPicture.asset(
               PrecachedIcons.inputOpenedEyeIcon,
-              width: 25,
-              height: 21,
+              width: 32,
+              height: 32,
               colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
             )
           : SvgPicture.asset(
               PrecachedIcons.inputClosedEyeIcon,
-              width: 25,
-              height: 21,
+              width: 32,
+              height: 32,
               colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
             );
       suffixIcon = IconButton(
