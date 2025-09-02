@@ -1,3 +1,7 @@
+## [2.9.0]
+
+- [wave-38] Добавлен компонент WaveChatInput
+
 ## [2.5.2]
 
 - [wave-34] Исправлено отображение GradientScaffoldWrapper на iOS устройствах

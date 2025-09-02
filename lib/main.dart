@@ -7,6 +7,7 @@ import 'package:md_ui_kit/_stories/widgets/blurred_circle_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_background_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_animated_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_chat_input_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_divider_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_simple_button_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_status_story.dart';
@@ -15,6 +16,7 @@ import 'package:md_ui_kit/_stories/widgets/wave_nav_bar_item_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_text_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_text_button_story.dart';
 import 'package:md_ui_kit/widgets/md_initial_wave.dart';
+import 'package:md_ui_kit/widgets/wave_chat_input.dart';
 import 'package:md_ui_kit/widgets/wave_logo.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
@@ -34,7 +36,7 @@ class StorybookApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      // darkTheme: AppTheme.dark, // Uncomment to use the dark theme
+      darkTheme: AppTheme.dark, // Uncomment to use the dark theme
       home: Directionality(
         textDirection: TextDirection.ltr,
         child: Material(
@@ -61,7 +63,8 @@ class StorybookApp extends StatelessWidget {
               ),
               Story(
                 name: 'Wave/WaveSimpleButton',
-                builder: (context) => WaveSimpleButtonStory(knobs: context.knobs),
+                builder: (context) =>
+                    WaveSimpleButtonStory(knobs: context.knobs),
               ),
               Story(
                 name: 'Wave/WaveItemBadge',
@@ -105,6 +108,10 @@ class StorybookApp extends StatelessWidget {
               Story(
                 name: 'Wave/WaveDivider',
                 builder: (context) => WaveDividerStory(knobs: context.knobs),
+              ),
+              Story(
+                name: 'Wave/WaveChatInput',
+                builder: (context) => WaveChatInputStory(knobs: context.knobs),
               ),
               Story(
                 name: 'Wave/WaveStatus',
