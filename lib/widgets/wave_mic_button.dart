@@ -52,10 +52,11 @@ class _WaveMicButtonState extends State<WaveMicButton> {
           decoration: BoxDecoration(
             color: palette.bg,
             shape: BoxShape.circle,
-            boxShadow: const [
+            boxShadow: [
               BoxShadow(
                 blurRadius: 60,
-                offset: Offset(0, 20),
+                offset: const Offset(0, 20),
+                color: palette.shadow,
               ),
             ],
           ),
@@ -102,34 +103,40 @@ class _WaveMicButtonState extends State<WaveMicButton> {
         return const MicPalette(
           bg: MdColors.mutedPressedBg,
           icon: MdColors.mutedPressedIcon,
+          shadow: MdColors.mutedShadow,
         );
       }
       if (hover) {
         return const MicPalette(
           bg: MdColors.mutedHoverBg,
           icon: MdColors.mutedHoverIcon,
+          shadow: MdColors.mutedShadow,
         );
       }
       return const MicPalette(
         bg: MdColors.mutedDefaultBg,
         icon: MdColors.mutedDefaultIcon,
+        shadow: MdColors.mutedShadow,
       );
     } else {
       if (pressed) {
         return const MicPalette(
           bg: MdColors.unmutedPressedBg,
           icon: MdColors.unmutedPressedIcon,
+          shadow: MdColors.unmutedShadow,
         );
       }
       if (hover) {
         return const MicPalette(
           bg: MdColors.unmutedHoverBg,
           icon: MdColors.unmutedHoverIcon,
+          shadow: MdColors.unmutedShadow,
         );
       }
       return const MicPalette(
         bg: MdColors.unmutedDefaultBg,
         icon: MdColors.unmutedDefaultIcon,
+        shadow: MdColors.unmutedShadow,
       );
     }
   }
@@ -139,8 +146,10 @@ class MicPalette {
   const MicPalette({
     required this.bg,
     required this.icon,
+    required this.shadow,
   });
 
   final Color bg;
   final Color icon;
+  final Color shadow;
 }

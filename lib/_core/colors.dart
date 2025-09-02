@@ -89,4 +89,6 @@ class MdColors {
   static const mutedHoverIcon = Color.fromRGBO(109, 80, 81, 1);
   static const mutedPressedBg = Color.fromRGBO(193, 154, 164, 1);
   static const mutedPressedIcon = Color.fromRGBO(100, 74, 74, 1);
+  static const mutedShadow = Color.fromRGBO(130, 50, 50, 0.4);
+  static const unmutedShadow = Color.fromRGBO(58, 51, 253, 0.4);
 }
