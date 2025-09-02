@@ -60,30 +60,30 @@ class _WaveInputState extends State<WaveInput> {
     switch (t) {
       case WaveInputType.login:
         {
-          // Разрешённые символы
-          final allowLoginChars =
-              FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z0-9_.\-@]"));
-          // Не больше одной @ и корректный префикс до неё
-          final singleAtWithPrefixRule =
+          // запрет пробелов
+          final denySpaces = FilteringTextInputFormatter.deny(RegExp(r'\s'));
+          // буквы/цифры/точка/тире/@
+          final allowChars =
+              FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9.\-@]'));
+          // общая функ правил
+          final emailShape =
               TextInputFormatter.withFunction((oldValue, newValue) {
-            final text = newValue.text;
-            // если нет '@', то ок
-            final atCount = RegExp(r'@').allMatches(text).length;
-            if (atCount == 0) return newValue;
-            // больше одной '@', то не пускаем
-            if (atCount > 1) return oldValue;
-            // '@' в начале, то нельзя
-            final atIndex = text.indexOf('@');
-            if (atIndex == 0) return oldValue;
-
-            final prefix = text.substring(0, atIndex);
-            // должен быть хотя бы 1 символ, и все из [A-Za-z.\-]ы
-            final prefixOk = RegExp(r'^[A-Za-z.\-]+$').hasMatch(prefix);
-            if (!prefixOk) return oldValue;
+            final s = newValue.text;
+            // не больше одной @
+            if (RegExp(r'@').allMatches(s).length > 1) return oldValue;
+            final at = s.indexOf('@');
+            // @ в начале нельзя
+            if (at == 0) return oldValue;
+            // если @ уже есть, перед ней должен быть хотя бы 1 символ из [A-Za-z.\-]
+            if (at > 0) {
+              final prefix = s.substring(0, at);
+              if (!RegExp(r'^[A-Za-z.\-]+$').hasMatch(prefix)) return oldValue;
+            }
+            // нельзя подряд две точки
+            if (s.contains('..')) return oldValue;
             return newValue;
           });
-
-          return [denySpaces, allowLoginChars, singleAtWithPrefixRule];
+          return [denySpaces, allowChars, emailShape];
         }
       case WaveInputType.password:
         return [
