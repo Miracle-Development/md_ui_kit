@@ -70,6 +70,16 @@ class MdColors {
   static const Color notificationsUnselectedText =
       Color.fromRGBO(67, 70, 243, 1);
 
+  /// WaveInput Colors
+  static const Color selectionTextInputColor = Color.fromRGBO(58, 89, 238, 0.4);
+  static const Color defaultTextInputColor = Color.fromRGBO(220, 218, 255, 0.9);
+  static const Color defaultBorderInputColor = Color.fromRGBO(67, 70, 243, 0.8);
+  static const Color selectedBorderInputColor =
+      Color.fromRGBO(177, 172, 255, 0.8);
+  static const Color disabledInputColor = Color.fromRGBO(52, 53, 91, 0.8);
+  static const Color disabledTextInputColor = Color.fromRGBO(52, 53, 91, 0.9);
+  static const Color errorInputColor = Color.fromRGBO(130, 50, 50, 0.8);
+
   // Wave main color palette
   static const backgroundColor = Color.fromRGBO(13, 13, 15, 1);
   static const containerColor = Color.fromRGBO(17, 17, 30, 0.6);

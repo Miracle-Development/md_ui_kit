@@ -1,3 +1,7 @@
+## [2.7.0]
+
+- [wave-33] Добавлен компонент WavrInput
+- 
 ## [2.5.2]
 
 - [wave-34] Исправлено отображение GradientScaffoldWrapper на iOS устройствах
