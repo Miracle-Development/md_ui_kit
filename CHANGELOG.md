@@ -1,6 +1,6 @@
 ## [2.9.0]
 
-- [wave-38] Добавлен компонент WaveChatInput
+- [wave-36] Добавлен компонент WaveChatInput
 
 ## [2.5.2]
 
