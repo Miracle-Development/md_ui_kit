@@ -9,6 +9,8 @@ import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_animated_st
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_chat_bubble_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_divider_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_mic_button_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_simple_button_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_status_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_item_badge_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_nav_bar_item_story.dart';
@@ -17,7 +19,6 @@ import 'package:md_ui_kit/_stories/widgets/wave_text_button_story.dart';
 import 'package:md_ui_kit/widgets/md_initial_wave.dart';
 import 'package:md_ui_kit/widgets/wave_logo.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
-import 'package:md_ui_kit/_stories/widgets/wave_button_story.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,8 +62,9 @@ class StorybookApp extends StatelessWidget {
                 builder: (context) => MdTextButtonStory(knobs: context.knobs),
               ),
               Story(
-                name: 'Wave/WaveButton',
-                builder: (context) => WaveButtonStory(knobs: context.knobs),
+                name: 'Wave/WaveSimpleButton',
+                builder: (context) =>
+                    WaveSimpleButtonStory(knobs: context.knobs),
               ),
               Story(
                 name: 'Wave/WaveItemBadge',
@@ -108,9 +110,13 @@ class StorybookApp extends StatelessWidget {
                 builder: (context) => WaveDividerStory(knobs: context.knobs),
               ),
               Story(
-                  name: 'Wave/WaveChatBubble',
-                  builder: (context) =>
-                      WaveChatBubbleStory(knobs: context.knobs)),
+                name: 'Wave/WaveChatBubble',
+                builder: (context) => WaveChatBubbleStory(knobs: context.knobs),
+              ),
+              Story(
+                name: 'Wave/WaveMicButton',
+                builder: (context) => WaveMicButtonStory(knobs: context.knobs),
+              ),
               Story(
                 name: 'Wave/WaveStatus',
                 builder: (context) => WaveStatusStory(knobs: context.knobs),
