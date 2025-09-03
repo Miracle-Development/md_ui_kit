@@ -1,3 +1,7 @@
+## [2.7.0]
+
+- [wave-31] Добавлен компонент WaveChatBubble
+
 ## [2.6.0]
 
 - [wave-37] Добавлен компонент WaveMicButton
