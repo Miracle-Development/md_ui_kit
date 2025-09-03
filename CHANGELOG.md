@@ -1,3 +1,7 @@
+## [3.0.0]
+
+- [wave-39] Компонент WaveDeviceMenu добавлен
+
 ## [2.5.2]
 
 - [wave-34] Исправлено отображение GradientScaffoldWrapper на iOS устройствах
