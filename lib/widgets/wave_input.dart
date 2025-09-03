@@ -60,27 +60,43 @@ class _WaveInputState extends State<WaveInput> {
     switch (t) {
       case WaveInputType.login:
         {
-          // запрет пробелов
-          final denySpaces = FilteringTextInputFormatter.deny(RegExp(r'\s'));
-          // буквы/цифры/точка/тире/@
           final allowChars =
               FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9.\-@]'));
-          // общая функ правил
           final emailShape =
               TextInputFormatter.withFunction((oldValue, newValue) {
             final s = newValue.text;
-            // не больше одной @
+
+            if (s.isEmpty) return newValue;
+
+            if (s.startsWith('.')) return oldValue;
+
             if (RegExp(r'@').allMatches(s).length > 1) return oldValue;
+
             final at = s.indexOf('@');
-            // @ в начале нельзя
+
             if (at == 0) return oldValue;
-            // если @ уже есть, перед ней должен быть хотя бы 1 символ из [A-Za-z.\-]
+
+            if (s.contains('..')) return oldValue;
+
             if (at > 0) {
               final prefix = s.substring(0, at);
-              if (!RegExp(r'^[A-Za-z.\-]+$').hasMatch(prefix)) return oldValue;
+              if (!RegExp(r'^[A-Za-z0-9.\-]+$').hasMatch(prefix)) {
+                return oldValue;
+              }
+              if (prefix.endsWith('.')) return oldValue;
             }
-            // нельзя подряд две точки
-            if (s.contains('..')) return oldValue;
+            if (at >= 0) {
+              final domain = s.substring(at + 1);
+              if (domain.isNotEmpty) {
+                if (domain.startsWith('.')) return oldValue;
+
+                final firstDot = domain.indexOf('.');
+                if (firstDot != -1) {
+                  if (domain.indexOf('.', firstDot + 1) != -1) return oldValue;
+                }
+              }
+            }
+
             return newValue;
           });
           return [denySpaces, allowChars, emailShape];
@@ -93,7 +109,7 @@ class _WaveInputState extends State<WaveInput> {
       case WaveInputType.code:
         return [
           denySpaces,
-          FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z\-]")),
+          FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z]")),
         ];
     }
   }
@@ -174,9 +190,8 @@ class _WaveInputState extends State<WaveInput> {
     final effectiveFocusedBorder =
         widget.hasError ? errorBorder : focusedBorder;
     final hasCustomHint = (widget.hintText?.trim().isNotEmpty ?? false);
-    final String? effectiveHint = _focus.hasFocus
-        ? null
-        : (hasCustomHint ? widget.hintText : _defaultHint(widget.type));
+    final String? effectiveHint =
+        (hasCustomHint ? widget.hintText : _defaultHint(widget.type));
     final readOnly = !widget.enabled;
 
     return Theme(
