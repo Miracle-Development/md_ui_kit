@@ -70,7 +70,9 @@ class MdColors {
   static const Color notificationsUnselectedText =
       Color.fromRGBO(67, 70, 243, 1);
 
-  /// WaveChatBubbleType
-  static const Color chatBubbleColorOther = Color.fromRGBO(255, 255, 255, 1);
-  static const Color chatBubbleColorMe = Color.fromRGBO(255, 255, 255, 1);
+  /// WaveChatBubble Colors
+  static const Color chatBubbleColorOther = Color.fromRGBO(58, 89, 238, 1);
+  static const Color chatBubbleColorMe = Color.fromRGBO(67, 70, 243, 1);
+  static const Color chatBubbleColorText = Color.fromRGBO(255, 255, 255, 1);
+  static const Color chatBubbleColorSystem = Color.fromRGBO(179, 179, 202, 1);
 }

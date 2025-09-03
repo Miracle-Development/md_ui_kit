@@ -10,7 +10,7 @@ class WaveText extends StatelessWidget {
     this.waveColor = WaveTextColor.titleColor,
     this.color,
     this.textAlign,
-    this.maxLines = 1,
+    this.maxLines,
     this.overflow = TextOverflow.ellipsis,
   }) : assert(color != null || waveColor != null);
 
@@ -25,7 +25,13 @@ class WaveText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = _buildTextStyle(type, weight, waveColor, color);
+    final style = _buildTextStyle(
+      type,
+      weight,
+      waveColor,
+      color,
+    );
+
     return Text(
       text,
       textAlign: textAlign,

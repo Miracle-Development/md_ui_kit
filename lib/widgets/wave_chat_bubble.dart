@@ -3,8 +3,12 @@ import 'package:md_ui_kit/_core/colors.dart';
 import 'package:md_ui_kit/md_ui_kit.dart';
 
 class WaveChatBubble extends StatelessWidget {
-  const WaveChatBubble(
-      {super.key, required this.type, required this.label, this.dividerType});
+  const WaveChatBubble({
+    super.key,
+    required this.type,
+    required this.label,
+    this.dividerType = WaveDividerType.brand,
+  });
 
   final WaveChatBubbleType type;
   final String label;
@@ -35,7 +39,7 @@ class WaveChatBubble extends StatelessWidget {
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: contentMaxWidth),
                   child: type == WaveChatBubbleType.bubbleMessageEvent
-                      ? WaveDivider(type: dividerType!, label: label)
+                      ? WaveDivider(type: dividerType!, label: label,)
                       : WaveText(
                           label,
                           type: WaveTextType.caption,
@@ -59,44 +63,78 @@ class WaveChatBubble extends StatelessWidget {
 
 enum WaveChatBubbleType {
   bubbleMessageOther(
-      padding: EdgeInsets.only(top: 8, right: 12, bottom: 8, left: 12),
-      margin: EdgeInsets.only(left: 16, right: 48, bottom: 12),
-      bgColor: Color.fromRGBO(58, 89, 238, 1),
-      textColor: MdColors.chatBubbleColorOther,
-      radius: BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(6),
-          bottomRight: Radius.circular(12),
-          bottomLeft: Radius.circular(6))),
+    padding: EdgeInsets.only(
+      top: 8,
+      right: 12,
+      bottom: 8,
+      left: 12,
+    ),
+    margin: EdgeInsets.only(
+      left: 16,
+      right: 48,
+      bottom: 12,
+    ),
+    bgColor: MdColors.chatBubbleColorOther,
+    textColor: MdColors.chatBubbleColorText,
+    radius: BorderRadius.only(
+      topLeft: Radius.circular(12),
+      topRight: Radius.circular(6),
+      bottomRight: Radius.circular(12),
+      bottomLeft: Radius.circular(6),
+    ),
+  ),
   bubbleMessageMe(
-      padding: EdgeInsets.only(top: 8, right: 12, bottom: 8, left: 12),
-      margin: EdgeInsets.only(left: 48, right: 16, bottom: 12),
-      bgColor: Color.fromRGBO(67, 70, 243, 1),
-      textColor: MdColors.chatBubbleColorMe,
-      radius: BorderRadius.only(
-          topLeft: Radius.circular(6),
-          topRight: Radius.circular(12),
-          bottomRight: Radius.circular(6),
-          bottomLeft: Radius.circular(12))),
+    padding: EdgeInsets.only(
+      top: 8,
+      right: 12,
+      bottom: 8,
+      left: 12,
+    ),
+    margin: EdgeInsets.only(
+      left: 48,
+      right: 16,
+      bottom: 12,
+    ),
+    bgColor: MdColors.chatBubbleColorMe,
+    textColor: MdColors.chatBubbleColorText,
+    radius: BorderRadius.only(
+      topLeft: Radius.circular(6),
+      topRight: Radius.circular(12),
+      bottomRight: Radius.circular(6),
+      bottomLeft: Radius.circular(12),
+    ),
+  ),
   bubbleMessageInfo(
-      padding: EdgeInsets.zero,
-      margin: EdgeInsets.only(left: 16, right: 16, bottom: 12),
-      bgColor: Colors.transparent,
-      textColor: Color.fromRGBO(179, 179, 202, 1),
-      radius: BorderRadius.zero),
+    padding: EdgeInsets.zero,
+    margin: EdgeInsets.only(
+      left: 16,
+      right: 16,
+      bottom: 12,
+    ),
+    bgColor: Colors.transparent,
+    textColor: MdColors.chatBubbleColorSystem,
+    radius: BorderRadius.zero,
+  ),
   bubbleMessageEvent(
-      padding: EdgeInsets.zero,
-      margin: EdgeInsets.only(left: 16, right: 16, bottom: 12),
-      bgColor: Colors.transparent,
-      textColor: null,
-      radius: BorderRadius.zero);
+    padding: EdgeInsets.zero,
+    margin: EdgeInsets.only(
+      left: 16,
+      right: 16,
+      bottom: 12,
+    ),
+    bgColor: Colors.transparent,
+    textColor: null,
+    radius: BorderRadius.zero,
+  );
 
-  const WaveChatBubbleType(
-      {required this.padding,
-      required this.margin,
-      required this.bgColor,
-      required this.radius,
-      required this.textColor});
+  const WaveChatBubbleType({
+    required this.padding,
+    required this.margin,
+    required this.bgColor,
+    required this.radius,
+    required this.textColor,
+  });
+
   final EdgeInsets padding;
   final EdgeInsets margin;
   final BorderRadius radius;
