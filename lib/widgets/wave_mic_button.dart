@@ -8,7 +8,7 @@ class WaveMicButton extends StatefulWidget {
   const WaveMicButton({
     super.key,
     this.isMuted = false,
-    this.duration = const Duration(milliseconds: 300),
+    this.duration = const Duration(milliseconds: 200),
     this.onTap,
   });
 
@@ -26,7 +26,7 @@ class _WaveMicButtonState extends State<WaveMicButton>
   bool _hover = false;
   bool _pressed = false;
 
-  late final AnimationController _anumationController;
+  late final AnimationController _animationController;
   bool _animating = false;
 
   static const double _btnSize = 112;
@@ -39,14 +39,14 @@ class _WaveMicButtonState extends State<WaveMicButton>
     super.initState();
     _muted = widget.isMuted;
 
-    _anumationController = AnimationController(
+    _animationController = AnimationController(
       vsync: this,
       duration: widget.duration,
     );
 
-    _anumationController.value = _muted ? 1.0 : 0.0;
+    _animationController.value = _muted ? 1.0 : 0.0;
 
-    _anumationController.addStatusListener((status) {
+    _animationController.addStatusListener((status) {
       final anim = status == AnimationStatus.forward ||
           status == AnimationStatus.reverse;
       if (anim != _animating) {
@@ -60,13 +60,13 @@ class _WaveMicButtonState extends State<WaveMicButton>
     super.didUpdateWidget(oldWidget);
     if (widget.isMuted != oldWidget.isMuted) {
       _muted = widget.isMuted;
-      _anumationController.value = _muted ? 1.0 : 0.0;
+      _animationController.value = _muted ? 1.0 : 0.0;
     }
   }
 
   @override
   void dispose() {
-    _anumationController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -80,72 +80,73 @@ class _WaveMicButtonState extends State<WaveMicButton>
     return SizedBox(
       width: _btnSize,
       height: _btnSize,
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _hover = true),
-        onExit: (_) => setState(() {
-          _hover = false;
-          _pressed = false;
-        }),
-        child: AnimatedContainer(
-          duration: widget.duration,
-          curve: Curves.easeOut,
-          decoration: BoxDecoration(
-            color: palette.bg,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 60,
-                offset: const Offset(0, 20),
-                color: palette.shadow,
-              ),
-            ],
-          ),
-          child: InkWell(
-            onTapDown:
-                _animating ? null : (_) => setState(() => _pressed = true),
-            onTapCancel:
-                _animating ? null : () => setState(() => _pressed = false),
-            onTapUp:
-                _animating ? null : (_) => setState(() => _pressed = false),
-            onTap: _animating
-                ? null
-                : () => setState(() {
-                      _muted = !_muted;
-                      if (_muted) {
-                        _anumationController.forward();
-                      } else {
-                        _anumationController.reverse();
-                      }
+      child: IgnorePointer(
+        ignoring: _animating,
+        child: MouseRegion(
+          onEnter: (_) => setState(() => _hover = true),
+          onExit: (_) => setState(() {
+            _hover = false;
+            _pressed = false;
+          }),
+          child: AnimatedContainer(
+            duration: widget.duration,
+            curve: Curves.easeOut,
+            decoration: BoxDecoration(
+              color: palette.bg,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 60,
+                  offset: const Offset(0, 20),
+                  color: palette.shadow,
+                ),
+              ],
+            ),
+            child: InkWell(
+              onTapDown:
+                  _animating ? null : (_) => setState(() => _pressed = true),
+              onTapCancel:
+                  _animating ? null : () => setState(() => _pressed = false),
+              onTapUp:
+                  _animating ? null : (_) => setState(() => _pressed = false),
+              onTap: () => setState(() {
+                _muted = !_muted;
+                if (_muted) {
+                  _animationController.forward();
+                } else {
+                  _animationController.reverse();
+                }
 
-                      widget.onTap;
-                    }),
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                AnimatedSwitcher(
-                  duration: widget.duration,
-                  child: SvgPicture.asset(
-                    PrecachedIcons.micButton,
-                    key: ValueKey(_muted),
-                    width: _btnSize * 0.41,
-                    height: _btnSize * 0.57,
-                    colorFilter: ColorFilter.mode(
-                      palette.icon,
-                      BlendMode.srcIn,
+                widget.onTap;
+              }),
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  AnimatedSwitcher(
+                    duration: widget.duration,
+                    child: SvgPicture.asset(
+                      PrecachedIcons.micButton,
+                      key: ValueKey(_muted),
+                      width: _btnSize * 0.41,
+                      height: _btnSize * 0.57,
+                      colorFilter: ColorFilter.mode(
+                        palette.icon,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
-                ),
-                if (_anumationController.value > 0.0 || _muted)
-                  _Line(
-                    controller: _anumationController,
-                    length: _lineLength,
-                    thickness: _lineThickness,
-                    color: _lineColor,
-                  ),
-              ],
+                  if (_animationController.value > 0.0 || _muted)
+                    _Line(
+                      controller: _animationController,
+                      length: _lineLength,
+                      thickness: _lineThickness,
+                      color: _lineColor,
+                    ),
+                ],
+              ),
             ),
           ),
         ),
@@ -229,8 +230,10 @@ class _Line extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Animation<double> progress =
-        CurvedAnimation(parent: controller, curve: Curves.easeInOut);
+    final Animation<double> progress = CurvedAnimation(
+      parent: controller,
+      curve: Curves.fastOutSlowIn,
+    );
 
     return AnimatedBuilder(
       animation: progress,
@@ -246,21 +249,22 @@ class _Line extends StatelessWidget {
             width: length,
             height: thickness,
             child: Align(
-                alignment: align,
-                child: ClipRect(
-                  child: Align(
-                    alignment: align,
-                    widthFactor: progress.value,
-                    child: Container(
-                      width: length,
-                      height: thickness,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: color,
-                      ),
+              alignment: align,
+              child: ClipRect(
+                child: Align(
+                  alignment: align,
+                  widthFactor: progress.value,
+                  child: Container(
+                    width: length,
+                    height: thickness,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: color,
                     ),
                   ),
-                )),
+                ),
+              ),
+            ),
           ),
         );
       },
