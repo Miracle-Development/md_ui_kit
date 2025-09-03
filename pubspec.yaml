@@ -35,6 +35,7 @@ flutter:
     - assets/icons/initial_wave/
     - assets/icons/copy/
     - assets/icons/nav_bar/
+    - assets/icons/chat_input/
 
   fonts:
     - family: Play
