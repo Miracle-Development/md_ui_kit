@@ -70,9 +70,26 @@ class MdColors {
   static const Color notificationsUnselectedText =
       Color.fromRGBO(67, 70, 243, 1);
 
-  // Wave main color palette
+  /// Wave main color palette
   static const backgroundColor = Color.fromRGBO(13, 13, 15, 1);
   static const containerColor = Color.fromRGBO(17, 17, 30, 0.6);
   static const brandFirstStrip = Color.fromRGBO(67, 70, 243, 1);
   static const brandSecondStrip = Color.fromRGBO(48, 51, 212, 1);
+
+  /// WaveMicButton Colors
+  static const unmutedDefaultBg = Color.fromRGBO(220, 218, 255, 1);
+  static const unmutedDefaultIcon = Color.fromRGBO(67, 70, 243, 1);
+  static const unmutedHoverBg = Color.fromRGBO(181, 178, 229, 1);
+  static const unmutedHoverIcon = Color.fromRGBO(63, 66, 243, 1);
+  static const unmutedPressedBg = Color.fromRGBO(157, 153, 229, 1);
+  static const unmutedPressedIcon = Color.fromRGBO(44, 47, 242, 1);
+  static const mutedDefaultBg = Color.fromRGBO(204, 178, 185, 1);
+  static const mutedDefaultIcon = Color.fromRGBO(117, 87, 87, 1);
+  static const mutedHoverBg = Color.fromRGBO(201, 166, 176, 1);
+  static const mutedHoverIcon = Color.fromRGBO(109, 80, 81, 1);
+  static const mutedPressedBg = Color.fromRGBO(193, 154, 164, 1);
+  static const mutedPressedIcon = Color.fromRGBO(100, 74, 74, 1);
+  static const mutedShadow = Color.fromRGBO(130, 50, 50, 0.4);
+  static const unmutedShadow = Color.fromRGBO(58, 51, 253, 0.4);
+  static const micLineColor = Color.fromRGBO(130, 50, 50, 1);
 }

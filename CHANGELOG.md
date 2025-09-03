@@ -1,3 +1,7 @@
+## [2.6.0]
+
+- [wave-37] Добавлен компонент WaveMicButton
+
 ## [2.5.2]
 
 - [wave-34] Исправлено отображение GradientScaffoldWrapper на iOS устройствах
