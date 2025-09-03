@@ -107,10 +107,29 @@ class _WaveInputState extends State<WaveInput> {
           FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z0-9\?\!\,\.]")),
         ];
       case WaveInputType.code:
-        return [
-          denySpaces,
-          FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z]")),
-        ];
+        {
+          final allowChars =
+              FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z\-]"));
+          final codeShape =
+              TextInputFormatter.withFunction((oldValue, newValue) {
+            final s = newValue.text;
+
+            if (s.isEmpty) return newValue;
+
+            if (s.startsWith('-')) return oldValue;
+
+            if (RegExp(r'-').allMatches(s).length > 1) return oldValue;
+
+            final at = s.indexOf('@');
+
+            if (at == 0) return oldValue;
+
+            if (s.contains('--')) return oldValue;
+
+            return newValue;
+          });
+          return [denySpaces, allowChars, codeShape];
+        }
     }
   }
 
