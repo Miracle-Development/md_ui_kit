@@ -61,7 +61,7 @@ class _WaveInputState extends State<WaveInput> {
       case WaveInputType.login:
         {
           final allowChars =
-              FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9.\-@]'));
+              FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9.\-@_]'));
           final emailShape =
               TextInputFormatter.withFunction((oldValue, newValue) {
             final s = newValue.text;
