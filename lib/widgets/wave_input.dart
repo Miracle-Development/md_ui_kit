@@ -104,7 +104,8 @@ class _WaveInputState extends State<WaveInput> {
       case WaveInputType.password:
         return [
           denySpaces,
-          FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z0-9\?\!\,\.]")),
+          FilteringTextInputFormatter.allow(
+              RegExp(r"[a-zA-Zа-яА-Я0-9\?\!\,\.]")),
         ];
       case WaveInputType.code:
         {
