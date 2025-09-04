@@ -170,7 +170,7 @@ class _WaveInputState extends State<WaveInput> {
         onPressed:
             widget.enabled ? () => setState(() => obscure = !obscure) : null,
         icon: icon,
-        padding: EdgeInsets.zero,
+        padding: const EdgeInsets.only(right: 20, top: 8, bottom: 8, left: 12),
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         hoverColor: Colors.transparent,
@@ -266,11 +266,7 @@ class _WaveInputState extends State<WaveInput> {
                 widget.enabled ? effectiveFocusedBorder : disabledBorder,
             errorBorder: errorBorder,
             disabledBorder: disabledBorder,
-            suffixIcon: Padding(
-              padding: const EdgeInsetsGeometry.only(
-                  right: 20, top: 8, bottom: 8, left: 12),
-              child: suffixIcon,
-            ),
+            suffixIcon: suffixIcon,
           ),
         ),
       ),
