@@ -14,6 +14,7 @@ class WaveDeviceMenuStory extends StatelessWidget {
   Widget build(BuildContext context) {
     return WaveDeviceMenu(
       items: const ['Device 1', 'Device 2', 'Device 3'],
+      subtitle: "Select input device",
       onChanged: () {},
     );
   }
