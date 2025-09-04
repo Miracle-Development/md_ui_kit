@@ -9,7 +9,7 @@ class WaveInputStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hintText = knobs.text(label: "HintText", initial: "some text");
-    final type = knobs.options<WaveInputType>(
+    var type = knobs.options<WaveInputType>(
       label: 'Style',
       initial: WaveInputType.login,
       options: const [
