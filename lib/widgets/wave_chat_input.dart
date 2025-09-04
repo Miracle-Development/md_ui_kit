@@ -160,7 +160,7 @@ class _WaveChatInoutState extends State<WaveChatInput> {
             duration: const Duration(milliseconds: 200),
             curve: Curves.ease,
             width: _showArrow ? 32 : 0,
-            height: _showArrow ? 32 : 0,
+            height: 32,
             margin: const EdgeInsets.only(
               top: 20,
               right: 20,
