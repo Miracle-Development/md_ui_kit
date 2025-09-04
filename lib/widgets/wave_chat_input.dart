@@ -10,16 +10,23 @@ class WaveChatInput extends StatefulWidget {
     this.hintText,
     this.onSend,
     this.enabled = true,
-    this.borderRadius = const BorderRadius.only(
+    this.borderRadiusContent = const BorderRadius.only(
       bottomLeft: Radius.circular(12),
       bottomRight: Radius.circular(6),
       topLeft: Radius.circular(6),
       topRight: Radius.circular(6),
     ),
+    this.borderRadiusNoContent = const BorderRadius.only(
+      bottomLeft: Radius.circular(12),
+      bottomRight: Radius.circular(6),
+      topLeft: Radius.circular(6),
+      topRight: Radius.circular(12),
+    ),
     this.contentPadding =
         const EdgeInsets.only(top: 8, bottom: 8, right: 10, left: 10),
   });
-  final BorderRadius borderRadius;
+  final BorderRadius borderRadiusContent;
+  final BorderRadius borderRadiusNoContent;
   final EdgeInsets contentPadding;
   final bool enabled;
   final TextEditingController? controller;
@@ -75,7 +82,9 @@ class _WaveChatInoutState extends State<WaveChatInput> {
             ? MdColors.selectedBorderInputColor
             : MdColors.defaultBorderInputColor);
     final enabledBorder = OutlineInputBorder(
-      borderRadius: widget.borderRadius,
+      borderRadius: _controller.text.isEmpty
+          ? widget.borderRadiusNoContent
+          : widget.borderRadiusContent,
       borderSide: BorderSide(
         color: widget.enabled
             ? MdColors.defaultBorderInputColor
@@ -84,7 +93,9 @@ class _WaveChatInoutState extends State<WaveChatInput> {
       ),
     );
     final focusedBorder = OutlineInputBorder(
-      borderRadius: widget.borderRadius,
+      borderRadius: _controller.text.isEmpty
+          ? widget.borderRadiusNoContent
+          : widget.borderRadiusContent,
       borderSide: BorderSide(
         color: widget.enabled
             ? MdColors.selectedBorderInputColor
@@ -93,7 +104,9 @@ class _WaveChatInoutState extends State<WaveChatInput> {
       ),
     );
     final disabledBorder = OutlineInputBorder(
-      borderRadius: widget.borderRadius,
+      borderRadius: _controller.text.isEmpty
+          ? widget.borderRadiusNoContent
+          : widget.borderRadiusContent,
       borderSide:
           const BorderSide(color: MdColors.disabledInputColor, width: 2),
     );
