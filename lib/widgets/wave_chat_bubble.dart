@@ -78,7 +78,7 @@ enum WaveChatBubbleType {
     textColor: MdColors.chatBubbleColorText,
     radius: BorderRadius.only(
       topLeft: Radius.circular(12),
-      topRight: Radius.circular(6),
+      topRight: Radius.circular(12),
       bottomRight: Radius.circular(12),
       bottomLeft: Radius.circular(6),
     ),
@@ -98,7 +98,7 @@ enum WaveChatBubbleType {
     bgColor: MdColors.chatBubbleColorMe,
     textColor: MdColors.chatBubbleColorText,
     radius: BorderRadius.only(
-      topLeft: Radius.circular(6),
+      topLeft: Radius.circular(12),
       topRight: Radius.circular(12),
       bottomRight: Radius.circular(6),
       bottomLeft: Radius.circular(12),
