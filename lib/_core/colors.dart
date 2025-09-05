@@ -77,6 +77,9 @@ class MdColors {
   static const Color notificationsUnselectedText =
       Color.fromRGBO(67, 70, 243, 1);
 
+  /// WaveInput Colors
+  static const Color selectionTextInputColor = Color.fromRGBO(58, 89, 238, 0.4);
+
   /// WaveMicButton Colors
   static const unmutedDefaultBg = Color.fromRGBO(220, 218, 255, 1);
   static const unmutedDefaultIcon = Color.fromRGBO(67, 70, 243, 1);

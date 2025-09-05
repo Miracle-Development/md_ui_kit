@@ -22,38 +22,48 @@ class WaveChatBubble extends StatelessWidget {
           final double contentMaxWidth = (constraints.maxWidth -
               type.margin.horizontal -
               type.padding.horizontal);
-          return Row(
-            mainAxisAlignment: type == WaveChatBubbleType.bubbleMessageOther
-                ? MainAxisAlignment.start
-                : type == WaveChatBubbleType.bubbleMessageMe
-                    ? MainAxisAlignment.end
-                    : MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: type.padding,
-                margin: type.margin,
-                decoration: BoxDecoration(
-                  color: type.bgColor,
-                  borderRadius: type.radius,
-                ),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: contentMaxWidth),
-                  child: type == WaveChatBubbleType.bubbleMessageEvent
-                      ? WaveDivider(type: dividerType!, label: label,)
-                      : WaveText(
-                          label,
-                          type: WaveTextType.caption,
-                          color: type.textColor,
-                          maxLines: null,
-                          overflow: TextOverflow.visible,
-                          textAlign:
-                              type == WaveChatBubbleType.bubbleMessageInfo
-                                  ? TextAlign.center
-                                  : null,
-                        ),
-                ),
+          return Theme(
+            data: Theme.of(context).copyWith(
+              textSelectionTheme: const TextSelectionThemeData(
+                selectionColor: MdColors.selectionTextInputColor,
               ),
-            ],
+            ),
+            child: Row(
+              mainAxisAlignment: type == WaveChatBubbleType.bubbleMessageOther
+                  ? MainAxisAlignment.start
+                  : type == WaveChatBubbleType.bubbleMessageMe
+                      ? MainAxisAlignment.end
+                      : MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: type.padding,
+                  margin: type.margin,
+                  decoration: BoxDecoration(
+                    color: type.bgColor,
+                    borderRadius: type.radius,
+                  ),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: contentMaxWidth),
+                    child: type == WaveChatBubbleType.bubbleMessageEvent
+                        ? WaveDivider(
+                            type: dividerType!,
+                            label: label,
+                          )
+                        : WaveText(
+                            label,
+                            type: WaveTextType.caption,
+                            color: type.textColor,
+                            selectable: true,
+                            overflow: TextOverflow.visible,
+                            textAlign:
+                                type == WaveChatBubbleType.bubbleMessageInfo
+                                    ? TextAlign.center
+                                    : null,
+                          ),
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ),

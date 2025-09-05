@@ -53,7 +53,7 @@ class _WaveItemBadgeState extends State<WaveItemBadge> {
     final fg = _resolveText();
 
     return Container(
-      height: 13,
+      height: 20,
       decoration: BoxDecoration(
         color: bg,
         borderRadius: widget.borderRadius,
@@ -70,7 +70,7 @@ class _WaveItemBadgeState extends State<WaveItemBadge> {
               ),
               child: WaveText(
                 widget.label! > 999 ? '999+' : widget.label!.toString(),
-                type: WaveTextType.badge,
+                type: WaveTextType.caption,
                 weight: WaveTextWeight.bold,
                 color: fg,
               ),
