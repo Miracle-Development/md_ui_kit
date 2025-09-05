@@ -70,9 +70,31 @@ class MdColors {
   static const Color notificationsUnselectedText =
       Color.fromRGBO(67, 70, 243, 1);
 
-  // Wave main color palette
+  /// Wave main color palette
   static const backgroundColor = Color.fromRGBO(13, 13, 15, 1);
   static const containerColor = Color.fromRGBO(17, 17, 30, 0.6);
   static const brandFirstStrip = Color.fromRGBO(67, 70, 243, 1);
   static const brandSecondStrip = Color.fromRGBO(48, 51, 212, 1);
+
+  /// WaveDeviceMenu Colors
+  static const deviceMenuBorderClosedDefaultColor =
+      Color.fromRGBO(67, 70, 243, 1);
+  static const deviceMenuBorderClosedHoverColor =
+      Color.fromRGBO(53, 56, 233, 1);
+  static const deviceMenuBorderClosedPressedColor =
+      Color.fromRGBO(41, 44, 224, 1);
+  static const deviceMenuBorderOpenDefaultColor =
+      Color.fromRGBO(177, 172, 255, 1);
+  static const deviceMenuBorderOpenHoverColor =
+      Color.fromRGBO(169, 163, 255, 1);
+  static const deviceMenuBorderOpenPressedColor =
+      Color.fromRGBO(159, 153, 255, 1);
+  static const deviceMenuTextDefaultColor = Color.fromRGBO(220, 218, 255, 1);
+  static const deviceMenuTextHoverColor = Color.fromRGBO(177, 172, 255, 1);
+  static const deviceMenuTextPressedColor = Color.fromRGBO(159, 153, 255, 1);
+  static const deviceMenuIconDefaultColor = Color.fromRGBO(192, 189, 255, 1);
+  static const deviceMenuIconHoverColor = Color.fromRGBO(177, 172, 255, 1);
+  static const deviceMenuIconPressedColor = Color.fromRGBO(159, 153, 255, 1);
+  static const deviceMenuShadowDefaultColor = Color.fromRGBO(17, 17, 30, 0.9);
+  static const deviceMenuShadowHoverColor = Color.fromRGBO(177, 172, 255, 0.1);
 }

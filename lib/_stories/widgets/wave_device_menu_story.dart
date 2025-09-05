@@ -12,9 +12,13 @@ class WaveDeviceMenuStory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final subtitle = knobs.text(
+      label: 'Text',
+      initial: "Select input device",
+    );
     return WaveDeviceMenu(
-      items: const ['Device 1', 'Device 2', 'Device 3'],
-      subtitle: "Select input device",
+      items: const ['Device 1', 'Device 2', 'Device 3', 'Device 4', 'Device 5'],
+      subtitle: subtitle,
       onChanged: () {},
     );
   }

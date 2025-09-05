@@ -42,11 +42,6 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
   double _panelWidth = 0;
   int? _hoveredIndex;
 
-  void _setHovered(int? i) {
-    _hoveredIndex = i;
-    _entry?.markNeedsBuild();
-  }
-
   @override
   void initState() {
     super.initState();
@@ -69,34 +64,106 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
     super.dispose();
   }
 
-  Color _borderColor() {
+  @override
+  Widget build(BuildContext context) {
+    final selected =
+        widget.items.isNotEmpty ? widget.items[_selectedIndex] : '';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CompositedTransformTarget(
+          link: _link,
+          child: MouseRegion(
+            onEnter: (_) => setState(() => _hover = true),
+            onExit: (_) => setState(() {
+              _hover = false;
+              _pressed = false;
+            }),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTapDown: (_) => setState(() => _pressed = true),
+              onTapCancel: () => setState(() => _pressed = false),
+              onTapUp: (_) => setState(() => _pressed = false),
+              onTap: _toggle,
+              child: Container(
+                key: _headerKey,
+                height: _headerHeight,
+                padding: _headerPadding,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(_radius),
+                  border: Border.all(
+                      color: _resovleBorderColor(), width: _borderWidth),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: WaveText(
+                        selected,
+                        type: WaveTextType.subtitle,
+                        color: _resolveTextColor(),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 16,
+                        bottom: 4.5,
+                        top: 4.5,
+                      ),
+                      child: AnimatedRotation(
+                        turns: _open ? 0.5 : 0.0,
+                        duration: const Duration(milliseconds: 120),
+                        child: SvgPicture.asset(
+                          PrecachedIcons.deviceMenuArrow,
+                          width: 32,
+                          height: 32,
+                          colorFilter: ColorFilter.mode(
+                            _resolveIconColor(),
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        if (widget.subtitle != null && widget.subtitle!.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 12, left: 10),
+            child: WaveText(
+              widget.subtitle!,
+              type: WaveTextType.caption,
+              color: MdColors.textButtonDefault,
+            ),
+          ),
+      ],
+    );
+  }
+
+  Color _resovleBorderColor() {
     if (!_open) {
-      if (_pressed) return MdColors.buttonMainPressedBg;
-      if (_hover) return MdColors.buttonMainHoverBg;
-      return MdColors.brandFirstStrip;
+      if (_pressed) return MdColors.deviceMenuBorderClosedPressedColor;
+      if (_hover) return MdColors.deviceMenuBorderClosedHoverColor;
+      return MdColors.deviceMenuBorderClosedDefaultColor;
     } else {
       return MdColors.textButtonHover;
     }
   }
 
-  Color _textColor() {
-    if (_hover) return MdColors.textButtonHover;
-    if (_pressed) return const Color.fromRGBO(159, 153, 255, 1);
-    return MdColors.textButtonDefault;
+  Color _resolveTextColor() {
+    if (_hover) return MdColors.deviceMenuTextHoverColor;
+    if (_pressed) return MdColors.deviceMenuTextPressedColor;
+    return MdColors.deviceMenuTextDefaultColor;
   }
 
-  Color _iconColor() {
-    if (_hover) return MdColors.buttonMainHoverText;
-    if (_pressed) return MdColors.textButtonHover;
-    return MdColors.buttonMainHoverText;
-  }
-
-  BoxDecoration _headerDecoration() {
-    return BoxDecoration(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(_radius),
-      border: Border.all(color: _borderColor(), width: _borderWidth),
-    );
+  Color _resolveIconColor() {
+    if (_pressed) return MdColors.deviceMenuIconPressedColor;
+    if (_hover) return MdColors.deviceMenuIconHoverColor;
+    return MdColors.deviceMenuIconDefaultColor;
   }
 
   void _toggle() {
@@ -105,6 +172,33 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
     } else {
       _showOverlay();
     }
+  }
+
+  void _select(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    widget.onChanged;
+  }
+
+  void _setHovered(int? i) {
+    _hoveredIndex = i;
+    _entry?.markNeedsBuild();
+  }
+
+  void _removeOverlay({bool immediate = false}) {
+    if (_entry == null) return;
+    if (immediate) {
+      _entry!.remove();
+      _entry = null;
+      _open = false;
+      return;
+    }
+    _fadeCtrl.reverse().whenComplete(() {
+      _entry?.remove();
+      _entry = null;
+      if (mounted) setState(() => _open = false);
+    });
   }
 
   void _showOverlay() {
@@ -132,7 +226,7 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                 child: Material(
                   type: MaterialType.transparency,
                   child: ConstrainedBox(
-                    constraints: BoxConstraints.tightFor(width: _panelWidth),
+                    constraints: BoxConstraints(maxWidth: _panelWidth),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         color: Colors.transparent,
@@ -141,6 +235,11 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                           color: MdColors.textButtonHover,
                           width: _borderWidth,
                         ),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: MdColors.deviceMenuShadowDefaultColor,
+                          )
+                        ],
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -151,20 +250,23 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                               onEnter: (_) => _setHovered(i),
                               onExit: (_) => _setHovered(null),
                               child: AnimatedContainer(
-                                height: 40,
+                                height: _headerHeight,
                                 duration: const Duration(milliseconds: 120),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(_radius),
                                   border: (_hoveredIndex == i)
                                       ? Border.all(
-                                          color: MdColors.textButtonHover,
+                                          color: MdColors
+                                              .deviceMenuBorderOpenDefaultColor,
                                           width: 2)
-                                      : null,
+                                      : Border.all(
+                                          color: Colors.transparent, width: 2),
                                   boxShadow: (_hoveredIndex == i)
                                       ? const [
                                           BoxShadow(
-                                              color: Color.fromRGBO(
-                                                  177, 172, 255, 0.1))
+                                            color: MdColors
+                                                .deviceMenuShadowHoverColor,
+                                          )
                                         ]
                                       : null,
                                 ),
@@ -177,28 +279,53 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                                   splashColor: Colors.transparent,
                                   highlightColor: Colors.transparent,
                                   child: Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 16,
-                                    ),
+                                    padding: _headerPadding,
                                     child: Align(
                                       alignment: Alignment.centerLeft,
                                       child: WaveText(
                                         widget.items[i],
                                         type: WaveTextType.subtitle,
-                                        color: MdColors.textButtonDefault,
+                                        color:
+                                            MdColors.deviceMenuTextDefaultColor,
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                            if (i != widget.items.length - 1)
-                              const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16),
-                                child: Divider(
-                                  height: 1,
-                                  thickness: 2,
-                                  color: MdColors.textButtonHover,
+                            if (i != widget.items.length - 1 &&
+                                _hoveredIndex != i &&
+                                i + 1 != _hoveredIndex)
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 2,
+                                  decoration: const BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(2)),
+                                    color: MdColors
+                                        .deviceMenuBorderOpenDefaultColor,
+                                  ),
+                                ),
+                              ),
+                            if (!(i != widget.items.length - 1 &&
+                                _hoveredIndex != i &&
+                                i + 1 != _hoveredIndex))
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 2,
+                                  decoration: const BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(2)),
+                                    color: Colors.transparent,
+                                  ),
                                 ),
                               ),
                           ],
@@ -217,107 +344,5 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
     Overlay.of(context, rootOverlay: true).insert(_entry!);
     setState(() => _open = true);
     _fadeCtrl.forward(from: 0);
-  }
-
-  void _removeOverlay({bool immediate = false}) {
-    if (_entry == null) return;
-    if (immediate) {
-      _entry!.remove();
-      _entry = null;
-      _open = false;
-      return;
-    }
-    _fadeCtrl.reverse().whenComplete(() {
-      _entry?.remove();
-      _entry = null;
-      if (mounted) setState(() => _open = false);
-    });
-  }
-
-  void _select(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    widget.onChanged?.call();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final selected =
-        widget.items.isNotEmpty ? widget.items[_selectedIndex] : '';
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        CompositedTransformTarget(
-          link: _link,
-          child: MouseRegion(
-            onEnter: (_) => setState(() => _hover = true),
-            onExit: (_) => setState(() {
-              _hover = false;
-              _pressed = false;
-            }),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTapDown: (_) => setState(() => _pressed = true),
-              onTapCancel: () => setState(() => _pressed = false),
-              onTapUp: (_) => setState(() => _pressed = false),
-              onTap: _toggle,
-              child: Container(
-                key: _headerKey,
-                height: _headerHeight,
-                padding: _headerPadding,
-                decoration: _headerDecoration(),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: WaveText(
-                        selected,
-                        type: WaveTextType.subtitle,
-                        color: _textColor(),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        right: 16,
-                        bottom: 4.5,
-                        top: 4.5,
-                      ),
-                      child: AnimatedRotation(
-                        turns: _open ? 0.5 : 0.0,
-                        duration: const Duration(milliseconds: 300),
-                        child: SvgPicture.asset(
-                          PrecachedIcons.deviceMenuArrow,
-                          width: 32,
-                          height: 32,
-                          colorFilter: ColorFilter.mode(
-                            _iconColor(),
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-        if (widget.subtitle != null && widget.subtitle!.isNotEmpty)
-          AnimatedOpacity(
-            opacity: _open ? 0 : 1,
-            duration: const Duration(milliseconds: 120),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 12, left: 10),
-              child: WaveText(
-                widget.subtitle!,
-                type: WaveTextType.caption,
-                color: MdColors.textButtonDefault,
-              ),
-            ),
-          ),
-      ],
-    );
   }
 }
