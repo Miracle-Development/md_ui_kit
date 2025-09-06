@@ -97,4 +97,12 @@ class MdColors {
   static const deviceMenuIconPressedColor = Color.fromRGBO(159, 153, 255, 1);
   static const deviceMenuShadowDefaultColor = Color.fromRGBO(17, 17, 30, 0.9);
   static const deviceMenuShadowHoverColor = Color.fromRGBO(177, 172, 255, 0.1);
+  static const deviceMenuShadowPressedColor =
+      Color.fromRGBO(159, 153, 255, 0.15);
+  static const deviceMenuItemHoverColor = Color.fromRGBO(169, 163, 255, 1);
+  static const deviceMenuItemPressedColor = Color.fromRGBO(159, 153, 255, 1);
+  static const deviceMenuItemTextDefualtColor =
+      Color.fromRGBO(192, 189, 255, 1);
+  static const deviceMenuItemTextHoverPressedColor =
+      Color.fromRGBO(220, 218, 255, 1);
 }

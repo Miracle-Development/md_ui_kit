@@ -41,6 +41,7 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
   late final Animation<double> _fade;
   double _panelWidth = 0;
   int? _hoveredIndex;
+  int? _pressedIndex;
 
   @override
   void initState() {
@@ -150,13 +151,15 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
       if (_hover) return MdColors.deviceMenuBorderClosedHoverColor;
       return MdColors.deviceMenuBorderClosedDefaultColor;
     } else {
-      return MdColors.textButtonHover;
+      if (_pressed) return MdColors.deviceMenuBorderOpenPressedColor;
+      if (_hover) return MdColors.deviceMenuBorderOpenHoverColor;
+      return MdColors.deviceMenuBorderOpenDefaultColor;
     }
   }
 
   Color _resolveTextColor() {
-    if (_hover) return MdColors.deviceMenuTextHoverColor;
     if (_pressed) return MdColors.deviceMenuTextPressedColor;
+    if (_hover) return MdColors.deviceMenuTextHoverColor;
     return MdColors.deviceMenuTextDefaultColor;
   }
 
@@ -164,6 +167,34 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
     if (_pressed) return MdColors.deviceMenuIconPressedColor;
     if (_hover) return MdColors.deviceMenuIconHoverColor;
     return MdColors.deviceMenuIconDefaultColor;
+  }
+
+  Border? _resolveItemBorderColor(int? i) {
+    if (i == _hoveredIndex && i != _pressedIndex) {
+      return Border.all(color: MdColors.deviceMenuItemHoverColor, width: 2);
+    } else if (i == _pressedIndex) {
+      return Border.all(color: MdColors.deviceMenuItemPressedColor, width: 2);
+    } else {
+      return null;
+    }
+  }
+
+  BoxShadow _resolveItemShadow(int? i) {
+    if (i == _hoveredIndex && i != _pressedIndex) {
+      return const BoxShadow(color: MdColors.deviceMenuShadowHoverColor);
+    } else if (i == _pressedIndex) {
+      return const BoxShadow(color: MdColors.deviceMenuShadowPressedColor);
+    } else {
+      return const BoxShadow(color: Colors.transparent);
+    }
+  }
+
+  Color _resolveItemTextColor(int? i) {
+    if (i == _hoveredIndex || i == _pressedIndex) {
+      return MdColors.deviceMenuItemTextHoverPressedColor;
+    } else {
+      return MdColors.deviceMenuItemTextDefualtColor;
+    }
   }
 
   void _toggle() {
@@ -179,6 +210,11 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
       _selectedIndex = index;
     });
     widget.onChanged;
+  }
+
+  void _setPressed(int? i) {
+    _pressedIndex = i;
+    _entry?.markNeedsBuild();
   }
 
   void _setHovered(int? i) {
@@ -235,11 +271,6 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                           color: MdColors.textButtonHover,
                           width: _borderWidth,
                         ),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: MdColors.deviceMenuShadowDefaultColor,
-                          )
-                        ],
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -249,44 +280,37 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                             MouseRegion(
                               onEnter: (_) => _setHovered(i),
                               onExit: (_) => _setHovered(null),
-                              child: AnimatedContainer(
-                                height: _headerHeight,
-                                duration: const Duration(milliseconds: 120),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(_radius),
-                                  border: (_hoveredIndex == i)
-                                      ? Border.all(
-                                          color: MdColors
-                                              .deviceMenuBorderOpenDefaultColor,
-                                          width: 2)
-                                      : Border.all(
-                                          color: Colors.transparent, width: 2),
-                                  boxShadow: (_hoveredIndex == i)
-                                      ? const [
-                                          BoxShadow(
-                                            color: MdColors
-                                                .deviceMenuShadowHoverColor,
-                                          )
-                                        ]
-                                      : null,
-                                ),
-                                child: InkWell(
-                                  onTap: () {
-                                    _select(i);
-                                    _removeOverlay();
-                                  },
-                                  hoverColor: Colors.transparent,
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  child: Padding(
-                                    padding: _headerPadding,
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: WaveText(
-                                        widget.items[i],
-                                        type: WaveTextType.subtitle,
-                                        color:
-                                            MdColors.deviceMenuTextDefaultColor,
+                              child: GestureDetector(
+                                onTapDown: (_) => _setPressed(i),
+                                onTapCancel: () => _setPressed(null),
+                                onTapUp: (_) => _setPressed(null),
+                                child: AnimatedContainer(
+                                  height: _headerHeight,
+                                  duration: const Duration(milliseconds: 120),
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.circular(_radius),
+                                    border: _resolveItemBorderColor(i),
+                                    boxShadow: [_resolveItemShadow(i)],
+                                    color: Colors.transparent,
+                                  ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      _select(i);
+                                      _removeOverlay();
+                                    },
+                                    hoverColor: Colors.transparent,
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    child: Padding(
+                                      padding: _headerPadding,
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: WaveText(
+                                          widget.items[i],
+                                          type: WaveTextType.subtitle,
+                                          color: _resolveItemTextColor(i),
+                                        ),
                                       ),
                                     ),
                                   ),
