@@ -96,6 +96,9 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                   borderRadius: BorderRadius.circular(_radius),
                   border: Border.all(
                       color: _resovleBorderColor(), width: _borderWidth),
+                  boxShadow: const [
+                    BoxShadow(color: MdColors.deviceMenuShadowDefaultColor),
+                  ],
                 ),
                 child: Row(
                   children: [
@@ -185,7 +188,7 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
     } else if (i == _pressedIndex) {
       return const BoxShadow(color: MdColors.deviceMenuShadowPressedColor);
     } else {
-      return const BoxShadow(color: Colors.transparent);
+      return const BoxShadow(color: MdColors.deviceMenuShadowDefaultColor);
     }
   }
 
@@ -263,8 +266,8 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                   type: MaterialType.transparency,
                   child: ConstrainedBox(
                     constraints: BoxConstraints(maxWidth: _panelWidth),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
+                    child: Container(
+                      foregroundDecoration: BoxDecoration(
                         color: Colors.transparent,
                         borderRadius: BorderRadius.circular(_radius),
                         border: Border.all(
