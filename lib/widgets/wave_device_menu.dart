@@ -41,6 +41,7 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
   late final Animation<double> _fade;
   double _panelWidth = 0;
   int? _hoveredIndex;
+  int? _pressedIndex;
 
   @override
   void initState() {
@@ -75,6 +76,7 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
         CompositedTransformTarget(
           link: _link,
           child: MouseRegion(
+            cursor: SystemMouseCursors.click,
             onEnter: (_) => setState(() => _hover = true),
             onExit: (_) => setState(() {
               _hover = false;
@@ -172,7 +174,19 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
   }
 
   Border? _resolveItemBorderColor(int? i) {
-    if (i == _hoveredIndex && i != widget.items.length - 1) {
+    if (i == _pressedIndex && i != widget.items.length - 1) {
+      return Border.all(color: MdColors.deviceMenuItemPressedColor, width: 2);
+    } else if (i == _pressedIndex && i != widget.items.length - 1) {
+      const side = BorderSide(
+        color: MdColors.deviceMenuItemPressedColor,
+        width: 2,
+      );
+      return const Border(
+        top: side,
+        left: side,
+        right: side,
+      );
+    } else if (i == _hoveredIndex && i != widget.items.length - 1) {
       return Border.all(color: MdColors.deviceMenuItemHoverColor, width: 2);
     } else if (i == _hoveredIndex && i == widget.items.length - 1) {
       const side = BorderSide(
@@ -185,14 +199,25 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
         right: side,
       );
     }
-    return null;
+    return Border.all(color: Colors.transparent);
   }
 
   Color _resolveItemTextColor(int? i) {
-    if (i == _hoveredIndex) {
+    if (i == _hoveredIndex || i == _pressedIndex) {
       return MdColors.deviceMenuItemTextHoverPressedColor;
     } else {
       return MdColors.deviceMenuItemTextDefualtColor;
+    }
+  }
+
+  Color _resolveItemShadow(int? i) {
+    if (i == _hoveredIndex && i != _pressedIndex) {
+      return MdColors.deviceMenuShadowHoverColor;
+    } else if (i == _pressedIndex) {
+      return MdColors.deviceMenuShadowPressedColor;
+    } else {
+      //return MdColors.deviceMenuShadowDefaultColor;
+      return Colors.transparent;
     }
   }
 
@@ -209,6 +234,11 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
       _selectedIndex = index;
     });
     widget.onChanged;
+  }
+
+  void _setPressed(int? i) {
+    _pressedIndex = i;
+    _entry?.markNeedsBuild();
   }
 
   void _setHovered(int? i) {
@@ -269,6 +299,7 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                         borderRadius: BorderRadius.circular(_radius),
                         border: Border.all(
                           color: MdColors.deviceMenuItemsBorderColor,
+                          //color: Colors.red,
                           width: _borderWidth,
                         ),
                         boxShadow: const [
@@ -282,59 +313,62 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                         children: [
                           for (int i = 0; i < widget.items.length; i++) ...[
                             MouseRegion(
+                              cursor: SystemMouseCursors.click,
                               onEnter: (_) => _setHovered(i),
                               onExit: (_) => _setHovered(null),
                               child: GestureDetector(
+                                onTapDown: (_) => _setPressed(i),
+                                onTapCancel: () => _setPressed(null),
+                                onTapUp: (_) => _setPressed(null),
                                 onTap: () => _onTap(i),
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 120),
+                                child: DecoratedBox(
                                   decoration: BoxDecoration(
                                     borderRadius:
                                         BorderRadius.circular(_radius),
                                     border: _resolveItemBorderColor(i),
-                                    color: Colors.transparent,
                                   ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          left: 16,
-                                          top: 11,
-                                          bottom: 10,
-                                          right: 16,
-                                        ),
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: WaveText(
-                                            widget.items[i],
-                                            type: WaveTextType.subtitle,
-                                            color: _resolveItemTextColor(i),
-                                          ),
-                                        ),
-                                      ),
-                                      if (i != widget.items.length - 1)
+                                  child: ColoredBox(
+                                    color: _resolveItemShadow(i),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                          child: AnimatedContainer(
-                                            duration: const Duration(
-                                                milliseconds: 120),
-                                            width: double.infinity,
-                                            height: 2,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(2)),
-                                              color: (_hoveredIndex == i ||
-                                                      _hoveredIndex == i + 1)
-                                                  ? Colors.transparent
-                                                  : MdColors
-                                                      .deviceMenuBorderOpenDefaultColor,
+                                          padding: const EdgeInsets.only(
+                                            left: 16,
+                                            top: 11,
+                                            bottom: 10,
+                                            right: 16,
+                                          ),
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: WaveText(
+                                              widget.items[i],
+                                              type: WaveTextType.subtitle,
+                                              color: _resolveItemTextColor(i),
                                             ),
                                           ),
                                         ),
-                                    ],
+                                        if (i != widget.items.length - 1)
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 16),
+                                            child: Container(
+                                              width: double.infinity,
+                                              height: 2,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(2)),
+                                                color: (_hoveredIndex == i ||
+                                                        _hoveredIndex == i + 1)
+                                                    ? Colors.transparent
+                                                    : MdColors
+                                                        .deviceMenuBorderOpenDefaultColor,
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
