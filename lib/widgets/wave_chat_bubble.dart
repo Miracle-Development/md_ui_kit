@@ -16,57 +16,58 @@ class WaveChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final double contentMaxWidth = (constraints.maxWidth -
-              type.margin.horizontal -
-              type.padding.horizontal);
-          return Theme(
-            data: Theme.of(context).copyWith(
-              textSelectionTheme: const TextSelectionThemeData(
-                selectionColor: MdColors.chatBubbleColorSelection,
+    return Theme(
+      data: Theme.of(context).copyWith(
+        textSelectionTheme: const TextSelectionThemeData(
+          selectionColor: MdColors.chatBubbleColorSelection,
+        ),
+      ),
+      child: LayoutBuilder(builder: (context, constraints) {
+        final double maxAvailable = constraints.maxWidth;
+        final double contentMaxWidth = (maxAvailable -
+            type.margin.horizontal -
+            type.padding.horizontal -
+            16);
+
+        return Row(
+          mainAxisAlignment: type == WaveChatBubbleType.bubbleMessageOther
+              ? MainAxisAlignment.start
+              : type == WaveChatBubbleType.bubbleMessageMe
+                  ? MainAxisAlignment.end
+                  : MainAxisAlignment.center,
+          children: [
+            Flexible(
+              child: Container(
+                padding: type.padding,
+                margin: type.margin,
+                decoration: BoxDecoration(
+                  color: type.bgColor,
+                  borderRadius: type.radius,
+                ),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: contentMaxWidth),
+                  child: type == WaveChatBubbleType.bubbleMessageEvent
+                      ? WaveDivider(
+                          type: dividerType!,
+                          label: label,
+                        )
+                      : WaveText(
+                          label,
+                          type: WaveTextType.caption,
+                          color: type.textColor,
+                          selectable: true,
+                          overflow: TextOverflow.clip,
+                          textAlign:
+                              type == WaveChatBubbleType.bubbleMessageInfo
+                                  ? TextAlign.center
+                                  : null,
+                        ),
+                ),
               ),
             ),
-            child: Row(
-              mainAxisAlignment: type == WaveChatBubbleType.bubbleMessageOther
-                  ? MainAxisAlignment.start
-                  : type == WaveChatBubbleType.bubbleMessageMe
-                      ? MainAxisAlignment.end
-                      : MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: type.padding,
-                  margin: type.margin,
-                  decoration: BoxDecoration(
-                    color: type.bgColor,
-                    borderRadius: type.radius,
-                  ),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: contentMaxWidth),
-                    child: type == WaveChatBubbleType.bubbleMessageEvent
-                        ? WaveDivider(
-                            type: dividerType!,
-                            label: label,
-                          )
-                        : WaveText(
-                            label,
-                            type: WaveTextType.caption,
-                            color: type.textColor,
-                            selectable: true,
-                            overflow: TextOverflow.visible,
-                            textAlign:
-                                type == WaveChatBubbleType.bubbleMessageInfo
-                                    ? TextAlign.center
-                                    : null,
-                          ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+          ],
+        );
+      }),
     );
   }
 }
