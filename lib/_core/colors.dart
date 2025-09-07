@@ -102,4 +102,6 @@ class MdColors {
   static const Color chatBubbleColorMe = Color.fromRGBO(67, 70, 243, 1);
   static const Color chatBubbleColorText = Color.fromRGBO(255, 255, 255, 1);
   static const Color chatBubbleColorSystem = Color.fromRGBO(179, 179, 202, 1);
+  static const Color chatBubbleColorSelection =
+      Color.fromRGBO(177, 172, 255, 0.6);
 }

@@ -25,7 +25,7 @@ class WaveChatBubble extends StatelessWidget {
           return Theme(
             data: Theme.of(context).copyWith(
               textSelectionTheme: const TextSelectionThemeData(
-                selectionColor: MdColors.selectionTextInputColor,
+                selectionColor: MdColors.chatBubbleColorSelection,
               ),
             ),
             child: Row(
