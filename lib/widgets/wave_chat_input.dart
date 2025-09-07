@@ -41,6 +41,8 @@ class _WaveChatInoutState extends State<WaveChatInput> {
   late final TextEditingController _controller;
   late final FocusNode _focus = FocusNode();
   bool _showArrow = false;
+  bool _iconHover = false;
+  bool _iconPressed = false;
 
   @override
   void initState() {
@@ -74,21 +76,27 @@ class _WaveChatInoutState extends State<WaveChatInput> {
     _controller.clear();
   }
 
+  Color _resolveIconColor() {
+    if (_iconPressed) {
+      return MdColors.pressedIconChatInputColor;
+    } else if (_iconHover || _focus.hasFocus) {
+      return MdColors.hoverIconChatInputColor;
+    }
+    return MdColors.defaultIconChatInputColor;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Color borderColor = !widget.enabled
-        ? MdColors.disabledInputColor
-        : (_focus.hasFocus
-            ? MdColors.selectedBorderInputColor
-            : MdColors.defaultBorderInputColor);
     final enabledBorder = OutlineInputBorder(
       borderRadius: _controller.text.isEmpty
           ? widget.borderRadiusNoContent
           : widget.borderRadiusContent,
       borderSide: BorderSide(
-        color: widget.enabled
-            ? MdColors.defaultBorderInputColor
-            : MdColors.disabledInputColor,
+        color: !widget.enabled
+            ? MdColors.disabledChatInputColor
+            : _controller.text.trim().isEmpty
+                ? MdColors.disabledChatInputColor
+                : MdColors.defaultBorderChatInputColor,
         width: 2,
       ),
     );
@@ -98,8 +106,8 @@ class _WaveChatInoutState extends State<WaveChatInput> {
           : widget.borderRadiusContent,
       borderSide: BorderSide(
         color: widget.enabled
-            ? MdColors.selectedBorderInputColor
-            : MdColors.disabledInputColor,
+            ? MdColors.selectedBorderChatInputColor
+            : MdColors.disabledChatInputColor,
         width: 2,
       ),
     );
@@ -108,17 +116,17 @@ class _WaveChatInoutState extends State<WaveChatInput> {
           ? widget.borderRadiusNoContent
           : widget.borderRadiusContent,
       borderSide:
-          const BorderSide(color: MdColors.disabledInputColor, width: 2),
+          const BorderSide(color: MdColors.disabledChatInputColor, width: 2),
     );
 
     final inputTextColor = widget.enabled
-        ? MdColors.defaultTextInputColor
-        : MdColors.disabledTextInputColor;
+        ? MdColors.defaultTextChatInputColor
+        : MdColors.disabledTextChatInputColor;
 
     return Theme(
       data: Theme.of(context).copyWith(
         textSelectionTheme: const TextSelectionThemeData(
-          selectionColor: MdColors.selectionTextInputColor,
+          selectionColor: MdColors.selectionTextChatInputColor,
         ),
       ),
       child: Row(
@@ -141,8 +149,8 @@ class _WaveChatInoutState extends State<WaveChatInput> {
                 maxLines: null,
                 style: TextStyle(
                   color: widget.enabled
-                      ? MdColors.defaultTextInputColor
-                      : MdColors.disabledInputColor,
+                      ? MdColors.defaultTextChatInputColor
+                      : MdColors.disabledChatInputColor,
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
                   fontFamily: 'Play',
@@ -156,7 +164,7 @@ class _WaveChatInoutState extends State<WaveChatInput> {
                   fillColor: Colors.transparent,
                   hintText: widget.hintText,
                   hintStyle: const TextStyle(
-                    color: MdColors.disabledTextInputColor,
+                    color: MdColors.disabledTextChatInputColor,
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                     fontFamily: 'Play',
@@ -180,35 +188,44 @@ class _WaveChatInoutState extends State<WaveChatInput> {
               left: 12,
               bottom: 12,
             ),
-            child: _showArrow
-                ? Container(
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(6),
-                        bottomRight: Radius.circular(12),
-                        topLeft: Radius.circular(6),
-                        topRight: Radius.circular(6),
-                      ),
-                      border: Border.all(
-                        color: borderColor,
-                        width: 2,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: IconButton(
-                        iconSize: 24,
-                        padding: EdgeInsets.zero,
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        icon: SvgPicture.asset(
-                          PrecachedIcons.sendMsgIcon,
-                          colorFilter:
-                              ColorFilter.mode(borderColor, BlendMode.srcIn),
+            child: _showArrow && widget.enabled
+                ? MouseRegion(
+                    onEnter: (_) => setState(() => _iconHover = true),
+                    onExit: (_) => setState(() => _iconHover = false),
+                    child: GestureDetector(
+                      onTapDown: (_) => setState(() => _iconPressed = true),
+                      onTapUp: (_) => setState(() => _iconPressed = false),
+                      onTapCancel: () => setState(() => _iconPressed = false),
+                      child: Container(
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(6),
+                            bottomRight: Radius.circular(12),
+                            topLeft: Radius.circular(6),
+                            topRight: Radius.circular(6),
+                          ),
+                          border: Border.all(
+                            color: _resolveIconColor(),
+                            width: 2,
+                          ),
                         ),
-                        onPressed: widget.enabled ? _handleSend : null,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: IconButton(
+                            iconSize: 24,
+                            padding: EdgeInsets.zero,
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            icon: SvgPicture.asset(
+                              PrecachedIcons.sendMsgIcon,
+                              colorFilter: ColorFilter.mode(
+                                  _resolveIconColor(), BlendMode.srcIn),
+                            ),
+                            onPressed: widget.enabled ? _handleSend : null,
+                          ),
+                        ),
                       ),
                     ),
                   )
