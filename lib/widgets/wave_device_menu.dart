@@ -172,8 +172,18 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
   }
 
   Border? _resolveItemBorderColor(int? i) {
-    if (i == _hoveredIndex) {
+    if (i == _hoveredIndex && i != widget.items.length - 1) {
       return Border.all(color: MdColors.deviceMenuItemHoverColor, width: 2);
+    } else if (i == _hoveredIndex && i == widget.items.length - 1) {
+      const side = BorderSide(
+        color: MdColors.deviceMenuItemHoverColor,
+        width: 2,
+      );
+      return const Border(
+        top: side,
+        left: side,
+        right: side,
+      );
     }
     return null;
   }
