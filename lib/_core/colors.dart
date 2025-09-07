@@ -105,4 +105,5 @@ class MdColors {
       Color.fromRGBO(192, 189, 255, 1);
   static const deviceMenuItemTextHoverPressedColor =
       Color.fromRGBO(220, 218, 255, 1);
+  static const deviceMenuItemsBorderColor = Color.fromRGBO(177, 172, 255, 0.8);
 }
