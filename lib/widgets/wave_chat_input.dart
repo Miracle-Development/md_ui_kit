@@ -134,10 +134,11 @@ class _WaveChatInoutState extends State<WaveChatInput> {
         children: [
           Expanded(
             child: Container(
-              margin: const EdgeInsets.only(
+              margin: EdgeInsets.only(
                 bottom: 12,
                 left: 20,
                 top: 20,
+                right: _showArrow ? 12 : 20,
               ),
               constraints: const BoxConstraints(minHeight: 32, maxHeight: 130),
               child: TextField(
@@ -185,7 +186,6 @@ class _WaveChatInoutState extends State<WaveChatInput> {
             margin: const EdgeInsets.only(
               top: 20,
               right: 20,
-              left: 12,
               bottom: 12,
             ),
             child: _showArrow && widget.enabled
