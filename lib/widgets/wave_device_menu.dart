@@ -231,6 +231,12 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
     });
   }
 
+  void _onTap(int i) {
+    _select(i);
+    _removeOverlay();
+    widget.onChanged;
+  }
+
   void _showOverlay() {
     final box = _headerKey.currentContext?.findRenderObject() as RenderBox?;
     if (box != null) {
@@ -278,71 +284,61 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                             MouseRegion(
                               onEnter: (_) => _setHovered(i),
                               onExit: (_) => _setHovered(null),
-                              child: AnimatedContainer(
-                                height: _headerHeight,
-                                duration: const Duration(milliseconds: 120),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(_radius),
-                                  border: _resolveItemBorderColor(i),
-                                  color: Colors.transparent,
-                                ),
-                                child: InkWell(
-                                  onTap: () {
-                                    _select(i);
-                                    _removeOverlay();
-                                  },
-                                  hoverColor: Colors.transparent,
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  child: Padding(
-                                    padding: _headerPadding,
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: WaveText(
-                                        widget.items[i],
-                                        type: WaveTextType.subtitle,
-                                        color: _resolveItemTextColor(i),
+                              child: GestureDetector(
+                                onTap: () => _onTap(i),
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 120),
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.circular(_radius),
+                                    border: _resolveItemBorderColor(i),
+                                    color: Colors.transparent,
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 16,
+                                          top: 11,
+                                          bottom: 10,
+                                          right: 16,
+                                        ),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: WaveText(
+                                            widget.items[i],
+                                            type: WaveTextType.subtitle,
+                                            color: _resolveItemTextColor(i),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      if (i != widget.items.length - 1)
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          child: AnimatedContainer(
+                                            duration: const Duration(
+                                                milliseconds: 120),
+                                            width: double.infinity,
+                                            height: 2,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(2)),
+                                              color: (_hoveredIndex == i ||
+                                                      _hoveredIndex == i + 1)
+                                                  ? Colors.transparent
+                                                  : MdColors
+                                                      .deviceMenuBorderOpenDefaultColor,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ),
-                            if (i != widget.items.length - 1 &&
-                                _hoveredIndex != i &&
-                                i + 1 != _hoveredIndex)
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                ),
-                                child: Container(
-                                  width: double.infinity,
-                                  height: 2,
-                                  decoration: const BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(2)),
-                                    color: MdColors
-                                        .deviceMenuBorderOpenDefaultColor,
-                                  ),
-                                ),
-                              ),
-                            if (!(i != widget.items.length - 1 &&
-                                _hoveredIndex != i &&
-                                i + 1 != _hoveredIndex))
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                ),
-                                child: Container(
-                                  width: double.infinity,
-                                  height: 2,
-                                  decoration: const BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(2)),
-                                    color: Colors.transparent,
-                                  ),
-                                ),
-                              ),
                           ],
                         ],
                       ),
