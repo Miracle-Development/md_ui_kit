@@ -74,12 +74,16 @@ class _WaveChatInoutState extends State<WaveChatInput> {
     if (text.trim().isEmpty) return;
     widget.onSend?.call(text);
     _controller.clear();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _focus.requestFocus();
+    });
   }
 
   Color _resolveIconColor() {
     if (_iconPressed) {
       return MdColors.pressedIconChatInputColor;
-    } else if (_iconHover || _focus.hasFocus) {
+    } else if (_iconHover) {
       return MdColors.hoverIconChatInputColor;
     }
     return MdColors.defaultIconChatInputColor;
