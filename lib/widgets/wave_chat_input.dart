@@ -137,47 +137,52 @@ class _WaveChatInoutState extends State<WaveChatInput> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
-            child: Container(
-              margin: EdgeInsets.only(
-                bottom: 12,
+            child: AnimatedPadding(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.ease,
+              padding: EdgeInsets.only(
                 left: 20,
                 top: 20,
+                bottom: 12,
                 right: _showArrow ? 12 : 20,
               ),
-              constraints: const BoxConstraints(minHeight: 32, maxHeight: 130),
-              child: TextField(
-                focusNode: _focus,
-                controller: _controller,
-                enabled: true,
-                readOnly: !widget.enabled,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                style: TextStyle(
-                  color: widget.enabled
-                      ? MdColors.defaultTextChatInputColor
-                      : MdColors.disabledChatInputColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  fontFamily: 'Play',
-                  letterSpacing: 1,
-                ),
-                cursorColor: inputTextColor,
-                decoration: InputDecoration(
-                  isCollapsed: true,
-                  contentPadding: widget.contentPadding,
-                  hoverColor: Colors.transparent,
-                  fillColor: Colors.transparent,
-                  hintText: widget.hintText,
-                  hintStyle: const TextStyle(
-                    color: MdColors.disabledTextChatInputColor,
+              child: Container(
+                constraints:
+                    const BoxConstraints(minHeight: 32, maxHeight: 130),
+                child: TextField(
+                  focusNode: _focus,
+                  controller: _controller,
+                  enabled: true,
+                  readOnly: !widget.enabled,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  style: TextStyle(
+                    color: widget.enabled
+                        ? MdColors.defaultTextChatInputColor
+                        : MdColors.disabledChatInputColor,
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                     fontFamily: 'Play',
                     letterSpacing: 1,
                   ),
-                  enabledBorder: enabledBorder,
-                  focusedBorder: focusedBorder,
-                  disabledBorder: disabledBorder,
+                  cursorColor: inputTextColor,
+                  decoration: InputDecoration(
+                    isCollapsed: true,
+                    contentPadding: widget.contentPadding,
+                    hoverColor: Colors.transparent,
+                    fillColor: Colors.transparent,
+                    hintText: widget.hintText,
+                    hintStyle: const TextStyle(
+                      color: MdColors.disabledTextChatInputColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'Play',
+                      letterSpacing: 1,
+                    ),
+                    enabledBorder: enabledBorder,
+                    focusedBorder: focusedBorder,
+                    disabledBorder: disabledBorder,
+                  ),
                 ),
               ),
             ),
@@ -192,49 +197,57 @@ class _WaveChatInoutState extends State<WaveChatInput> {
               right: 20,
               bottom: 12,
             ),
-            child: _showArrow && widget.enabled
-                ? MouseRegion(
-                    onEnter: (_) => setState(() => _iconHover = true),
-                    onExit: (_) => setState(() => _iconHover = false),
-                    child: GestureDetector(
-                      onTapDown: (_) => setState(() => _iconPressed = true),
-                      onTapUp: (_) => setState(() => _iconPressed = false),
-                      onTapCancel: () => setState(() => _iconPressed = false),
-                      child: Container(
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(6),
-                            bottomRight: Radius.circular(12),
-                            topLeft: Radius.circular(6),
-                            topRight: Radius.circular(6),
-                          ),
-                          border: Border.all(
-                            color: _resolveIconColor(),
-                            width: 2,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: IconButton(
-                            iconSize: 24,
-                            padding: EdgeInsets.zero,
-                            splashColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
-                            icon: SvgPicture.asset(
-                              PrecachedIcons.sendMsgIcon,
-                              colorFilter: ColorFilter.mode(
-                                  _resolveIconColor(), BlendMode.srcIn),
+            child: IgnorePointer(
+              ignoring: !_showArrow || !widget.enabled,
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 150),
+                opacity: (_showArrow && widget.enabled) ? 1 : 0,
+                child: _showArrow && widget.enabled
+                    ? MouseRegion(
+                        onEnter: (_) => setState(() => _iconHover = true),
+                        onExit: (_) => setState(() => _iconHover = false),
+                        child: GestureDetector(
+                          onTapDown: (_) => setState(() => _iconPressed = true),
+                          onTapUp: (_) => setState(() => _iconPressed = false),
+                          onTapCancel: () =>
+                              setState(() => _iconPressed = false),
+                          child: Container(
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(6),
+                                bottomRight: Radius.circular(12),
+                                topLeft: Radius.circular(6),
+                                topRight: Radius.circular(6),
+                              ),
+                              border: Border.all(
+                                color: _resolveIconColor(),
+                                width: 2,
+                              ),
                             ),
-                            onPressed: widget.enabled ? _handleSend : null,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: IconButton(
+                                iconSize: 24,
+                                padding: EdgeInsets.zero,
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                icon: SvgPicture.asset(
+                                  PrecachedIcons.sendMsgIcon,
+                                  colorFilter: ColorFilter.mode(
+                                      _resolveIconColor(), BlendMode.srcIn),
+                                ),
+                                onPressed: widget.enabled ? _handleSend : null,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  )
-                : const SizedBox.shrink(),
-          )
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ),
+          ),
         ],
       ),
     );
