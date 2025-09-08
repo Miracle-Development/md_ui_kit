@@ -142,7 +142,7 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
             child: WaveText(
               widget.subtitle!,
               type: WaveTextType.caption,
-              color: MdColors.textButtonDefault,
+              color: MdColors.deviceMenuSubTitleTextColor,
             ),
           ),
       ],

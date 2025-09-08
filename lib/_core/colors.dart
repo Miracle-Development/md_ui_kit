@@ -77,6 +77,7 @@ class MdColors {
   static const brandSecondStrip = Color.fromRGBO(48, 51, 212, 1);
 
   /// WaveDeviceMenu Colors
+  static const deviceMenuSubTitleTextColor = Color.fromRGBO(179, 179, 202, 1);
   static const deviceMenuBorderClosedDefaultColor =
       Color.fromRGBO(67, 70, 243, 1);
   static const deviceMenuBorderClosedHoverColor =
