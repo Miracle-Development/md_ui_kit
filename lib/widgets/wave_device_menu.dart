@@ -233,7 +233,7 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
     setState(() {
       _selectedIndex = index;
     });
-    widget.onChanged;
+    widget.onChanged?.call();
   }
 
   void _setPressed(int? i) {
@@ -264,7 +264,6 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
   void _onTap(int i) {
     _select(i);
     _removeOverlay();
-    widget.onChanged;
   }
 
   void _showOverlay() {
