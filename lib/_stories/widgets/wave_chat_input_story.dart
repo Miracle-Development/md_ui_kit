@@ -16,7 +16,7 @@ class WaveChatInputStory extends StatelessWidget {
     return WaveChatInput(
       hintText: hintText,
       enabled: enabled,
-      onSend: () => print(123),
+      onSend: () => print("WaveChatInput Test"),
     );
   }
 }

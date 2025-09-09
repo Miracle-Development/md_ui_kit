@@ -133,120 +133,152 @@ class _WaveChatInoutState extends State<WaveChatInput> {
           selectionColor: MdColors.selectionTextChatInputColor,
         ),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+      child: Stack(
         children: [
-          Expanded(
-            child: AnimatedPadding(
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.ease,
-              padding: EdgeInsets.only(
-                left: 20,
-                top: 20,
-                bottom: 12,
-                right: _showArrow ? 12 : 20,
-              ),
-              child: Container(
-                constraints:
-                    const BoxConstraints(minHeight: 32, maxHeight: 130),
-                child: TextField(
-                  focusNode: _focus,
-                  controller: _controller,
-                  enabled: true,
-                  readOnly: !widget.enabled,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  style: TextStyle(
-                    color: widget.enabled
-                        ? MdColors.defaultTextChatInputColor
-                        : MdColors.disabledChatInputColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: 'Play',
-                    letterSpacing: 1,
-                  ),
-                  cursorColor: inputTextColor,
-                  decoration: InputDecoration(
-                    isCollapsed: true,
-                    contentPadding: widget.contentPadding,
-                    hoverColor: Colors.transparent,
-                    fillColor: Colors.transparent,
-                    hintText: widget.hintText,
-                    hintStyle: const TextStyle(
-                      color: MdColors.disabledTextChatInputColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      fontFamily: 'Play',
-                      letterSpacing: 1,
-                    ),
-                    enabledBorder: enabledBorder,
-                    focusedBorder: focusedBorder,
-                    disabledBorder: disabledBorder,
+          Positioned.fill(
+            child: IgnorePointer(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Color.fromRGBO(17, 17, 30, 0.95),
                   ),
                 ),
               ),
             ),
           ),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.ease,
-            width: _showArrow ? 32 : 0,
-            height: 32,
-            margin: const EdgeInsets.only(
-              top: 20,
-              right: 20,
-              bottom: 12,
-            ),
-            child: IgnorePointer(
-              ignoring: !_showArrow || !widget.enabled,
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 150),
-                opacity: (_showArrow && widget.enabled) ? 1 : 0,
-                child: _showArrow && widget.enabled
-                    ? MouseRegion(
-                        onEnter: (_) => setState(() => _iconHover = true),
-                        onExit: (_) => setState(() => _iconHover = false),
-                        child: GestureDetector(
-                          onTapDown: (_) => setState(() => _iconPressed = true),
-                          onTapUp: (_) => setState(() => _iconPressed = false),
-                          onTapCancel: () =>
-                              setState(() => _iconPressed = false),
-                          child: Container(
-                            clipBehavior: Clip.antiAlias,
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(6),
-                                bottomRight: Radius.circular(12),
-                                topLeft: Radius.circular(6),
-                                topRight: Radius.circular(6),
-                              ),
-                              border: Border.all(
-                                color: _resolveIconColor(),
-                                width: 2,
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(4),
-                              child: IconButton(
-                                iconSize: 24,
-                                padding: EdgeInsets.zero,
-                                splashColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                icon: SvgPicture.asset(
-                                  PrecachedIcons.sendMsgIcon,
-                                  colorFilter: ColorFilter.mode(
-                                      _resolveIconColor(), BlendMode.srcIn),
-                                ),
-                                onPressed: widget.enabled ? _handleSend : null,
-                              ),
-                            ),
-                          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
+                child: AnimatedPadding(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.ease,
+                  padding: EdgeInsets.only(
+                    left: 20,
+                    top: 20,
+                    bottom: 12,
+                    right: _showArrow ? 12 : 20,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: _controller.text.isEmpty
+                        ? widget.borderRadiusNoContent
+                        : widget.borderRadiusContent,
+                    child: Container(
+                      constraints:
+                          const BoxConstraints(minHeight: 32, maxHeight: 130),
+                      decoration: const BoxDecoration(
+                        color: Color.fromRGBO(17, 17, 30, 0.9),
+                      ),
+                      child: TextField(
+                        focusNode: _focus,
+                        controller: _controller,
+                        enabled: true,
+                        readOnly: !widget.enabled,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        style: TextStyle(
+                          color: widget.enabled
+                              ? MdColors.defaultTextChatInputColor
+                              : MdColors.disabledChatInputColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Play',
+                          letterSpacing: 1,
                         ),
-                      )
-                    : const SizedBox.shrink(),
+                        cursorColor: inputTextColor,
+                        decoration: InputDecoration(
+                          isCollapsed: true,
+                          filled: true,
+                          contentPadding: widget.contentPadding,
+                          hoverColor: Colors.transparent,
+                          fillColor: Colors.transparent,
+                          hintText: widget.hintText,
+                          hintStyle: const TextStyle(
+                            color: MdColors.disabledTextChatInputColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Play',
+                            letterSpacing: 1,
+                          ),
+                          enabledBorder: enabledBorder,
+                          focusedBorder: focusedBorder,
+                          disabledBorder: disabledBorder,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            ),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.ease,
+                width: _showArrow ? 32 : 0,
+                height: 32,
+                margin: const EdgeInsets.only(
+                  top: 20,
+                  right: 20,
+                  bottom: 12,
+                ),
+                child: IgnorePointer(
+                  ignoring: !_showArrow || !widget.enabled,
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.ease,
+                    opacity: (_showArrow && widget.enabled) ? 1 : 0,
+                    child: _showArrow && widget.enabled
+                        ? MouseRegion(
+                            onEnter: (_) => setState(() => _iconHover = true),
+                            onExit: (_) => setState(() => _iconHover = false),
+                            child: GestureDetector(
+                              onTapDown: (_) =>
+                                  setState(() => _iconPressed = true),
+                              onTapUp: (_) =>
+                                  setState(() => _iconPressed = false),
+                              onTapCancel: () =>
+                                  setState(() => _iconPressed = false),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 150),
+                                curve: Curves.ease,
+                                clipBehavior: Clip.antiAlias,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.only(
+                                    bottomLeft: Radius.circular(6),
+                                    bottomRight: Radius.circular(12),
+                                    topLeft: Radius.circular(6),
+                                    topRight: Radius.circular(6),
+                                  ),
+                                  color: const Color.fromRGBO(17, 17, 30, 0.9),
+                                  border: Border.all(
+                                    color: _resolveIconColor(),
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4),
+                                  child: IconButton(
+                                    iconSize: 24,
+                                    padding: EdgeInsets.zero,
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    icon: SvgPicture.asset(
+                                      PrecachedIcons.sendMsgIcon,
+                                      colorFilter: ColorFilter.mode(
+                                          _resolveIconColor(), BlendMode.srcIn),
+                                    ),
+                                    onPressed:
+                                        widget.enabled ? _handleSend : null,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
