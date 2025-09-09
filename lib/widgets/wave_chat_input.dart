@@ -31,7 +31,7 @@ class WaveChatInput extends StatefulWidget {
   final bool enabled;
   final TextEditingController? controller;
   final String? hintText;
-  final ValueChanged<String>? onSend;
+  final VoidCallback? onSend;
 
   @override
   State<WaveChatInput> createState() => _WaveChatInoutState();
@@ -72,7 +72,7 @@ class _WaveChatInoutState extends State<WaveChatInput> {
   void _handleSend() {
     final text = _controller.text;
     if (text.trim().isEmpty) return;
-    widget.onSend?.call(text);
+    widget.onSend?.call();
     _controller.clear();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
