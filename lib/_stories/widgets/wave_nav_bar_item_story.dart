@@ -66,7 +66,7 @@ class WaveNavBarItemStory extends StatelessWidget {
       selected: tapTogglesSelected,
       counter: badgeLabel,
       onTap: () {
-        print('test');
+        print('WaveNavBarItem Test');
       },
     );
   }

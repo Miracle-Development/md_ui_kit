@@ -21,7 +21,7 @@ class MdTextButtonStory extends StatelessWidget {
     return Center(
       child: WaveTextButton(
         label: label,
-        onPressed: () {},
+        onPressed: () => print("WaveTextButton Test"),
       ),
     );
   }
