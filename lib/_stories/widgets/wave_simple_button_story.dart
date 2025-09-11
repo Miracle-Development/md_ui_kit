@@ -51,7 +51,8 @@ class WaveSimpleButtonStory extends StatelessWidget {
 
     return WaveSimpleButton(
       type: type,
-      onPressed: !enabled ? () {} : () => print("WaveSimpleButton Test"),
+      enabled: enabled,
+      onPressed: () => print("WaveSimpleButton Test"),
       label: label,
     );
   }

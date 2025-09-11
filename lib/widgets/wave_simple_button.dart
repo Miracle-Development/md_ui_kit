@@ -7,6 +7,7 @@ class WaveSimpleButton extends StatefulWidget {
     super.key,
     required this.label,
     this.onPressed,
+    this.enabled = true,
     this.type = WaveButtonType.main,
     this.padding = const EdgeInsets.symmetric(
       horizontal: 32,
@@ -29,6 +30,7 @@ class WaveSimpleButton extends StatefulWidget {
   final EdgeInsets padding;
   final BorderRadius radius;
   final bool showShadow;
+  final bool enabled;
 
   @override
   State<WaveSimpleButton> createState() => _WaveSimpleButtonState();
@@ -63,7 +65,7 @@ class _WaveSimpleButtonState extends State<WaveSimpleButton> {
 
   @override
   Widget build(BuildContext context) {
-    final enabled = widget.onPressed != null;
+    final enabled = widget.enabled;
     final colors = _resolveTextAndButtonColors(enabled);
 
     return MouseRegion(
