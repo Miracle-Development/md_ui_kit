@@ -220,69 +220,58 @@ class _WaveInputState extends State<WaveInput> {
           selectionColor: MdColors.selectionTextInputColor,
         ),
       ),
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: IgnorePointer(
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Color.fromRGBO(17, 17, 30, 0.95),
-                ),
-              ),
-            ),
+      //
+      child: SizedBox(
+        height: 48,
+        child: TextField(
+          focusNode: _focus,
+          controller: widget.controller,
+          enabled: true,
+          readOnly: readOnly,
+          cursorHeight: 20,
+          inputFormatters: _formattersFor(widget.type),
+          keyboardType: switch (widget.type) {
+            WaveInputType.login => TextInputType.emailAddress,
+            WaveInputType.password => TextInputType.visiblePassword,
+            WaveInputType.code => TextInputType.text,
+          },
+          obscureText: isPassword && obscure,
+          obscuringCharacter: '*',
+          cursorColor: widget.enabled
+              ? MdColors.defaultTextInputColor
+              : MdColors.disabledInputColor,
+          textAlign: widget.type.textAlign,
+          style: TextStyle(
+            color: widget.enabled
+                ? MdColors.defaultTextInputColor
+                : MdColors.disabledInputColor,
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'Play',
+            letterSpacing: 1,
           ),
-          SizedBox(
-            height: 48,
-            child: TextField(
-              focusNode: _focus,
-              controller: widget.controller,
-              enabled: true,
-              readOnly: readOnly,
-              cursorHeight: 20,
-              inputFormatters: _formattersFor(widget.type),
-              keyboardType: switch (widget.type) {
-                WaveInputType.login => TextInputType.emailAddress,
-                WaveInputType.password => TextInputType.visiblePassword,
-                WaveInputType.code => TextInputType.text,
-              },
-              obscureText: isPassword && obscure,
-              obscuringCharacter: '*',
-              cursorColor: widget.enabled
-                  ? MdColors.defaultTextInputColor
-                  : MdColors.disabledInputColor,
-              textAlign: widget.type.textAlign,
-              style: TextStyle(
-                color: widget.enabled
-                    ? MdColors.defaultTextInputColor
-                    : MdColors.disabledInputColor,
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                fontFamily: 'Play',
-                letterSpacing: 1,
-              ),
-              decoration: InputDecoration(
-                hoverColor: Colors.transparent,
-                fillColor: Colors.transparent,
-                contentPadding: widget.contentPadding,
-                hintText: effectiveHint,
-                hintStyle: const TextStyle(
-                  color: MdColors.disabledTextInputColor,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Play',
-                  letterSpacing: 1,
-                ),
-                enabledBorder:
-                    widget.enabled ? effectiveEnabledBorder : disabledBorder,
-                focusedBorder:
-                    widget.enabled ? effectiveFocusedBorder : disabledBorder,
-                errorBorder: errorBorder,
-                disabledBorder: disabledBorder,
-                suffixIcon: suffixIcon,
-              ),
+          decoration: InputDecoration(
+            hoverColor: Colors.transparent,
+            filled: true,
+            fillColor: const Color.fromRGBO(17, 17, 30, 0.95),
+            contentPadding: widget.contentPadding,
+            hintText: effectiveHint,
+            hintStyle: const TextStyle(
+              color: MdColors.disabledTextInputColor,
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'Play',
+              letterSpacing: 1,
             ),
+            enabledBorder:
+                widget.enabled ? effectiveEnabledBorder : disabledBorder,
+            focusedBorder:
+                widget.enabled ? effectiveFocusedBorder : disabledBorder,
+            errorBorder: errorBorder,
+            disabledBorder: disabledBorder,
+            suffixIcon: suffixIcon,
           ),
-        ],
+        ),
       ),
     );
   }
