@@ -1,4 +1,4 @@
-## [2.8.5]
+## [2.8.6]
 
 - Добавлен тестовый onTap для WaveTextButton, WaveSimpleButton, WaveNavBarItem
 
