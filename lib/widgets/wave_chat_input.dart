@@ -236,6 +236,7 @@ class _WaveChatInoutState extends State<WaveChatInput> {
                                   setState(() => _iconPressed = false),
                               onTapCancel: () =>
                                   setState(() => _iconPressed = false),
+                              onTap: widget.enabled ? _handleSend : null,
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 150),
                                 curve: Curves.ease,
