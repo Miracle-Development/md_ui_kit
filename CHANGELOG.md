@@ -2,6 +2,10 @@
 
 - Добавлен тестовый onTap для WaveTextButton, WaveSimpleButton, WaveNavBarItem
 
+## [2.8.5]
+
+- Исправлен баг с onTap для WaveMicButton
+
 ## [2.8.4]
 
 - Исправлена производительность WaveChatBubble 

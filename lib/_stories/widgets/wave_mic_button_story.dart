@@ -8,6 +8,6 @@ class WaveMicButtonStory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const WaveMicButton();
+    return WaveMicButton(onTap: () => print(123));
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+//import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:md_ui_kit/_core/colors.dart' show MdColors;
@@ -109,16 +110,17 @@ class _WaveMicButtonState extends State<WaveMicButton>
                   _animating ? null : () => setState(() => _pressed = false),
               onTapUp:
                   _animating ? null : (_) => setState(() => _pressed = false),
-              onTap: () => setState(() {
-                _muted = !_muted;
-                if (_muted) {
-                  _animationController.forward();
-                } else {
-                  _animationController.reverse();
-                }
-
-                widget.onTap;
-              }),
+              onTap: () {
+                setState(() {
+                  _muted = !_muted;
+                  if (_muted) {
+                    _animationController.forward();
+                  } else {
+                    _animationController.reverse();
+                  }
+                });
+                widget.onTap?.call();
+              },
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               hoverColor: Colors.transparent,
