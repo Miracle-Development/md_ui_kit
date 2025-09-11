@@ -138,7 +138,6 @@ class _WaveChatInoutState extends State<WaveChatInput> {
           Positioned.fill(
             child: IgnorePointer(
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
                 child: Container(
                   decoration: const BoxDecoration(
                     color: Color.fromRGBO(17, 17, 30, 0.95),
