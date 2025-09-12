@@ -217,10 +217,9 @@ class _WaveInputState extends State<WaveInput> {
     return Theme(
       data: Theme.of(context).copyWith(
         textSelectionTheme: const TextSelectionThemeData(
-          selectionColor: MdColors.selectionTextInputColor,
+          selectionColor: MdColors.selectionChatBubbleColor,
         ),
       ),
-      //
       child: SizedBox(
         height: 48,
         child: TextField(
@@ -253,7 +252,7 @@ class _WaveInputState extends State<WaveInput> {
           decoration: InputDecoration(
             hoverColor: Colors.transparent,
             filled: true,
-            fillColor: const Color.fromRGBO(17, 17, 30, 0.95),
+            fillColor: MdColors.waveInputBackgroundColor,
             contentPadding: widget.contentPadding,
             hintText: effectiveHint,
             hintStyle: const TextStyle(

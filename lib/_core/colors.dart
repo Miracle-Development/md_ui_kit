@@ -5,6 +5,7 @@ class MdColors {
   static const backgroundColor = Color.fromRGBO(13, 13, 15, 1);
   static const containerColor = Color.fromRGBO(17, 17, 30, 0.6);
   static const navBarContainerColor = Color.fromRGBO(17, 17, 30, 0.95);
+  static const waveInputBackgroundColor = const Color.fromRGBO(17, 17, 30, 0.95);
   static const brandFirstStrip = Color.fromRGBO(67, 70, 243, 1);
   static const brandSecondStrip = Color.fromRGBO(48, 51, 212, 1);
 
@@ -109,6 +110,6 @@ class MdColors {
   static const Color chatBubbleColorMe = Color.fromRGBO(67, 70, 243, 1);
   static const Color chatBubbleColorText = Color.fromRGBO(255, 255, 255, 1);
   static const Color chatBubbleColorSystem = Color.fromRGBO(179, 179, 202, 1);
-  static const Color chatBubbleColorSelection =
+  static const Color selectionChatBubbleColor =
       Color.fromRGBO(177, 172, 255, 0.6);
 }
