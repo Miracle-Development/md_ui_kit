@@ -36,6 +36,7 @@ flutter:
     - assets/icons/copy/
     - assets/icons/nav_bar/
     - assets/icons/chat_input/
+    - assets/icons/mic/
 
   fonts:
     - family: Play

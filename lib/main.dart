@@ -8,7 +8,10 @@ import 'package:md_ui_kit/_stories/widgets/gradient_background_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_animated_story.dart';
 import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_chat_input_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_chat_bubble_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_divider_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_hint_text_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_mic_button_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_simple_button_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_status_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_item_badge_story.dart';
@@ -114,8 +117,20 @@ class StorybookApp extends StatelessWidget {
                 builder: (context) => WaveChatInputStory(knobs: context.knobs),
               ),
               Story(
+                name: 'Wave/WaveChatBubble',
+                builder: (context) => WaveChatBubbleStory(knobs: context.knobs),
+              ),
+              Story(
+                name: 'Wave/WaveMicButton',
+                builder: (context) => WaveMicButtonStory(knobs: context.knobs),
+              ),
+              Story(
                 name: 'Wave/WaveStatus',
                 builder: (context) => WaveStatusStory(knobs: context.knobs),
+              ),
+              Story(
+                name: 'Wave/WaveHintText',
+                builder: (context) => WaveHintTextStory(knobs: context.knobs),
               ),
             ]..sort((a, b) => a.name.compareTo(b.name)),
           ),
