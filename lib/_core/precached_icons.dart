@@ -16,6 +16,7 @@ class PrecachedIcons {
   static const navBarPlanetIcon = 'assets/icons/nav_bar/planet.svg';
   static const inputOpenedEyeIcon = 'assets/icons/input/opened_eye.svg';
   static const inputClosedEyeIcon = 'assets/icons/input/closed_eye.svg';
+  static const micButton = 'assets/icons/mic/microphone_button.svg';
 
   List<SvgAssetLoader> get iconsToPrecache => const [
         SvgAssetLoader(copyDefaultIcon),
@@ -29,6 +30,7 @@ class PrecachedIcons {
         SvgAssetLoader(navBarPlanetIcon),
         SvgAssetLoader(inputOpenedEyeIcon),
         SvgAssetLoader(inputClosedEyeIcon),
+        SvgAssetLoader(micButton),
       ];
 
   void precache(BuildContext context) {

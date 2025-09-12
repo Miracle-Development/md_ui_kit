@@ -73,6 +73,7 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
   }
 
   Future<void> _handleTap() async {
+    if (widget.onTap != null) widget.onTap!();
     setState(() {
       _onTapDown = false;
       _onTapUp = true;
@@ -99,98 +100,6 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
         });
       }
     });
-    widget.onTap;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final color = _resolveColors(
-      selected: widget.selected,
-      hover: _hover,
-      onTapDown: _onTapDown,
-      onTapUp: _onTapUp,
-    );
-
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hover = true),
-      onExit: (_) => setState(() => _hover = false),
-      child: GestureDetector(
-        onTapDown: _handleTapDown,
-        onTapUp: _handleTapUp,
-        onTapCancel: _handleTapCancel,
-        onTap: _handleTap,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                widget.icon.isStack
-                    ? AnimatedContainer(
-                        duration: _animDuration,
-                        transform: Matrix4.identity()
-                          ..translate(_offsetX, _offsetY)
-                          ..scale(_scale),
-                        curve: Curves.easeIn,
-                        child: Stack(
-                          children: [
-                            SvgPicture.asset(
-                              widget.icon.asset,
-                              width: widget.iconSize,
-                              height: widget.iconSize,
-                              colorFilter: ColorFilter.mode(
-                                color,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                            SvgPicture.asset(
-                              widget.icon.overlay!,
-                              width: widget.iconSize,
-                              height: widget.iconSize,
-                            ),
-                          ],
-                        ))
-                    : AnimatedContainer(
-                        duration: _animDuration,
-                        transform: Matrix4.identity()
-                          ..translate(_offsetX, _offsetY)
-                          ..scale(_scale),
-                        curve: Curves.easeOut,
-                        child: SvgPicture.asset(
-                          widget.icon.asset,
-                          width: widget.iconSize,
-                          height: widget.iconSize,
-                          colorFilter: ColorFilter.mode(
-                            color,
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                      ),
-                if (widget.counter != null && widget.counter != 0)
-                  Positioned(
-                    left: 22,
-                    top: -2.5,
-                    child: WaveItemBadge(
-                      label: widget.counter,
-                      type: widget.selected
-                          ? WaveItemBadgeType.selected
-                          : WaveItemBadgeType.unselected,
-                    ),
-                  ),
-              ],
-            ),
-            SizedBox(height: widget.gap),
-            WaveText(
-              widget.label,
-              type: WaveTextType.caption,
-              weight: WaveTextWeight.bold,
-              color: color,
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   Color _resolveColors({
@@ -212,6 +121,119 @@ class _WaveNavBarItemState extends State<WaveNavBarItem> {
     return hover
         ? MdColors.navBarUnselectedHoverColor
         : MdColors.navBarUnselectedColor;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final targetColor = _resolveColors(
+      selected: widget.selected,
+      hover: _hover,
+      onTapDown: _onTapDown,
+      onTapUp: _onTapUp,
+    );
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() => _hover = false),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        onTapDown: _handleTapDown,
+        onTapUp: _handleTapUp,
+        onTapCancel: _handleTapCancel,
+        onTap: _handleTap,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                widget.icon.isStack
+                    ? AnimatedContainer(
+                        duration: _animDuration,
+                        transform: Matrix4.identity()
+                          ..translate(_offsetX, _offsetY)
+                          ..scale(_scale),
+                        curve: Curves.easeIn,
+                        child: Stack(
+                          children: [
+                            TweenAnimationBuilder<Color?>(
+                              duration: _animDuration,
+                              tween: ColorTween(end: targetColor),
+                              builder: (context, color, child) {
+                                return SvgPicture.asset(
+                                  widget.icon.asset,
+                                  width: widget.iconSize,
+                                  height: widget.iconSize,
+                                  colorFilter: ColorFilter.mode(
+                                    color ?? Colors.transparent,
+                                    BlendMode.srcIn,
+                                  ),
+                                );
+                              },
+                            ),
+                            SvgPicture.asset(
+                              widget.icon.overlay!,
+                              width: widget.iconSize,
+                              height: widget.iconSize,
+                            ),
+                          ],
+                        ),
+                      )
+                    : AnimatedContainer(
+                        duration: _animDuration,
+                        transform: Matrix4.identity()
+                          ..translate(_offsetX, _offsetY)
+                          ..scale(_scale),
+                        curve: Curves.easeOut,
+                        child: TweenAnimationBuilder<Color?>(
+                          duration: _animDuration,
+                          tween: ColorTween(end: targetColor),
+                          builder: (context, color, child) {
+                            return SvgPicture.asset(
+                              widget.icon.asset,
+                              width: widget.iconSize,
+                              height: widget.iconSize,
+                              colorFilter: ColorFilter.mode(
+                                color ?? Colors.transparent,
+                                BlendMode.srcIn,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                if (widget.counter != null && widget.counter != 0)
+                  Positioned(
+                    left: 22,
+                    top: -2.5,
+                    child: WaveItemBadge(
+                      label: widget.counter,
+                      type: widget.selected
+                          ? WaveItemBadgeType.selected
+                          : WaveItemBadgeType.unselected,
+                    ),
+                  ),
+              ],
+            ),
+            SizedBox(height: widget.gap),
+            TweenAnimationBuilder<Color?>(
+              duration: _animDuration,
+              tween: ColorTween(end: targetColor),
+              builder: (context, color, child) {
+                return WaveText(
+                  widget.label,
+                  type: WaveTextType.caption,
+                  weight: WaveTextWeight.bold,
+                  color: color,
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
