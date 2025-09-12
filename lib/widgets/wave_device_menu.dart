@@ -216,7 +216,6 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
     } else if (i == _pressedIndex) {
       return MdColors.deviceMenuShadowPressedColor;
     } else {
-      //return MdColors.deviceMenuShadowDefaultColor;
       return Colors.transparent;
     }
   }
@@ -298,7 +297,6 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                         borderRadius: BorderRadius.circular(_radius),
                         border: Border.all(
                           color: MdColors.deviceMenuItemsBorderColor,
-                          //color: Colors.red,
                           width: _borderWidth,
                         ),
                         boxShadow: const [
@@ -331,11 +329,30 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
+                                        if (i != 0)
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 16),
+                                            child: Container(
+                                              width: double.infinity,
+                                              height: 1,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(2)),
+                                                color: (_hoveredIndex == i ||
+                                                        _hoveredIndex == i - 1)
+                                                    ? Colors.transparent
+                                                    : MdColors
+                                                        .deviceMenuBorderOpenDefaultColor,
+                                              ),
+                                            ),
+                                          ),
                                         Padding(
                                           padding: const EdgeInsets.only(
                                             left: 16,
                                             top: 11,
-                                            bottom: 10,
+                                            bottom: 11,
                                             right: 16,
                                           ),
                                           child: Align(
@@ -353,7 +370,7 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                                                 horizontal: 16),
                                             child: Container(
                                               width: double.infinity,
-                                              height: 2,
+                                              height: 1,
                                               decoration: BoxDecoration(
                                                 borderRadius:
                                                     const BorderRadius.all(
