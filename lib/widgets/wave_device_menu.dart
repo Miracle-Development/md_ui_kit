@@ -271,6 +271,9 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
       _panelWidth = box.size.width;
     }
 
+    BorderSide side =
+        BorderSide(color: MdColors.deviceMenuBorderOpenPressedColor, width: 2);
+
     _entry = OverlayEntry(
       builder: (context) {
         return Stack(
@@ -318,73 +321,86 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                                 onTapCancel: () => _setPressed(null),
                                 onTapUp: (_) => _setPressed(null),
                                 onTap: () => _onTap(i),
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.circular(_radius),
-                                    border: _resolveItemBorderColor(i),
-                                  ),
-                                  child: ColoredBox(
-                                    color: _resolveItemShadow(i),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        if (i != 0)
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 16),
-                                            child: Container(
-                                              width: double.infinity,
-                                              height: 1,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(2)),
-                                                color: (_hoveredIndex == i ||
-                                                        _hoveredIndex == i - 1)
-                                                    ? Colors.transparent
-                                                    : MdColors
-                                                        .deviceMenuBorderOpenDefaultColor,
+                                child: ColoredBox(
+                                  color: _resolveItemShadow(i),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        height: (i == _hoveredIndex)
+                                            ? (i == 0)
+                                                ? 44
+                                                : 46
+                                            : (i + 1 == _hoveredIndex)
+                                                ? 42
+                                                : 44,
+                                        decoration: BoxDecoration(
+                                          border: (i + 1) == _hoveredIndex
+                                              ? null
+                                              : i != _hoveredIndex
+                                                  ? (i ==
+                                                          widget.items.length -
+                                                              1)
+                                                      ? null
+                                                      : Border(
+                                                          bottom: side,
+                                                        )
+                                                  : Border(
+                                                      bottom: side,
+                                                      top: side,
+                                                      left: side,
+                                                      right: side),
+                                          borderRadius: i == _hoveredIndex
+                                              ? BorderRadius.circular(_radius)
+                                              : null,
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                            left:
+                                                (i == _hoveredIndex) ? 14 : 16,
+                                            // top: (i == 0) ? 2 : 0,
+                                            // bottom:
+                                            //     (i == _hoveredIndex) ? 0 : 2,
+                                            // top: (i == _hoveredIndex) ? 0 : 2,
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              SizedBox(
+                                                height: (i == 0)
+                                                    ? (i ==
+                                                            widget.items
+                                                                    .length -
+                                                                1)
+                                                        ? 1
+                                                        : 0
+                                                    : 0,
                                               ),
-                                            ),
-                                          ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            left: 16,
-                                            top: 11,
-                                            bottom: 11,
-                                            right: 16,
-                                          ),
-                                          child: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: WaveText(
-                                              widget.items[i],
-                                              type: WaveTextType.subtitle,
-                                              color: _resolveItemTextColor(i),
-                                            ),
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: WaveText(
+                                                  widget.items[i],
+                                                  type: WaveTextType.subtitle,
+                                                  color:
+                                                      _resolveItemTextColor(i),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: (i == 0)
+                                                    ? 2
+                                                    : (i ==
+                                                            widget.items
+                                                                    .length -
+                                                                1)
+                                                        ? 0
+                                                        : 2,
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        if (i != widget.items.length - 1)
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 16),
-                                            child: Container(
-                                              width: double.infinity,
-                                              height: 1,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(2)),
-                                                color: (_hoveredIndex == i ||
-                                                        _hoveredIndex == i + 1)
-                                                    ? Colors.transparent
-                                                    : MdColors
-                                                        .deviceMenuBorderOpenDefaultColor,
-                                              ),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
