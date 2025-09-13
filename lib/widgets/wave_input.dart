@@ -61,14 +61,12 @@ class _WaveInputState extends State<WaveInput> {
       case WaveInputType.login:
         {
           final allowChars =
-              FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9.\-@_]'));
-          final emailShape =
+              FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9._\-@]'));
+          final emailMask =
               TextInputFormatter.withFunction((oldValue, newValue) {
             final s = newValue.text;
 
             if (s.isEmpty) return newValue;
-
-            if (s.startsWith('.')) return oldValue;
 
             if (RegExp(r'@').allMatches(s).length > 1) return oldValue;
 
@@ -76,31 +74,23 @@ class _WaveInputState extends State<WaveInput> {
 
             if (at == 0) return oldValue;
 
-            if (s.contains('..')) return oldValue;
-
-            if (at > 0) {
-              final prefix = s.substring(0, at);
-              if (!RegExp(r'^[A-Za-z0-9.\-]+$').hasMatch(prefix)) {
-                return oldValue;
-              }
-              if (prefix.endsWith('.')) return oldValue;
-            }
             if (at >= 0) {
               final domain = s.substring(at + 1);
-              if (domain.isNotEmpty) {
-                if (domain.startsWith('.')) return oldValue;
 
-                final firstDot = domain.indexOf('.');
-                if (firstDot != -1) {
-                  if (domain.indexOf('.', firstDot + 1) != -1) return oldValue;
-                }
+              if (domain.startsWith('.')) return oldValue;
+
+              final firstDot = domain.indexOf('.');
+              if (firstDot != -1) {
+                if (domain.indexOf('.', firstDot + 1) != -1) return oldValue;
               }
             }
 
             return newValue;
           });
-          return [denySpaces, allowChars, emailShape];
+
+          return [denySpaces, allowChars, emailMask];
         }
+
       case WaveInputType.password:
         return [
           denySpaces,
