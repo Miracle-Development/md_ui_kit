@@ -34,10 +34,10 @@ class WaveChatInput extends StatefulWidget {
   final VoidCallback? onSend;
 
   @override
-  State<WaveChatInput> createState() => _WaveChatInoutState();
+  State<WaveChatInput> createState() => _WaveChatInputState();
 }
 
-class _WaveChatInoutState extends State<WaveChatInput> {
+class _WaveChatInputState extends State<WaveChatInput> {
   late final TextEditingController _controller;
   late final FocusNode _focus = FocusNode();
   bool _showArrow = false;
