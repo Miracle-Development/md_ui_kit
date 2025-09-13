@@ -173,35 +173,6 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
     return MdColors.deviceMenuIconDefaultColor;
   }
 
-  Border? _resolveItemBorderColor(int? i) {
-    if (i == _pressedIndex && i != widget.items.length - 1) {
-      return Border.all(color: MdColors.deviceMenuItemPressedColor, width: 2);
-    } else if (i == _pressedIndex && i != widget.items.length - 1) {
-      const side = BorderSide(
-        color: MdColors.deviceMenuItemPressedColor,
-        width: 2,
-      );
-      return const Border(
-        top: side,
-        left: side,
-        right: side,
-      );
-    } else if (i == _hoveredIndex && i != widget.items.length - 1) {
-      return Border.all(color: MdColors.deviceMenuItemHoverColor, width: 2);
-    } else if (i == _hoveredIndex && i == widget.items.length - 1) {
-      const side = BorderSide(
-        color: MdColors.deviceMenuItemHoverColor,
-        width: 2,
-      );
-      return const Border(
-        top: side,
-        left: side,
-        right: side,
-      );
-    }
-    return Border.all(color: Colors.transparent);
-  }
-
   Color _resolveItemTextColor(int? i) {
     if (i == _hoveredIndex || i == _pressedIndex) {
       return MdColors.deviceMenuItemTextHoverPressedColor;
@@ -272,7 +243,7 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
     }
 
     BorderSide side =
-        BorderSide(color: MdColors.deviceMenuBorderOpenPressedColor, width: 2);
+        const BorderSide(color: MdColors.deviceMenuItemHoverColor, width: 2);
 
     _entry = OverlayEntry(
       builder: (context) {
@@ -342,8 +313,11 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                                                           widget.items.length -
                                                               1)
                                                       ? null
-                                                      : Border(
-                                                          bottom: side,
+                                                      : const Border(
+                                                          bottom: BorderSide(
+                                                              color: MdColors
+                                                                  .deviceMenuItemsBorderColor,
+                                                              width: 2),
                                                         )
                                                   : Border(
                                                       bottom: side,
@@ -364,17 +338,14 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                                                 MainAxisAlignment.center,
                                             children: [
                                               SizedBox(
-                                                height: (i == 0 &&
-                                                        (i == _hoveredIndex))
-                                                    ? 0
-                                                    : (i ==
-                                                                widget.items
-                                                                        .length -
-                                                                    1 &&
-                                                            (i ==
-                                                                _hoveredIndex))
-                                                        ? 2
-                                                        : 0,
+                                                height: (i == 0)
+                                                    ? (i ==
+                                                            widget.items
+                                                                    .length -
+                                                                1)
+                                                        ? 1
+                                                        : 0
+                                                    : 0,
                                               ),
                                               Align(
                                                 alignment: Alignment.centerLeft,
@@ -386,15 +357,14 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                                                 ),
                                               ),
                                               SizedBox(
-                                                height: (i == 0 &&
-                                                        (i == _hoveredIndex))
+                                                height: (i == 0)
                                                     ? 2
                                                     : (i ==
                                                             widget.items
                                                                     .length -
                                                                 1)
                                                         ? 0
-                                                        : 0,
+                                                        : 2,
                                               ),
                                             ],
                                           ),
