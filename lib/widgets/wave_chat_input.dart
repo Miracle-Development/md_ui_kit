@@ -43,10 +43,12 @@ class _WaveChatInputState extends State<WaveChatInput> {
   bool _showArrow = false;
   bool _iconHover = false;
   bool _iconPressed = false;
+  late final ScrollController _scrollCtrl;
 
   @override
   void initState() {
     super.initState();
+    _scrollCtrl = ScrollController();
     _focus.addListener(() => setState(() {}));
     _controller = widget.controller ?? TextEditingController();
     _showArrow = _controller.text.isNotEmpty;
@@ -67,6 +69,7 @@ class _WaveChatInputState extends State<WaveChatInput> {
     }
     _focus.dispose();
     super.dispose();
+    _scrollCtrl.dispose();
   }
 
   void _handleSend() {
@@ -132,6 +135,15 @@ class _WaveChatInputState extends State<WaveChatInput> {
         textSelectionTheme: const TextSelectionThemeData(
           selectionColor: MdColors.selectionTextChatInputColor,
         ),
+        scrollbarTheme: ScrollbarThemeData(
+          thumbVisibility: WidgetStateProperty.all(false),
+          trackVisibility: WidgetStateProperty.all(false),
+          thickness: WidgetStateProperty.all(0),
+          radius: Radius.zero,
+          thumbColor: WidgetStateProperty.all(Colors.transparent),
+          trackColor: WidgetStateProperty.all(Colors.transparent),
+          trackBorderColor: WidgetStateProperty.all(Colors.transparent),
+        ),
       ),
       child: Stack(
         children: [
@@ -169,40 +181,56 @@ class _WaveChatInputState extends State<WaveChatInput> {
                       decoration: const BoxDecoration(
                         color: Color.fromRGBO(17, 17, 30, 0.9),
                       ),
-                      child: TextField(
-                        focusNode: _focus,
-                        controller: _controller,
-                        enabled: true,
-                        readOnly: !widget.enabled,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        style: TextStyle(
-                          color: widget.enabled
-                              ? MdColors.defaultTextChatInputColor
-                              : MdColors.disabledChatInputColor,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'Play',
-                          letterSpacing: 1,
-                        ),
-                        cursorColor: inputTextColor,
-                        decoration: InputDecoration(
-                          isCollapsed: true,
-                          filled: true,
-                          contentPadding: widget.contentPadding,
-                          hoverColor: Colors.transparent,
-                          fillColor: Colors.transparent,
-                          hintText: widget.hintText,
-                          hintStyle: const TextStyle(
-                            color: MdColors.disabledTextChatInputColor,
+                      child: RawScrollbar(
+                        controller: _scrollCtrl,
+                        thumbVisibility: true,
+                        thickness: 8,
+                        radius: const Radius.circular(8),
+                        mainAxisMargin: 5,
+                        crossAxisMargin: 7,
+                        child: TextField(
+                          scrollController: _scrollCtrl,
+                          focusNode: _focus,
+                          controller: _controller,
+                          enabled: true,
+                          readOnly: !widget.enabled,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          style: TextStyle(
+                            color: widget.enabled
+                                ? MdColors.defaultTextChatInputColor
+                                : MdColors.disabledChatInputColor,
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'Play',
                             letterSpacing: 1,
                           ),
-                          enabledBorder: enabledBorder,
-                          focusedBorder: focusedBorder,
-                          disabledBorder: disabledBorder,
+                          cursorColor: inputTextColor,
+                          decoration: InputDecoration(
+                            isCollapsed: true,
+                            isDense: true,
+                            filled: true,
+                            hoverColor: Colors.transparent,
+                            fillColor: Colors.transparent,
+                            suffixIcon: const SizedBox(width: 12),
+                            suffixIconConstraints: const BoxConstraints(
+                              minWidth: 12,
+                            ),
+                            contentPadding: widget.contentPadding.copyWith(
+                              right: widget.contentPadding.right + 4,
+                            ),
+                            hintText: widget.hintText,
+                            hintStyle: const TextStyle(
+                              color: MdColors.disabledTextChatInputColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: 'Play',
+                              letterSpacing: 1,
+                            ),
+                            enabledBorder: enabledBorder,
+                            focusedBorder: focusedBorder,
+                            disabledBorder: disabledBorder,
+                          ),
                         ),
                       ),
                     ),
