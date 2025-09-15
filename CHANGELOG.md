@@ -1,3 +1,7 @@
+## [2.12.0]
+
+- Добавлен компонент WaveParticipant
+
 ## [2.8.5]
 
 - Исправлен баг с onTap для WaveMicButton
