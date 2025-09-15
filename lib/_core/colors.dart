@@ -104,4 +104,12 @@ class MdColors {
   static const Color chatBubbleColorSystem = Color.fromRGBO(179, 179, 202, 1);
   static const Color chatBubbleColorSelection =
       Color.fromRGBO(177, 172, 255, 0.6);
+
+  /// WaveParticipantLoader Colors
+  static const Color participantLoaderFirstPoint =
+      Color.fromRGBO(220, 218, 255, 0.6);
+  static const Color participantLoaderSecondPoint =
+      Color.fromRGBO(220, 218, 255, 0.7);
+  static const Color participantLoaderThirdPoint =
+      Color.fromRGBO(220, 218, 255, 0.8);
 }
