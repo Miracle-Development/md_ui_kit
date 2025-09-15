@@ -11,6 +11,7 @@ import 'package:md_ui_kit/_stories/widgets/wave_chat_bubble_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_divider_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_hint_text_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_mic_button_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_participant_loader_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_simple_button_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_status_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_item_badge_story.dart';
@@ -126,6 +127,9 @@ class StorybookApp extends StatelessWidget {
                 name: 'Wave/WaveHintText',
                 builder: (context) => WaveHintTextStory(knobs: context.knobs),
               ),
+              Story(
+                  name: 'Wave/WaveParticipantLoader',
+                  builder: (context) => const WaveParticipantLoaderStory()),
             ]..sort((a, b) => a.name.compareTo(b.name)),
           ),
         ),
