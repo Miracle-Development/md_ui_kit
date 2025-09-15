@@ -106,10 +106,22 @@ class MdColors {
       Color.fromRGBO(177, 172, 255, 0.6);
 
   /// WaveParticipantLoader Colors
-  static const Color participantLoaderFirstPoint =
+  static const Color participantLoaderFirstPointColor =
       Color.fromRGBO(220, 218, 255, 0.6);
-  static const Color participantLoaderSecondPoint =
+  static const Color participantLoaderSecondPointColor =
       Color.fromRGBO(220, 218, 255, 0.7);
-  static const Color participantLoaderThirdPoint =
+  static const Color participantLoaderThirdPointColor =
       Color.fromRGBO(220, 218, 255, 0.8);
+
+  /// WaveParticipant Colors
+  static const Color participantBaseOutColor = Color.fromRGBO(113, 113, 136, 1);
+  static const Color participantGradientOutStartColor =
+      Color.fromRGBO(13, 13, 15, 0);
+  static const Color participantGradientOutEndColor =
+      Color.fromRGBO(13, 13, 15, 1);
+  static const Color participantBaseInColor = Color.fromRGBO(67, 70, 243, 1);
+  static const Color participantGradientInStartColor =
+      Color.fromRGBO(13, 13, 15, 0);
+  static const Color participantGradientInEndColor =
+      Color.fromRGBO(20, 20, 116, 1);
 }

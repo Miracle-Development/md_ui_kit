@@ -12,6 +12,7 @@ import 'package:md_ui_kit/_stories/widgets/wave_divider_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_hint_text_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_mic_button_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_participant_loader_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_participant_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_simple_button_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_status_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_item_badge_story.dart';
@@ -38,7 +39,7 @@ class StorybookApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      // darkTheme: AppTheme.dark, // Uncomment to use the dark theme
+      darkTheme: AppTheme.dark, // Uncomment to use the dark theme
       home: Directionality(
         textDirection: TextDirection.ltr,
         child: Material(
@@ -128,8 +129,14 @@ class StorybookApp extends StatelessWidget {
                 builder: (context) => WaveHintTextStory(knobs: context.knobs),
               ),
               Story(
-                  name: 'Wave/WaveParticipantLoader',
-                  builder: (context) => const WaveParticipantLoaderStory()),
+                name: 'Wave/WaveParticipant',
+                builder: (context) =>
+                    WaveParticipantStory(knobs: context.knobs),
+              ),
+              Story(
+                name: 'Wave/WaveParticipantLoader',
+                builder: (context) => const WaveParticipantLoaderStory(),
+              ),
             ]..sort((a, b) => a.name.compareTo(b.name)),
           ),
         ),
