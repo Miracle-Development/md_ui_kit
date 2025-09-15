@@ -1,3 +1,7 @@
+## [2.11.0]
+
+- Добавлен компонент WaveAmplitude
+
 ## [2.8.5]
 
 - Исправлен баг с onTap для WaveMicButton
