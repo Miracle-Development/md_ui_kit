@@ -1,3 +1,7 @@
+## [2.13.0]
+
+- Добавлен компонент WaveFlowerLoader
+
 ## [2.8.5]
 
 - Исправлен баг с onTap для WaveMicButton
