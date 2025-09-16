@@ -3,38 +3,39 @@ import 'package:flutter/material.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
 
-/// level — вход (0..1), от него волны «надуваются»/«сдуваются»
-class WaveAmplitude extends StatelessWidget {
+class WaveAmplitude extends StatefulWidget {
   const WaveAmplitude({
     super.key,
-    required this.level, // 0..1
-    this.height = 92, // ~как в макете: 91.5
-    this.width,
+    this.level = 3,
+    this.height = 90,
+    this.onVoice = true,
   });
 
   final double level;
   final double height;
-  final double? width;
+  final bool onVoice;
 
   @override
-  Widget build(BuildContext context) {
-    // Подбираем амплитуды и «линию воды» под уровень:
-    final ampNear = lerpDouble(2, 14, level)!.toDouble(); // ближняя волна
-    final ampMiddle = lerpDouble(1, 10, level)!.toDouble();
-    final ampFar = lerpDouble(0, 6, level)!.toDouble();
+  State<WaveAmplitude> createState() => _WaveAmplitudeState();
+}
 
-    // Сдвигаем «базовую высоту» слоёв (0..1 от высоты виджета)
-    final baseNear = lerpDouble(0.62, 0.45, level)!;
-    final baseMiddle = lerpDouble(0.66, 0.55, level)!;
-    final baseFar = lerpDouble(0.70, 0.62, level)!;
+class _WaveAmplitudeState extends State<WaveAmplitude> {
+  @override
+  Widget build(BuildContext context) {
+    final ampNearBase = lerpDouble(2, 14, widget.level)!.toDouble();
+    final ampMiddleBase = lerpDouble(1, 10, widget.level)!.toDouble();
+    final ampFarBase = lerpDouble(0, 6, widget.level)!.toDouble();
+
+    final baseNear = lerpDouble(0.62, 0.45, widget.level)!;
+    final baseMiddle = lerpDouble(0.66, 0.55, widget.level)!;
+    final baseFar = lerpDouble(0.70, 0.62, widget.level)!;
 
     return SizedBox(
-      width: width ?? double.infinity,
-      height: height,
+      width: double.infinity,
+      height: widget.height,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // Мягкая падающая тень (как в фигме: blur 120, offset y=20)
           const IgnorePointer(
             child: DecoratedBox(
               decoration: BoxDecoration(boxShadow: [
@@ -46,39 +47,45 @@ class WaveAmplitude extends StatelessWidget {
               ]),
             ),
           ),
-
-          // Дальний слой: самый прозрачный, медленный
           WaveWidget(
             config: CustomConfig(
-              colors: const [Color.fromRGBO(48, 51, 212, 0.18)],
-              durations: const [9000], // самая «лёгкая» волна
-              heightPercentages: [baseFar], // базовая линия
+              colors: [
+                widget.onVoice
+                    ? const Color.fromRGBO(48, 51, 212, 0.40)
+                    : Colors.transparent,
+              ],
+              durations: const [9000],
+              heightPercentages: [baseFar],
             ),
-            waveAmplitude: ampFar, // амплитуда в px
+            waveAmplitude: ampNearBase,
             backgroundColor: Colors.transparent,
             size: Size.infinite,
           ),
-
-          // Средний слой
           WaveWidget(
             config: CustomConfig(
-              colors: const [Color.fromRGBO(67, 70, 243, 0.30)],
+              colors: [
+                widget.onVoice
+                    ? const Color.fromRGBO(67, 70, 243, 0.40)
+                    : Colors.transparent,
+              ],
               durations: const [6500],
               heightPercentages: [baseMiddle],
             ),
-            waveAmplitude: ampMiddle,
+            waveAmplitude: ampMiddleBase,
             backgroundColor: Colors.transparent,
             size: Size.infinite,
           ),
-
-          // Передний слой: ярче/контрастнее, быстрее
           WaveWidget(
             config: CustomConfig(
-              colors: const [Color.fromRGBO(140, 141, 227, 0.40)],
+              colors: [
+                widget.onVoice
+                    ? const Color.fromRGBO(140, 141, 227, 0.30)
+                    : Colors.transparent,
+              ],
               durations: const [4800],
               heightPercentages: [baseNear],
             ),
-            waveAmplitude: ampNear,
+            waveAmplitude: ampFarBase,
             backgroundColor: Colors.transparent,
             size: Size.infinite,
           ),

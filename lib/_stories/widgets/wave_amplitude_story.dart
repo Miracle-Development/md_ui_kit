@@ -8,12 +8,9 @@ class WaveAmplitudeStory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final level = knobs.slider(
-      label: 'level',
-      initial: 0,
-    );
+    final isSpeaking = knobs.boolean(label: "Speak", initial: true);
     return WaveAmplitude(
-      level: level,
+      onVoice: isSpeaking,
     );
   }
 }
