@@ -10,10 +10,12 @@ class InitialScreen extends StatefulWidget {
     this.screenWidth,
     this.screenHeight,
     this.wavePositionedBottom = 235,
+    this.waveLotoPositionedTop = 28,
   });
   final double wavePositionedBottom;
   final double? screenWidth;
   final double? screenHeight;
+  final double? waveLotoPositionedTop;
 
   @override
   State<InitialScreen> createState() => _InitialScreenState();
@@ -58,7 +60,7 @@ class _InitialScreenState extends State<InitialScreen>
         alignment: Alignment.center,
         children: [
           Positioned(
-            top: 20,
+            top: widget.waveLotoPositionedTop!,
             child: AnimatedOpacity(
               opacity: _showTitle ? 1.0 : 0.0,
               duration: const Duration(milliseconds: 800),
