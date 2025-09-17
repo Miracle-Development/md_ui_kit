@@ -12,14 +12,14 @@ class WaveFlowerLoader extends StatefulWidget {
 
 class _WaveFlowerLoaderState extends State<WaveFlowerLoader>
     with TickerProviderStateMixin {
-  Duration breathDuration = const Duration(milliseconds: 2200);
-  Duration rotateDuration = const Duration(seconds: 8);
-  double minScale = 0.1;
-  double maxScale = 1.0;
+  Duration breathDuration = const Duration(milliseconds: 800);
+  Duration rotateDuration = const Duration(seconds: 5);
+  double minScale = 0.2;
+  double maxScale = 0.5;
 
   double size = 376.0;
   double radius = 50.0;
-  double closedCornerBoost = 30.0;
+  double closedCornerBoost = 20.0;
 
   List<double> layerAnglesDeg = const [15, -33, -75, -15, -63, -105];
   List<double> layerSizeMul = const [1.00, 1.10, 1.24, 1.00, 1.10, 1.24];
