@@ -153,6 +153,10 @@ class _WaveChatInputState extends State<WaveChatInput> {
                 child: Container(
                   decoration: const BoxDecoration(
                     color: Color.fromRGBO(17, 17, 30, 0.95),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
                   ),
                 ),
               ),
@@ -255,6 +259,7 @@ class _WaveChatInputState extends State<WaveChatInput> {
                     opacity: (_showArrow && widget.enabled) ? 1 : 0,
                     child: _showArrow && widget.enabled
                         ? MouseRegion(
+                            cursor: SystemMouseCursors.click,
                             onEnter: (_) => setState(() => _iconHover = true),
                             onExit: (_) => setState(() => _iconHover = false),
                             child: GestureDetector(
