@@ -1,7 +1,7 @@
 name: md_ui_kit
 description: "Miracle Development UI Kit"
 publish_to: "none"
-version: 2.9.0
+version: 2.10.0
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -35,6 +35,7 @@ flutter:
     - assets/icons/initial_wave/
     - assets/icons/copy/
     - assets/icons/nav_bar/
+    - assets/icons/menu/
     - assets/icons/input/
     - assets/icons/mic/
 
