@@ -38,7 +38,7 @@ class StorybookApp extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      //theme: AppTheme.light,
+      theme: AppTheme.light,
       // darkTheme: AppTheme.dark, // Uncomment to use the dark theme
       home: Directionality(
         textDirection: TextDirection.ltr,
