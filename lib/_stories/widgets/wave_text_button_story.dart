@@ -18,10 +18,12 @@ class MdTextButtonStory extends StatelessWidget {
       initial: 'test-peer',
     );
 
+    final enabled = knobs.boolean(label: "Enabled");
+
     return Center(
       child: WaveTextButton(
         label: label,
-        onPressed: () => print("WaveTextButton Test"),
+        onPressed: enabled ? () => print("WaveTextButton Test") : null,
       ),
     );
   }
