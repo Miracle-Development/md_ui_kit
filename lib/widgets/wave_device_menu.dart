@@ -338,14 +338,17 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                                                 MainAxisAlignment.center,
                                             children: [
                                               SizedBox(
-                                                height: (i == 0)
-                                                    ? (i ==
-                                                            widget.items
-                                                                    .length -
-                                                                1)
-                                                        ? 1
-                                                        : 0
-                                                    : 0,
+                                                height: (i == 0 &&
+                                                        (i == _hoveredIndex))
+                                                    ? 0
+                                                    : (i ==
+                                                                widget.items
+                                                                        .length -
+                                                                    1 &&
+                                                            (i ==
+                                                                _hoveredIndex))
+                                                        ? 2
+                                                        : 0,
                                               ),
                                               Align(
                                                 alignment: Alignment.centerLeft,
@@ -357,14 +360,15 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                                                 ),
                                               ),
                                               SizedBox(
-                                                height: (i == 0)
+                                                height: (i == 0 &&
+                                                        (i == _hoveredIndex))
                                                     ? 2
                                                     : (i ==
                                                             widget.items
                                                                     .length -
                                                                 1)
                                                         ? 0
-                                                        : 2,
+                                                        : 0,
                                               ),
                                             ],
                                           ),
