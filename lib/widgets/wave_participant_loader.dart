@@ -10,6 +10,7 @@ class WaveParticipantLoader extends StatefulWidget {
     this.first = MdColors.participantLoaderFirstPointColor,
     this.second = MdColors.participantLoaderSecondPointColor,
     this.third = MdColors.participantLoaderThirdPointColor,
+    this.direction = WaveParticipantLoaderDirection.leftToRight,
   });
 
   final double size;
@@ -19,6 +20,8 @@ class WaveParticipantLoader extends StatefulWidget {
   final Color first;
   final Color second;
   final Color third;
+
+  final WaveParticipantLoaderDirection direction;
 
   @override
   State<WaveParticipantLoader> createState() => _ParticipantLoaderState();
@@ -38,6 +41,12 @@ class _ParticipantLoaderState extends State<WaveParticipantLoader>
   @override
   Widget build(BuildContext context) {
     final colors = [widget.first, widget.second, widget.third];
+    final dirSign =
+        widget.direction == WaveParticipantLoaderDirection.leftToRight
+            ? -1.0
+            : 1.0;
+
+    double fract(double x) => x - x.floorToDouble();
 
     return AnimatedBuilder(
       animation: _c,
@@ -45,7 +54,8 @@ class _ParticipantLoaderState extends State<WaveParticipantLoader>
         final base = _c.value;
 
         Color colorForDot(int index) {
-          final t = (base + index / 3.0) % 1.0;
+          final phase = base + dirSign * index / 3.0;
+          final t = fract(phase);
           final seg = (t * 3).floor();
           final localT = (t * 3) - seg;
           final a = colors[seg];
@@ -98,3 +108,5 @@ Color _lerpHSV(Color a, Color b, double t) {
 
   return HSVColor.fromAHSV(aOut / 255.0, h % 360, s, v).toColor();
 }
+
+enum WaveParticipantLoaderDirection { leftToRight, rightToLeft }

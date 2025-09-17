@@ -147,7 +147,8 @@ class StorybookApp extends StatelessWidget {
               ),
               Story(
                 name: 'Wave/WaveParticipantLoader',
-                builder: (context) => const WaveParticipantLoaderStory(),
+                builder: (context) =>
+                    WaveParticipantLoaderStory(knobs: context.knobs),
               ),
             ]..sort((a, b) => a.name.compareTo(b.name)),
           ),
