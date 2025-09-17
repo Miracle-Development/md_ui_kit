@@ -5,6 +5,7 @@ class MdColors {
   static const backgroundColor = Color.fromRGBO(13, 13, 15, 1);
   static const containerColor = Color.fromRGBO(17, 17, 30, 0.6);
   static const navBarContainerColor = Color.fromRGBO(17, 17, 30, 0.95);
+  static const waveInputBackgroundColor = const Color.fromRGBO(17, 17, 30, 0.95);
   static const brandFirstStrip = Color.fromRGBO(67, 70, 243, 1);
   static const brandSecondStrip = Color.fromRGBO(48, 51, 212, 1);
 
@@ -79,6 +80,13 @@ class MdColors {
 
   /// WaveInput Colors
   static const Color selectionTextInputColor = Color.fromRGBO(58, 89, 238, 0.4);
+  static const Color defaultTextInputColor = Color.fromRGBO(220, 218, 255, 0.9);
+  static const Color defaultBorderInputColor = Color.fromRGBO(67, 70, 243, 0.8);
+  static const Color selectedBorderInputColor =
+      Color.fromRGBO(177, 172, 255, 0.8);
+  static const Color disabledInputColor = Color.fromRGBO(52, 53, 91, 0.8);
+  static const Color disabledTextInputColor = Color.fromRGBO(52, 53, 91, 0.9);
+  static const Color errorInputColor = Color.fromRGBO(130, 50, 50, 0.8);
 
   /// WaveMicButton Colors
   static const unmutedDefaultBg = Color.fromRGBO(220, 218, 255, 1);
@@ -102,6 +110,6 @@ class MdColors {
   static const Color chatBubbleColorMe = Color.fromRGBO(67, 70, 243, 1);
   static const Color chatBubbleColorText = Color.fromRGBO(255, 255, 255, 1);
   static const Color chatBubbleColorSystem = Color.fromRGBO(179, 179, 202, 1);
-  static const Color chatBubbleColorSelection =
+  static const Color selectionChatBubbleColor =
       Color.fromRGBO(177, 172, 255, 0.6);
 }
