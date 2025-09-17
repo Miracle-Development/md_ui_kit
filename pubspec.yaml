@@ -35,6 +35,8 @@ flutter:
     - assets/icons/initial_wave/
     - assets/icons/copy/
     - assets/icons/nav_bar/
+    - assets/icons/menu/
+    - assets/icons/input/
     - assets/icons/mic/
 
   fonts:
