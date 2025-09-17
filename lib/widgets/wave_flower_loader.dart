@@ -31,23 +31,55 @@ class _WaveFlowerLoaderState extends State<WaveFlowerLoader>
     Color.fromRGBO(158, 152, 255, 0.2),
     Color.fromRGBO(134, 127, 255, 0.2),
   ];
-  late final _breath =
-      AnimationController(vsync: this, duration: breathDuration)
-        ..repeat(reverse: true);
-  late final _rotate =
-      AnimationController(vsync: this, duration: rotateDuration)..repeat();
 
-  late final Animation<double> _scale = Tween<double>(
-    begin: minScale,
-    end: maxScale,
-  ).animate(CurvedAnimation(parent: _breath, curve: Curves.easeInOut));
+  // TODO: Edit rotate durations
+  // rotate duration list (seconds), each index correspoding to the triangle in UI
+  List<double> rotateDurationList = const [5, 5, 5, 5, 5, 5];
 
-  late final Animation<double> _angle =
-      Tween<double>(begin: 0.0, end: 2 * math.pi).animate(_rotate);
+  late final AnimationController _breath;
+  late final Animation<double> _scale;
+
+  late final AnimationController _rotateAll;
+  late final Animation<double> _angleAll;
+
+  late final List<AnimationController> _layerRotCtrls;
+  late final List<Animation<double>> _layerAnglesAnim;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _breath = AnimationController(vsync: this, duration: breathDuration)
+      ..repeat(reverse: true);
+
+    _scale = Tween<double>(begin: minScale, end: maxScale)
+        .animate(CurvedAnimation(parent: _breath, curve: Curves.easeInOut));
+
+    _rotateAll = AnimationController(vsync: this, duration: rotateDuration)
+      ..repeat();
+
+    _angleAll = Tween<double>(begin: 0.0, end: 2 * math.pi).animate(_rotateAll);
+
+    final layerCount = layerAnglesDeg.length;
+    _layerRotCtrls = List.generate(layerCount, (i) {
+      final secs = rotateDurationList[i % rotateDurationList.length];
+      return AnimationController(
+        vsync: this,
+        duration: Duration(milliseconds: (secs * 1000).round()),
+      )..repeat();
+    });
+
+    _layerAnglesAnim = _layerRotCtrls
+        .map((c) => Tween<double>(begin: 0.0, end: 2 * math.pi).animate(c))
+        .toList();
+  }
 
   @override
   void dispose() {
-    _rotate.dispose();
+    for (final c in _layerRotCtrls) {
+      c.dispose();
+    }
+    _rotateAll.dispose();
     _breath.dispose();
     super.dispose();
   }
@@ -55,45 +87,44 @@ class _WaveFlowerLoaderState extends State<WaveFlowerLoader>
   @override
   Widget build(BuildContext context) {
     final openCornerRatio = radius / size;
-    final angles = layerAnglesDeg.map((d) => d * math.pi / 180).toList();
+    final baseAngles = layerAnglesDeg.map((d) => d * math.pi / 180).toList();
 
     return LayoutBuilder(
       builder: (context, c) {
         final maxSide = math.min(c.maxWidth, c.maxHeight);
 
+        final listeners = <Listenable>[_breath, _rotateAll, ..._layerRotCtrls];
+
         return AnimatedBuilder(
-          animation: Listenable.merge([_breath, _rotate]),
+          animation: Listenable.merge(listeners),
           builder: (_, __) {
             final tOpen = ((_scale.value - minScale) / (maxScale - minScale))
                 .clamp(0.0, 1.0);
-
             final baseSize = maxSide * _scale.value;
 
             Widget layer(int i) {
               final color = layerColors[i];
-              final angle = angles[i];
               final sizeMul = layerSizeMul[i];
-              final size = baseSize * sizeMul;
+              final side = baseSize * sizeMul;
 
-              final openCornerPx = size * openCornerRatio;
-
+              final openCornerPx = side * openCornerRatio;
               final targetClosedPx = openCornerPx + closedCornerBoost;
-
               double cornerPx =
                   lerpDouble(openCornerPx, targetClosedPx, 1 - tOpen)!;
-
-              cornerPx = cornerPx.clamp(0.0, size * 0.5 - 0.5);
+              cornerPx = cornerPx.clamp(0.0, side * 0.5 - 0.5);
 
               final shape = PolygonShapeBorder(
                 sides: 3,
                 cornerRadius: Length(cornerPx),
               );
 
+              final angle = baseAngles[i] + _layerAnglesAnim[i].value;
+
               return Transform.rotate(
                 angle: angle,
                 child: Container(
-                  width: size,
-                  height: size,
+                  width: side,
+                  height: side,
                   decoration: ShapeDecoration(color: color, shape: shape),
                 ),
               );
@@ -101,10 +132,10 @@ class _WaveFlowerLoaderState extends State<WaveFlowerLoader>
 
             return Center(
               child: Transform.rotate(
-                angle: _angle.value,
+                angle: _angleAll.value,
                 child: Stack(
                   alignment: Alignment.center,
-                  children: List.generate(6, layer),
+                  children: List.generate(baseAngles.length, layer),
                 ),
               ),
             );
