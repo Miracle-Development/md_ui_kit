@@ -74,24 +74,36 @@ class WaveParticipant extends StatelessWidget {
           ),
           if (muted)
             Positioned(
-              right: 0,
-              bottom: 0,
-              width: muteBadgeSize,
-              height: muteBadgeSize,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: MdColors.participantIconBackgroundColor,
-                  border: BoxBorder.all(
-                      color: MdColors.participantIconBorderColor, width: 3),
-                ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    muteBadgeIconAsset,
-                    width: muteIconSize,
-                    height: muteIconSize,
+              right: -3,
+              bottom: -3,
+              width: muteBadgeSize + 6,
+              height: muteBadgeSize + 6,
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: MdColors.participantIconBorderColor,
+                    ),
                   ),
-                ),
+                  Center(
+                    child: Container(
+                      width: muteBadgeSize,
+                      height: muteBadgeSize,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: MdColors.participantIconBackgroundColor,
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: SvgPicture.asset(
+                      muteBadgeIconAsset,
+                      width: muteIconSize,
+                      height: muteIconSize,
+                    ),
+                  )
+                ],
               ),
             ),
         ],
