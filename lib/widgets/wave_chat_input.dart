@@ -95,9 +95,11 @@ class _WaveChatInputState extends State<WaveChatInput> {
   @override
   Widget build(BuildContext context) {
     final enabledBorder = OutlineInputBorder(
-      borderRadius: _controller.text.isEmpty
-          ? widget.borderRadiusNoContent
-          : widget.borderRadiusContent,
+      borderRadius: widget.enabled
+          ? (_controller.text.isEmpty
+              ? widget.borderRadiusNoContent
+              : widget.borderRadiusContent)
+          : widget.borderRadiusNoContent,
       borderSide: BorderSide(
         color: !widget.enabled
             ? MdColors.disabledChatInputColor
@@ -108,9 +110,11 @@ class _WaveChatInputState extends State<WaveChatInput> {
       ),
     );
     final focusedBorder = OutlineInputBorder(
-      borderRadius: _controller.text.isEmpty
-          ? widget.borderRadiusNoContent
-          : widget.borderRadiusContent,
+      borderRadius: widget.enabled
+          ? (_controller.text.isEmpty
+              ? widget.borderRadiusNoContent
+              : widget.borderRadiusContent)
+          : widget.borderRadiusNoContent,
       borderSide: BorderSide(
         color: widget.enabled
             ? MdColors.selectedBorderChatInputColor
@@ -119,9 +123,11 @@ class _WaveChatInputState extends State<WaveChatInput> {
       ),
     );
     final disabledBorder = OutlineInputBorder(
-      borderRadius: _controller.text.isEmpty
-          ? widget.borderRadiusNoContent
-          : widget.borderRadiusContent,
+      borderRadius: widget.enabled
+          ? (_controller.text.isEmpty
+              ? widget.borderRadiusNoContent
+              : widget.borderRadiusContent)
+          : widget.borderRadiusNoContent,
       borderSide:
           const BorderSide(color: MdColors.disabledChatInputColor, width: 2),
     );
@@ -173,7 +179,7 @@ class _WaveChatInputState extends State<WaveChatInput> {
                     left: 20,
                     top: 20,
                     bottom: 12,
-                    right: _showArrow ? 12 : 20,
+                    right: (_showArrow && widget.enabled) ? 12 : 0,
                   ),
                   child: ClipRRect(
                     borderRadius: _controller.text.isEmpty
@@ -227,7 +233,7 @@ class _WaveChatInputState extends State<WaveChatInput> {
                             hintStyle: const TextStyle(
                               color: MdColors.disabledTextChatInputColor,
                               fontSize: 14,
-                              fontWeight: FontWeight.w400,
+                              fontWeight: FontWeight.w700,
                               fontFamily: 'Play',
                               letterSpacing: 1,
                             ),
@@ -244,7 +250,7 @@ class _WaveChatInputState extends State<WaveChatInput> {
               AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 curve: Curves.ease,
-                width: _showArrow ? 32 : 0,
+                width: (_showArrow && widget.enabled) ? 32 : 0,
                 height: 32,
                 margin: const EdgeInsets.only(
                   top: 20,
@@ -263,6 +269,7 @@ class _WaveChatInputState extends State<WaveChatInput> {
                             onEnter: (_) => setState(() => _iconHover = true),
                             onExit: (_) => setState(() => _iconHover = false),
                             child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
                               onTapDown: (_) =>
                                   setState(() => _iconPressed = true),
                               onTapUp: (_) =>
@@ -288,22 +295,33 @@ class _WaveChatInputState extends State<WaveChatInput> {
                                   ),
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(4),
-                                  child: IconButton(
-                                    iconSize: 24,
-                                    padding: EdgeInsets.zero,
-                                    splashColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    hoverColor: Colors.transparent,
-                                    icon: SvgPicture.asset(
-                                      PrecachedIcons.sendMsgIcon,
-                                      colorFilter: ColorFilter.mode(
-                                          _resolveIconColor(), BlendMode.srcIn),
-                                    ),
-                                    onPressed:
-                                        widget.enabled ? _handleSend : null,
-                                  ),
-                                ),
+                                    padding: const EdgeInsets.all(4),
+                                    child: TweenAnimationBuilder<Color?>(
+                                      tween:
+                                          ColorTween(end: _resolveIconColor()),
+                                      duration:
+                                          const Duration(milliseconds: 150),
+                                      curve: Curves.ease,
+                                      builder: (context, color, _) {
+                                        return IconButton(
+                                          iconSize: 24,
+                                          padding: EdgeInsets.zero,
+                                          splashColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          hoverColor: Colors.transparent,
+                                          icon: SvgPicture.asset(
+                                            PrecachedIcons.sendMsgIcon,
+                                            colorFilter: ColorFilter.mode(
+                                              color ?? _resolveIconColor(),
+                                              BlendMode.srcIn,
+                                            ),
+                                          ),
+                                          onPressed: widget.enabled
+                                              ? _handleSend
+                                              : null,
+                                        );
+                                      },
+                                    )),
                               ),
                             ),
                           )

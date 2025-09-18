@@ -79,7 +79,7 @@ class MdColors {
 
   /// WaveInput Colors
   static const Color selectionTextChatInputColor =
-      Color.fromRGBO(58, 89, 238, 0.4);
+      Color.fromRGBO(177, 172, 255, 0.6);
   static const Color defaultTextChatInputColor =
       Color.fromRGBO(220, 218, 255, 0.9);
   static const Color defaultBorderChatInputColor =
