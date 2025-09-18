@@ -18,6 +18,7 @@ class WaveParticipant extends StatelessWidget {
     this.gradientInColorFrom = MdColors.participantGradientInStartColor,
     this.gradientInColorTo = MdColors.participantGradientInEndColor,
     this.muteBadgeSize = 28,
+    this.muteIconSize = 18,
     this.muteBadgeIconAsset = PrecachedIcons.participantMicIcon,
   });
 
@@ -33,6 +34,7 @@ class WaveParticipant extends StatelessWidget {
   final bool muted;
 
   final double muteBadgeSize;
+  final double muteIconSize;
   final String muteBadgeIconAsset;
 
   @override
@@ -76,10 +78,20 @@ class WaveParticipant extends StatelessWidget {
               bottom: 0,
               width: muteBadgeSize,
               height: muteBadgeSize,
-              child: SvgPicture.asset(
-                muteBadgeIconAsset,
-                width: muteBadgeSize,
-                height: muteBadgeSize,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: MdColors.participantIconBackgroundColor,
+                  border: BoxBorder.all(
+                      color: MdColors.participantIconBorderColor, width: 3),
+                ),
+                child: Center(
+                  child: SvgPicture.asset(
+                    muteBadgeIconAsset,
+                    width: muteIconSize,
+                    height: muteIconSize,
+                  ),
+                ),
               ),
             ),
         ],

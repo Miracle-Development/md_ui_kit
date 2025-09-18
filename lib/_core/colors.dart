@@ -5,7 +5,8 @@ class MdColors {
   static const backgroundColor = Color.fromRGBO(13, 13, 15, 1);
   static const containerColor = Color.fromRGBO(17, 17, 30, 0.6);
   static const navBarContainerColor = Color.fromRGBO(17, 17, 30, 0.95);
-  static const waveInputBackgroundColor = const Color.fromRGBO(17, 17, 30, 0.95);
+  static const waveInputBackgroundColor =
+      const Color.fromRGBO(17, 17, 30, 0.95);
   static const brandFirstStrip = Color.fromRGBO(67, 70, 243, 1);
   static const brandSecondStrip = Color.fromRGBO(48, 51, 212, 1);
 
@@ -132,6 +133,9 @@ class MdColors {
       Color.fromRGBO(13, 13, 15, 0);
   static const Color participantGradientInEndColor =
       Color.fromRGBO(20, 20, 116, 1);
+  static const Color participantIconBackgroundColor =
+      Color.fromRGBO(130, 50, 50, 1);
+  static const Color participantIconBorderColor = Color.fromRGBO(17, 17, 27, 1);
 
   /// WaveDeviceMenu Colors
   static const deviceMenuSubTitleTextColor = Color.fromRGBO(179, 179, 202, 1);
