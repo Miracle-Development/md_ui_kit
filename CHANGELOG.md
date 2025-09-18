@@ -1,4 +1,4 @@
-## [2.12.0]
+## [2.11.0]
 
 - Добавлен компонент WaveParticipant и WaveParticipantLoader
 
