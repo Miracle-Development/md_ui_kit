@@ -12,17 +12,25 @@ class WaveFlowerLoader extends StatefulWidget {
 
 class _WaveFlowerLoaderState extends State<WaveFlowerLoader>
     with TickerProviderStateMixin {
+  // Скорость увеличения/уменьшения цветка
   Duration breathDuration = const Duration(milliseconds: 800);
+  // Скорость вращения цветка
   Duration rotateDuration = const Duration(seconds: 8);
+  // Множители увеличения/уменьшения
   double minScale = 0.2;
   double maxScale = 0.5;
 
+  // Основной размер цветка
   double size = 376.0;
+  // Радиус закругления каждого цветка
   double radius = 50.0;
   double closedCornerBoost = 20.0;
 
+  // Угол поворота каждого треугольника относительно оси Ox (счет по слоям идет, начиная от пользователя)
   List<double> layerAnglesDeg = const [15, -33, -75, 48, -56, -103];
+  // Множитель увеличения по сравнению с изначальным (счет по слоям идет, начиная от пользователя)
   List<double> layerSizeMul = const [1.00, 1.10, 1.24, 1.00, 1.10, 1.24];
+  // Цвета для каждого слоя (счет по слоям идет, начиная от пользователя)
   List<Color> layerColors = const [
     Color.fromRGBO(220, 218, 255, 0.2),
     Color.fromRGBO(158, 152, 255, 0.2),
@@ -32,15 +40,18 @@ class _WaveFlowerLoaderState extends State<WaveFlowerLoader>
     Color.fromRGBO(134, 127, 255, 0.2),
   ];
 
-  // rotate duration list (seconds), each index correspoding to the triangle in UI
+  // Скорость вращения каждого элемента (счет по слоям идет, начиная от пользователя)
   List<double> rotateDurationList = const [5.1, 5.2, 5.3, 5.1, 5.2, 5.3];
 
+  // Контролеры увеличения/уменьшения
   late final AnimationController _breath;
   late final Animation<double> _scale;
 
+  // Контролер поворота всего цветка
   late final AnimationController _rotateAll;
   late final Animation<double> _angleAll;
 
+  // Контролеы скорости для каждого лепестка
   late final List<AnimationController> _layerRotCtrls;
   late final List<Animation<double>> _layerAnglesAnim;
 
