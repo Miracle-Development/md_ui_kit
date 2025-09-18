@@ -13,7 +13,7 @@ class WaveFlowerLoader extends StatefulWidget {
 class _WaveFlowerLoaderState extends State<WaveFlowerLoader>
     with TickerProviderStateMixin {
   Duration breathDuration = const Duration(milliseconds: 800);
-  Duration rotateDuration = const Duration(seconds: 5);
+  Duration rotateDuration = const Duration(seconds: 8);
   double minScale = 0.2;
   double maxScale = 0.5;
 
@@ -21,7 +21,7 @@ class _WaveFlowerLoaderState extends State<WaveFlowerLoader>
   double radius = 50.0;
   double closedCornerBoost = 20.0;
 
-  List<double> layerAnglesDeg = const [15, -33, -75, -15, -63, -105];
+  List<double> layerAnglesDeg = const [15, -33, -75, 48, -56, -103];
   List<double> layerSizeMul = const [1.00, 1.10, 1.24, 1.00, 1.10, 1.24];
   List<Color> layerColors = const [
     Color.fromRGBO(220, 218, 255, 0.2),
@@ -32,9 +32,8 @@ class _WaveFlowerLoaderState extends State<WaveFlowerLoader>
     Color.fromRGBO(134, 127, 255, 0.2),
   ];
 
-  // TODO: Edit rotate durations
   // rotate duration list (seconds), each index correspoding to the triangle in UI
-  List<double> rotateDurationList = const [5, 5, 5, 5, 5, 5];
+  List<double> rotateDurationList = const [5.1, 5.2, 5.3, 5.1, 5.2, 5.3];
 
   late final AnimationController _breath;
   late final Animation<double> _scale;
