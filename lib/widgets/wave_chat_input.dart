@@ -175,7 +175,7 @@ class _WaveChatInputState extends State<WaveChatInput> {
             children: [
               Expanded(
                 child: AnimatedPadding(
-                  duration: const Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 1200),
                   curve: Curves.ease,
                   padding: EdgeInsets.only(
                     left: 20,
@@ -250,7 +250,7 @@ class _WaveChatInputState extends State<WaveChatInput> {
                 ),
               ),
               AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 1200),
                 curve: Curves.ease,
                 width: (_showArrow && widget.enabled) ? 32 : 0,
                 height: 32,
@@ -262,7 +262,7 @@ class _WaveChatInputState extends State<WaveChatInput> {
                 child: IgnorePointer(
                   ignoring: !_showArrow || !widget.enabled,
                   child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 150),
+                    duration: const Duration(milliseconds: 1200),
                     curve: Curves.ease,
                     opacity: (_showArrow && widget.enabled) ? 1 : 0,
                     child: _showArrow && widget.enabled
@@ -288,7 +288,7 @@ class _WaveChatInputState extends State<WaveChatInput> {
                               }),
                               onTap: widget.enabled ? _handleSend : null,
                               child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 150),
+                                duration: const Duration(milliseconds: 1200),
                                 curve: Curves.ease,
                                 clipBehavior: Clip.antiAlias,
                                 decoration: BoxDecoration(
