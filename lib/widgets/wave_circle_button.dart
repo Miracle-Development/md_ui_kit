@@ -23,7 +23,7 @@ class WaveCircleButton extends StatefulWidget {
 class _WaveCircleButtonState extends State<WaveCircleButton> {
   bool isPressed = false;
   bool isHover = false;
-  bool selected = false;
+  bool selected = true;
   String icon = "";
   static const duration = Duration(milliseconds: 300);
   double _turns = 0.0;
@@ -65,7 +65,7 @@ class _WaveCircleButtonState extends State<WaveCircleButton> {
               setState(() {
                 if (widget.type == WaveCircleButtonType.setting) {
                   selected = !selected;
-                  _turns += selected ? 0.5 : -0.5;
+                  _turns += selected ? -0.5 : 0.5;
                 }
               });
               widget.onTap?.call();
