@@ -1,3 +1,7 @@
+## [2.13.0]
+
+- Добавлен компонент WaveCircleButton
+
 ## [2.12.0]
 
 - Добавлен компонент WaveParticipant и WaveParticipantLoader
