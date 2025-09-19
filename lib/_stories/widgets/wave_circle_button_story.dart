@@ -36,12 +36,9 @@ class WaveCircleButtonStory extends StatelessWidget {
       ],
     );
 
-    final selected = knobs.boolean(label: "selected");
-
     return WaveCircleButton(
       subtitle: label,
       type: type,
-      selected: selected,
       onTap: () => print("WaveCircleButton Test"),
     );
   }

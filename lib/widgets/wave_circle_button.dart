@@ -9,12 +9,10 @@ class WaveCircleButton extends StatefulWidget {
     super.key,
     required this.type,
     required this.subtitle,
-    this.selected = false,
     this.onTap,
   });
 
   final WaveCircleButtonType type;
-  final bool selected;
   final VoidCallback? onTap;
   final String subtitle;
 
@@ -25,8 +23,10 @@ class WaveCircleButton extends StatefulWidget {
 class _WaveCircleButtonState extends State<WaveCircleButton> {
   bool isPressed = false;
   bool isHover = false;
+  bool selected = false;
   String icon = "";
   static const duration = Duration(milliseconds: 300);
+  double _turns = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class _WaveCircleButtonState extends State<WaveCircleButton> {
     final colors = _resolveCircleButtonColors(
       widget.type,
       uiState,
-      widget.selected,
+      selected,
     );
 
     final String icon = switch (widget.type) {
@@ -52,6 +52,7 @@ class _WaveCircleButtonState extends State<WaveCircleButton> {
       mainAxisSize: MainAxisSize.min,
       children: [
         MouseRegion(
+          cursor: SystemMouseCursors.click,
           onEnter: (_) => setState(() => isHover = true),
           onExit: (_) => setState(() => isHover = false),
           child: GestureDetector(
@@ -61,6 +62,12 @@ class _WaveCircleButtonState extends State<WaveCircleButton> {
             }),
             onTapCancel: () => setState(() => isPressed = false),
             onTap: () {
+              setState(() {
+                if (widget.type == WaveCircleButtonType.setting) {
+                  selected = !selected;
+                  _turns += selected ? 0.5 : -0.5;
+                }
+              });
               widget.onTap?.call();
             },
             child: AnimatedContainer(
@@ -73,19 +80,38 @@ class _WaveCircleButtonState extends State<WaveCircleButton> {
                 color: colors.background,
               ),
               child: Center(
-                child: TweenAnimationBuilder<Color?>(
-                  tween: ColorTween(end: colors.icon),
-                  duration: duration,
-                  curve: Curves.ease,
-                  child: SvgPicture.asset(icon, width: 36, height: 36),
-                  builder: (context, color, child) => ColorFiltered(
-                    colorFilter: ColorFilter.mode(
-                      color ?? colors.icon,
-                      BlendMode.srcIn,
-                    ),
-                    child: child,
-                  ),
-                ),
+                child: widget.type == WaveCircleButtonType.setting
+                    ? AnimatedRotation(
+                        turns: _turns,
+                        duration: duration,
+                        curve: Curves.ease,
+                        child: TweenAnimationBuilder<Color?>(
+                          tween: ColorTween(end: colors.icon),
+                          duration: duration,
+                          curve: Curves.ease,
+                          child: SvgPicture.asset(icon, width: 36, height: 36),
+                          builder: (context, color, child) => ColorFiltered(
+                            colorFilter: ColorFilter.mode(
+                              color ?? colors.icon,
+                              BlendMode.srcIn,
+                            ),
+                            child: child,
+                          ),
+                        ),
+                      )
+                    : TweenAnimationBuilder<Color?>(
+                        tween: ColorTween(end: colors.icon),
+                        duration: duration,
+                        curve: Curves.ease,
+                        child: SvgPicture.asset(icon, width: 36, height: 36),
+                        builder: (context, color, child) => ColorFiltered(
+                          colorFilter: ColorFilter.mode(
+                            color ?? colors.icon,
+                            BlendMode.srcIn,
+                          ),
+                          child: child,
+                        ),
+                      ),
               ),
             ),
           ),
