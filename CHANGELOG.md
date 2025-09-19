@@ -1,6 +1,10 @@
-## [2.11.0]
+## [2.12.0]
 
 - Добавлен компонент WaveParticipant и WaveParticipantLoader
+
+## [2.11.0]
+
+- Добавлен компонент WaveFlowerLoader
 
 ## [2.10.2]
 
