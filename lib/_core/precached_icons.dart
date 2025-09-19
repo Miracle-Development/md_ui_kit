@@ -14,7 +14,7 @@ class PrecachedIcons {
   static const navBarMicOffLineIcon = 'assets/icons/nav_bar/line_mic_off.svg';
   static const navBarPhoneIcon = 'assets/icons/nav_bar/phone.svg';
   static const navBarPlanetIcon = 'assets/icons/nav_bar/planet.svg';
-  static const sendMsgIcon = 'assets/icons/chat_input/Arrow_Up_MD.svg';
+  static const sendMsgIcon = 'assets/icons/chat_input/arrow_up_md.svg';
   static const micButton = 'assets/icons/mic/microphone_button.svg';
 
   List<SvgAssetLoader> get iconsToPrecache => const [
