@@ -146,6 +146,7 @@ class StorybookApp extends StatelessWidget {
                 name: 'Wave/WaveCircleButton',
                 builder: (context) =>
                     WaveCircleButtonStory(knobs: context.knobs),
+              ),
               Story(
                 name: 'Wave/WaveParticipant',
                 builder: (context) =>
