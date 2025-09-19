@@ -51,9 +51,9 @@ class _WaveChatInputState extends State<WaveChatInput> {
     _scrollCtrl = ScrollController();
     _focus.addListener(() => setState(() {}));
     _controller = widget.controller ?? TextEditingController();
-    _showArrow = _controller.text.isNotEmpty;
+    _showArrow = _controller.text.trim().isNotEmpty;
     _controller.addListener(() {
-      final textNotEmpty = _controller.text.isNotEmpty;
+      final textNotEmpty = _controller.text.trim().isNotEmpty;
       if (textNotEmpty != _showArrow) {
         setState(() {
           _showArrow = textNotEmpty;
@@ -77,6 +77,8 @@ class _WaveChatInputState extends State<WaveChatInput> {
     if (text.trim().isEmpty) return;
     widget.onSend?.call();
     _controller.clear();
+    _iconHover = false;
+    _iconPressed = false;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _focus.requestFocus();
@@ -270,12 +272,20 @@ class _WaveChatInputState extends State<WaveChatInput> {
                             onExit: (_) => setState(() => _iconHover = false),
                             child: GestureDetector(
                               behavior: HitTestBehavior.opaque,
-                              onTapDown: (_) =>
-                                  setState(() => _iconPressed = true),
-                              onTapUp: (_) =>
-                                  setState(() => _iconPressed = false),
-                              onTapCancel: () =>
-                                  setState(() => _iconPressed = false),
+                              onTapDown: (_) => setState(() {
+                                _iconPressed = true;
+                                _iconHover = false;
+                              }),
+                              onTapUp: (_) => setState(
+                                () {
+                                  _iconPressed = false;
+                                  _iconHover = false;
+                                },
+                              ),
+                              onTapCancel: () => setState(() {
+                                _iconPressed = false;
+                                _iconHover = false;
+                              }),
                               onTap: widget.enabled ? _handleSend : null,
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 150),

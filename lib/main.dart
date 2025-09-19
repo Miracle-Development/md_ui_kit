@@ -19,7 +19,6 @@ import 'package:md_ui_kit/_stories/widgets/wave_nav_bar_item_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_text_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_text_button_story.dart';
 import 'package:md_ui_kit/widgets/md_initial_wave.dart';
-import 'package:md_ui_kit/widgets/wave_chat_input.dart';
 import 'package:md_ui_kit/widgets/wave_logo.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
