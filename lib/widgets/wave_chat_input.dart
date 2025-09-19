@@ -262,81 +262,75 @@ class _WaveChatInputState extends State<WaveChatInput> {
                 child: IgnorePointer(
                   ignoring: !_showArrow || !widget.enabled,
                   child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 150),
-                    curve: Curves.ease,
-                    opacity: (_showArrow && widget.enabled) ? 1 : 0,
-                    child: _showArrow && widget.enabled
-                        ? MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            onEnter: (_) => setState(() => _iconHover = true),
-                            onExit: (_) => setState(() => _iconHover = false),
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTapDown: (_) => setState(() {
-                                _iconPressed = true;
-                                _iconHover = false;
-                              }),
-                              onTapUp: (_) => setState(
-                                () {
-                                  _iconPressed = false;
-                                  _iconHover = false;
-                                },
+                      duration: const Duration(milliseconds: 150),
+                      curve: Curves.ease,
+                      opacity: (_showArrow && widget.enabled) ? 1 : 0,
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        onEnter: (_) => setState(() => _iconHover = true),
+                        onExit: (_) => setState(() => _iconHover = false),
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTapDown: (_) => setState(() {
+                            _iconPressed = true;
+                            _iconHover = false;
+                          }),
+                          onTapUp: (_) => setState(
+                            () {
+                              _iconPressed = false;
+                              _iconHover = false;
+                            },
+                          ),
+                          onTapCancel: () => setState(() {
+                            _iconPressed = false;
+                            _iconHover = false;
+                          }),
+                          onTap: widget.enabled ? _handleSend : null,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 150),
+                            curve: Curves.ease,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(6),
+                                bottomRight: Radius.circular(12),
+                                topLeft: Radius.circular(6),
+                                topRight: Radius.circular(6),
                               ),
-                              onTapCancel: () => setState(() {
-                                _iconPressed = false;
-                                _iconHover = false;
-                              }),
-                              onTap: widget.enabled ? _handleSend : null,
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 150),
-                                curve: Curves.ease,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.only(
-                                    bottomLeft: Radius.circular(6),
-                                    bottomRight: Radius.circular(12),
-                                    topLeft: Radius.circular(6),
-                                    topRight: Radius.circular(6),
-                                  ),
-                                  color: const Color.fromRGBO(17, 17, 30, 0.9),
-                                  border: Border.all(
-                                    color: _resolveIconColor(),
-                                    width: 2,
-                                  ),
-                                ),
-                                child: Padding(
-                                    padding: const EdgeInsets.all(4),
-                                    child: TweenAnimationBuilder<Color?>(
-                                      tween:
-                                          ColorTween(end: _resolveIconColor()),
-                                      duration:
-                                          const Duration(milliseconds: 150),
-                                      curve: Curves.ease,
-                                      builder: (context, color, _) {
-                                        return IconButton(
-                                          iconSize: 24,
-                                          padding: EdgeInsets.zero,
-                                          splashColor: Colors.transparent,
-                                          highlightColor: Colors.transparent,
-                                          hoverColor: Colors.transparent,
-                                          icon: SvgPicture.asset(
-                                            PrecachedIcons.sendMsgIcon,
-                                            colorFilter: ColorFilter.mode(
-                                              color ?? _resolveIconColor(),
-                                              BlendMode.srcIn,
-                                            ),
-                                          ),
-                                          onPressed: widget.enabled
-                                              ? _handleSend
-                                              : null,
-                                        );
-                                      },
-                                    )),
+                              color: const Color.fromRGBO(17, 17, 30, 0.9),
+                              border: Border.all(
+                                color: _resolveIconColor(),
+                                width: 2,
                               ),
                             ),
-                          )
-                        : const SizedBox.shrink(),
-                  ),
+                            child: Padding(
+                                padding: const EdgeInsets.all(4),
+                                child: TweenAnimationBuilder<Color?>(
+                                  tween: ColorTween(end: _resolveIconColor()),
+                                  duration: const Duration(milliseconds: 150),
+                                  curve: Curves.ease,
+                                  builder: (context, color, _) {
+                                    return IconButton(
+                                      iconSize: 24,
+                                      padding: EdgeInsets.zero,
+                                      splashColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      hoverColor: Colors.transparent,
+                                      icon: SvgPicture.asset(
+                                        PrecachedIcons.sendMsgIcon,
+                                        colorFilter: ColorFilter.mode(
+                                          color ?? _resolveIconColor(),
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
+                                      onPressed:
+                                          widget.enabled ? _handleSend : null,
+                                    );
+                                  },
+                                )),
+                          ),
+                        ),
+                      )),
                 ),
               ),
             ],
