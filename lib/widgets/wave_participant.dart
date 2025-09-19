@@ -57,7 +57,9 @@ class WaveParticipant extends StatelessWidget {
                       end: Alignment.bottomRight,
                       colors: [
                         inCall ? gradientInColorFrom : gradientOutColorFrom,
-                        inCall ? gradientInColorTo : gradientOutColorTo,
+                        inCall
+                            ? gradientInColorTo.withValues(alpha: 0.45)
+                            : gradientOutColorTo.withValues(alpha: 0.45),
                       ],
                     ),
                   ),
