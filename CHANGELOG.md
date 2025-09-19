@@ -2,6 +2,14 @@
 
 - Добавлен компонент WaveFlowerLoader
 
+## [2.10.2]
+
+- Изменен цвет заднего фона в дефолтном состоянии у WaveMicButton
+
+## [2.10.1]
+
+- Добавлен тестовый onTap для WaveTextButton, WaveSimpleButton, WaveNavBarItem
+
 ## [2.10.0]
 
 - [wave-39] Компонент WaveDeviceMenu добавлен
