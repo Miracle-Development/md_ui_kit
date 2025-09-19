@@ -1,3 +1,7 @@
+## [2.10.2]
+
+- Изменен цвет заднего фона в дефолтном состоянии у WaveMicButton
+
 ## [2.10.1]
 
 - Добавлен тестовый onTap для WaveTextButton, WaveSimpleButton, WaveNavBarItem
