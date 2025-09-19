@@ -116,11 +116,11 @@ class MdColors {
 
   /// WaveParticipantLoader Colors
   static const Color participantLoaderFirstPointColor =
-      Color.fromRGBO(220, 218, 255, 0.6);
+      Color.fromRGBO(223, 222, 251, 0.6);
   static const Color participantLoaderSecondPointColor =
-      Color.fromRGBO(220, 218, 255, 0.7);
+      Color.fromRGBO(223, 222, 251, 0.7);
   static const Color participantLoaderThirdPointColor =
-      Color.fromRGBO(220, 218, 255, 0.8);
+      Color.fromRGBO(223, 222, 251, 0.8);
 
   /// WaveParticipant Colors
   static const Color participantBaseOutColor = Color.fromRGBO(113, 113, 136, 1);
@@ -136,6 +136,7 @@ class MdColors {
   static const Color participantIconBackgroundColor =
       Color.fromRGBO(130, 50, 50, 1);
   static const Color participantIconBorderColor = Color.fromRGBO(17, 17, 27, 1);
+  static const Color participantLabelColor = Color.fromRGBO(223, 222, 251, 1);
 
   /// WaveDeviceMenu Colors
   static const deviceMenuSubTitleTextColor = Color.fromRGBO(179, 179, 202, 1);

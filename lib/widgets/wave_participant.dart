@@ -67,6 +67,7 @@ class WaveParticipant extends StatelessWidget {
                     label,
                     type: WaveTextType.subtitle,
                     weight: WaveTextWeight.bold,
+                    color: MdColors.participantLabelColor,
                   ),
                 ),
               ],
