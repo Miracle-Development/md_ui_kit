@@ -1,6 +1,30 @@
-## [2.9.0]
+## [2.13.0]
 
 - [wave-36] Добавлен компонент WaveChatInput
+
+## [2.12.0]
+
+- Добавлен компонент WaveParticipant и WaveParticipantLoader
+
+## [2.11.0]
+
+- Добавлен компонент WaveFlowerLoader
+
+## [2.10.2]
+
+- Изменен цвет заднего фона в дефолтном состоянии у WaveMicButton
+
+## [2.10.1]
+
+- Добавлен тестовый onTap для WaveTextButton, WaveSimpleButton, WaveNavBarItem
+
+## [2.10.0]
+
+- [wave-39] Компонент WaveDeviceMenu добавлен
+
+## [2.9.0]
+
+- [wave-33] Добавлен компонент WaveInput
 
 ## [2.8.5]
 
