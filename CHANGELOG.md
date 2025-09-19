@@ -1,3 +1,15 @@
+## [2.10.1]
+
+- Добавлен тестовый onTap для WaveTextButton, WaveSimpleButton, WaveNavBarItem
+
+## [2.10.0]
+
+- [wave-39] Компонент WaveDeviceMenu добавлен
+
+## [2.9.0]
+
+- [wave-33] Добавлен компонент WaveInput
+
 ## [2.8.6]
 
 - Изменен цвет заднего фона в дефолтном состоянии у WaveMicButton
