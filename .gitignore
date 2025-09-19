@@ -65,6 +65,7 @@ migrate_working_dir/
 
 # Add-to-app related
 .android/
+.android/local.properties
 .ios/
 
 # FVM related
