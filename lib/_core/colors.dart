@@ -5,6 +5,8 @@ class MdColors {
   static const backgroundColor = Color.fromRGBO(13, 13, 15, 1);
   static const containerColor = Color.fromRGBO(17, 17, 30, 0.6);
   static const navBarContainerColor = Color.fromRGBO(17, 17, 30, 0.95);
+  static const waveInputBackgroundColor =
+      const Color.fromRGBO(17, 17, 30, 0.95);
   static const brandFirstStrip = Color.fromRGBO(67, 70, 243, 1);
   static const brandSecondStrip = Color.fromRGBO(48, 51, 212, 1);
 
@@ -79,9 +81,16 @@ class MdColors {
 
   /// WaveInput Colors
   static const Color selectionTextInputColor = Color.fromRGBO(58, 89, 238, 0.4);
+  static const Color defaultTextInputColor = Color.fromRGBO(220, 218, 255, 0.9);
+  static const Color defaultBorderInputColor = Color.fromRGBO(67, 70, 243, 0.8);
+  static const Color selectedBorderInputColor =
+      Color.fromRGBO(177, 172, 255, 0.8);
+  static const Color disabledInputColor = Color.fromRGBO(52, 53, 91, 0.8);
+  static const Color disabledTextInputColor = Color.fromRGBO(52, 53, 91, 0.9);
+  static const Color errorInputColor = Color.fromRGBO(130, 50, 50, 0.8);
 
   /// WaveMicButton Colors
-  static const unmutedDefaultBg = Color.fromRGBO(220, 218, 255, 1);
+  static const unmutedDefaultBg = Color.fromRGBO(223, 222, 251, 1);
   static const unmutedDefaultIcon = Color.fromRGBO(67, 70, 243, 1);
   static const unmutedHoverBg = Color.fromRGBO(181, 178, 229, 1);
   static const unmutedHoverIcon = Color.fromRGBO(63, 66, 243, 1);
@@ -102,7 +111,7 @@ class MdColors {
   static const Color chatBubbleColorMe = Color.fromRGBO(67, 70, 243, 1);
   static const Color chatBubbleColorText = Color.fromRGBO(255, 255, 255, 1);
   static const Color chatBubbleColorSystem = Color.fromRGBO(179, 179, 202, 1);
-  static const Color chatBubbleColorSelection =
+  static const Color selectionChatBubbleColor =
       Color.fromRGBO(177, 172, 255, 0.6);
 
   /// WaveCircleButton Colors
@@ -159,4 +168,61 @@ class MdColors {
       Color.fromRGBO(214, 250, 215, 1);
   // Subtitle Color
   static const circleButtonSubtitleColor = Color.fromRGBO(179, 179, 202, 1);
+
+  
+  /// WaveParticipantLoader Colors
+  static const Color participantLoaderFirstPointColor =
+      Color.fromRGBO(223, 222, 251, 0.6);
+  static const Color participantLoaderSecondPointColor =
+      Color.fromRGBO(223, 222, 251, 0.7);
+  static const Color participantLoaderThirdPointColor =
+      Color.fromRGBO(223, 222, 251, 0.8);
+
+  /// WaveParticipant Colors
+  static const Color participantBaseOutColor = Color.fromRGBO(113, 113, 136, 1);
+  static const Color participantGradientOutStartColor =
+      Color.fromRGBO(13, 13, 15, 0);
+  static const Color participantGradientOutEndColor =
+      Color.fromRGBO(13, 13, 15, 1);
+  static const Color participantBaseInColor = Color.fromRGBO(67, 70, 243, 1);
+  static const Color participantGradientInStartColor =
+      Color.fromRGBO(13, 13, 15, 0);
+  static const Color participantGradientInEndColor =
+      Color.fromRGBO(20, 20, 116, 1);
+  static const Color participantIconBackgroundColor =
+      Color.fromRGBO(130, 50, 50, 1);
+  static const Color participantIconBorderColor = Color.fromRGBO(17, 17, 27, 1);
+  static const Color participantLabelColor = Color.fromRGBO(223, 222, 251, 1);
+
+  /// WaveDeviceMenu Colors
+  static const deviceMenuSubTitleTextColor = Color.fromRGBO(179, 179, 202, 1);
+  static const deviceMenuBorderClosedDefaultColor =
+      Color.fromRGBO(67, 70, 243, 1);
+  static const deviceMenuBorderClosedHoverColor =
+      Color.fromRGBO(53, 56, 233, 1);
+  static const deviceMenuBorderClosedPressedColor =
+      Color.fromRGBO(41, 44, 224, 1);
+  static const deviceMenuBorderOpenDefaultColor =
+      Color.fromRGBO(177, 172, 255, 1);
+  static const deviceMenuBorderOpenHoverColor =
+      Color.fromRGBO(169, 163, 255, 1);
+  static const deviceMenuBorderOpenPressedColor =
+      Color.fromRGBO(159, 153, 255, 1);
+  static const deviceMenuTextDefaultColor = Color.fromRGBO(220, 218, 255, 1);
+  static const deviceMenuTextHoverColor = Color.fromRGBO(177, 172, 255, 1);
+  static const deviceMenuTextPressedColor = Color.fromRGBO(159, 153, 255, 1);
+  static const deviceMenuIconDefaultColor = Color.fromRGBO(192, 189, 255, 1);
+  static const deviceMenuIconHoverColor = Color.fromRGBO(177, 172, 255, 1);
+  static const deviceMenuIconPressedColor = Color.fromRGBO(159, 153, 255, 1);
+  static const deviceMenuShadowDefaultColor = Color.fromRGBO(17, 17, 30, 0.9);
+  static const deviceMenuShadowHoverColor = Color.fromRGBO(177, 172, 255, 0.1);
+  static const deviceMenuShadowPressedColor =
+      Color.fromRGBO(159, 153, 255, 0.15);
+  static const deviceMenuItemHoverColor = Color.fromRGBO(169, 163, 255, 1);
+  static const deviceMenuItemPressedColor = Color.fromRGBO(159, 153, 255, 1);
+  static const deviceMenuItemTextDefualtColor =
+      Color.fromRGBO(192, 189, 255, 1);
+  static const deviceMenuItemTextHoverPressedColor =
+      Color.fromRGBO(220, 218, 255, 1);
+  static const deviceMenuItemsBorderColor = Color.fromRGBO(177, 172, 255, 0.8);
 }
