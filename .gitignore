@@ -67,6 +67,8 @@ migrate_working_dir/
 .android/
 .android/local.properties
 .ios/
+.ios/Flutter/Generated.xcconfig
+.ios/Flutter/flutter_export_environment.sh
 
 # FVM related
 .fvm/

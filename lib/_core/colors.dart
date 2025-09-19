@@ -5,7 +5,8 @@ class MdColors {
   static const backgroundColor = Color.fromRGBO(13, 13, 15, 1);
   static const containerColor = Color.fromRGBO(17, 17, 30, 0.6);
   static const navBarContainerColor = Color.fromRGBO(17, 17, 30, 0.95);
-  static const waveInputBackgroundColor = const Color.fromRGBO(17, 17, 30, 0.95);
+  static const waveInputBackgroundColor =
+      const Color.fromRGBO(17, 17, 30, 0.95);
   static const brandFirstStrip = Color.fromRGBO(67, 70, 243, 1);
   static const brandSecondStrip = Color.fromRGBO(48, 51, 212, 1);
 
@@ -112,6 +113,30 @@ class MdColors {
   static const Color chatBubbleColorSystem = Color.fromRGBO(179, 179, 202, 1);
   static const Color selectionChatBubbleColor =
       Color.fromRGBO(177, 172, 255, 0.6);
+
+  /// WaveParticipantLoader Colors
+  static const Color participantLoaderFirstPointColor =
+      Color.fromRGBO(223, 222, 251, 0.6);
+  static const Color participantLoaderSecondPointColor =
+      Color.fromRGBO(223, 222, 251, 0.7);
+  static const Color participantLoaderThirdPointColor =
+      Color.fromRGBO(223, 222, 251, 0.8);
+
+  /// WaveParticipant Colors
+  static const Color participantBaseOutColor = Color.fromRGBO(113, 113, 136, 1);
+  static const Color participantGradientOutStartColor =
+      Color.fromRGBO(13, 13, 15, 0);
+  static const Color participantGradientOutEndColor =
+      Color.fromRGBO(13, 13, 15, 1);
+  static const Color participantBaseInColor = Color.fromRGBO(67, 70, 243, 1);
+  static const Color participantGradientInStartColor =
+      Color.fromRGBO(13, 13, 15, 0);
+  static const Color participantGradientInEndColor =
+      Color.fromRGBO(20, 20, 116, 1);
+  static const Color participantIconBackgroundColor =
+      Color.fromRGBO(130, 50, 50, 1);
+  static const Color participantIconBorderColor = Color.fromRGBO(17, 17, 27, 1);
+  static const Color participantLabelColor = Color.fromRGBO(223, 222, 251, 1);
 
   /// WaveDeviceMenu Colors
   static const deviceMenuSubTitleTextColor = Color.fromRGBO(179, 179, 202, 1);

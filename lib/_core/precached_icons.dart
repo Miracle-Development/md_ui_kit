@@ -18,6 +18,8 @@ class PrecachedIcons {
   static const inputOpenedEyeIcon = 'assets/icons/input/opened_eye.svg';
   static const inputClosedEyeIcon = 'assets/icons/input/closed_eye.svg';
   static const micButton = 'assets/icons/mic/microphone_button.svg';
+  static const participantMicIcon =
+      'assets/icons/participants/mic_muted_mini.svg';
 
   List<SvgAssetLoader> get iconsToPrecache => const [
         SvgAssetLoader(copyDefaultIcon),
@@ -33,6 +35,7 @@ class PrecachedIcons {
         SvgAssetLoader(inputOpenedEyeIcon),
         SvgAssetLoader(inputClosedEyeIcon),
         SvgAssetLoader(micButton),
+        SvgAssetLoader(participantMicIcon),
       ];
 
   void precache(BuildContext context) {
