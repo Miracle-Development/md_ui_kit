@@ -17,6 +17,7 @@ dependencies:
   flex_color_scheme: ^8.1.1
   wave: ^0.2.2
   morphable_shape: ^2.0.0
+  record: ^6.1.1
 
 dev_dependencies:
   flutter_test:
