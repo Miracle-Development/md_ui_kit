@@ -19,6 +19,9 @@ class PrecachedIcons {
   static const inputOpenedEyeIcon = 'assets/icons/input/opened_eye.svg';
   static const inputClosedEyeIcon = 'assets/icons/input/closed_eye.svg';
   static const micButton = 'assets/icons/mic/microphone_button.svg';
+  static const settingsButton = 'assets/icons/circle_button/settings.svg';
+  static const leaveCallButton = 'assets/icons/circle_button/leave_call.svg';
+  static const startCallButton = 'assets/icons/circle_button/start_call.svg';
   static const participantMicIcon =
       'assets/icons/participants/mic_muted_mini.svg';
 
@@ -37,6 +40,9 @@ class PrecachedIcons {
         SvgAssetLoader(inputOpenedEyeIcon),
         SvgAssetLoader(inputClosedEyeIcon),
         SvgAssetLoader(micButton),
+        SvgAssetLoader(settingsButton),
+        SvgAssetLoader(leaveCallButton),
+        SvgAssetLoader(startCallButton),
         SvgAssetLoader(participantMicIcon),
       ];
 
