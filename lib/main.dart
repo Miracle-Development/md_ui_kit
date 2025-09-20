@@ -10,10 +10,14 @@ import 'package:md_ui_kit/_stories/widgets/gradient_scaffold_wrapper_story.dart'
 import 'package:md_ui_kit/_stories/widgets/wave_amplitude_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_device_menu_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_chat_bubble_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_circle_button_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_divider_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_flower_loader_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_input_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_hint_text_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_mic_button_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_participant_loader_story.dart';
+import 'package:md_ui_kit/_stories/widgets/wave_participant_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_simple_button_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_status_story.dart';
 import 'package:md_ui_kit/_stories/widgets/wave_item_badge_story.dart';
@@ -40,7 +44,7 @@ class StorybookApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      // darkTheme: AppTheme.dark, // Uncomment to use the dark theme
+      darkTheme: AppTheme.dark, // Uncomment to use the dark theme
       home: Directionality(
         textDirection: TextDirection.ltr,
         child: Material(
@@ -142,6 +146,25 @@ class StorybookApp extends StatelessWidget {
               Story(
                 name: 'Wave/WaveHintText',
                 builder: (context) => WaveHintTextStory(knobs: context.knobs),
+              ),
+              Story(
+                name: 'Wave/WaveCircleButton',
+                builder: (context) =>
+                    WaveCircleButtonStory(knobs: context.knobs),
+              ),
+              Story(
+                name: 'Wave/WaveParticipant',
+                builder: (context) =>
+                    WaveParticipantStory(knobs: context.knobs),
+              ),
+              Story(
+                name: 'Wave/WaveParticipantLoader',
+                builder: (context) =>
+                    WaveParticipantLoaderStory(knobs: context.knobs),
+              ),
+              Story(
+                name: 'Wave/WaveFlowerLoader',
+                builder: (context) => const WaveFlowerLoaderStory(),
               ),
             ]..sort((a, b) => a.name.compareTo(b.name)),
           ),

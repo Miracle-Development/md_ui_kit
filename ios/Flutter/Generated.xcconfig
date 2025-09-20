@@ -4,8 +4,8 @@ FLUTTER_APPLICATION_PATH=/Users/akstolyarov/Documents/GitHub/md_ui_kit
 COCOAPODS_PARALLEL_CODE_SIGN=true
 FLUTTER_TARGET=/Users/akstolyarov/Documents/GitHub/md_ui_kit/lib/main.dart
 FLUTTER_BUILD_DIR=build
-FLUTTER_BUILD_NAME=2.5.1
-FLUTTER_BUILD_NUMBER=2.5.1
+FLUTTER_BUILD_NAME=2.11.0
+FLUTTER_BUILD_NUMBER=2.11.0
 EXCLUDED_ARCHS[sdk=iphonesimulator*]=i386
 EXCLUDED_ARCHS[sdk=iphoneos*]=armv7
 DART_OBFUSCATION=false

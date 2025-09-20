@@ -1,6 +1,22 @@
-## [2.11.0]
+## [2.14.0]
 
 - Добавлен компонент WaveAmplitude
+
+## [2.13.0]
+
+- Добавлен компонент WaveCircleButton
+
+## [2.12.0]
+
+- Добавлен компонент WaveParticipant и WaveParticipantLoader
+
+## [2.11.0]
+
+- Добавлен компонент WaveFlowerLoader
+
+## [2.10.2]
+
+- Изменен цвет заднего фона в дефолтном состоянии у WaveMicButton
 
 ## [2.10.1]
 

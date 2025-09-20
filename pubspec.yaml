@@ -1,7 +1,7 @@
 name: md_ui_kit
 description: "Miracle Development UI Kit"
 publish_to: "none"
-version: 2.11.0
+version: 2.14.0
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -16,6 +16,7 @@ dependencies:
   shared_preferences: ^2.2.3
   flex_color_scheme: ^8.1.1
   wave: ^0.2.2
+  morphable_shape: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -39,6 +40,8 @@ flutter:
     - assets/icons/menu/
     - assets/icons/input/
     - assets/icons/mic/
+    - assets/icons/circle_button/
+    - assets/icons/participants/
 
   fonts:
     - family: Play
