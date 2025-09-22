@@ -85,6 +85,12 @@ class _WaveChatInputState extends State<WaveChatInput> {
     });
   }
 
+  void _setFocus() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _focus.requestFocus();
+    });
+  }
+
   Color _resolveIconColor() {
     if (_iconPressed) {
       return MdColors.pressedIconChatInputColor;
@@ -281,10 +287,15 @@ class _WaveChatInputState extends State<WaveChatInput> {
                               _iconHover = false;
                             },
                           ),
-                          onTapCancel: () => setState(() {
-                            _iconPressed = false;
-                            _iconHover = false;
-                          }),
+                          onTapCancel: () {
+                            setState(
+                              () {
+                                _iconPressed = false;
+                                _iconHover = false;
+                              },
+                            );
+                            _setFocus();
+                          },
                           onTap: widget.enabled ? _handleSend : null,
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 150),
