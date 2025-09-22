@@ -98,7 +98,7 @@ class _WaveChatInputState extends State<WaveChatInput> {
   Widget build(BuildContext context) {
     final enabledBorder = OutlineInputBorder(
       borderRadius: widget.enabled
-          ? (_controller.text.isEmpty
+          ? (_controller.text.trim().isEmpty
               ? widget.borderRadiusNoContent
               : widget.borderRadiusContent)
           : widget.borderRadiusNoContent,
@@ -113,7 +113,7 @@ class _WaveChatInputState extends State<WaveChatInput> {
     );
     final focusedBorder = OutlineInputBorder(
       borderRadius: widget.enabled
-          ? (_controller.text.isEmpty
+          ? (_controller.text.trim().isEmpty
               ? widget.borderRadiusNoContent
               : widget.borderRadiusContent)
           : widget.borderRadiusNoContent,
@@ -126,7 +126,7 @@ class _WaveChatInputState extends State<WaveChatInput> {
     );
     final disabledBorder = OutlineInputBorder(
       borderRadius: widget.enabled
-          ? (_controller.text.isEmpty
+          ? (_controller.text.trim().isEmpty
               ? widget.borderRadiusNoContent
               : widget.borderRadiusContent)
           : widget.borderRadiusNoContent,
