@@ -117,10 +117,18 @@ class WaveAmplitude extends StatefulWidget {
 
     // === генерация случайных точек (seed) на тик ===
     this.seedsPerTickMin = 6,
-    this.seedsPerTickMax = 10,
+    this.seedsPerTickMax = 16,
     this.seedMinGap = 28.0, // минимальный зазор между точками, px
     this.humpHalfWidthPxMin = 24.0, // половина ширины «горба» (минимум), px
     this.humpHalfWidthPxMax = 72.0, // половина ширины «горба» (максимум), px
+
+    // === контейнер ===
+    this.backgroundColor = Colors.transparent,
+    this.containerShadow = const BoxShadow(
+      color: Color.fromRGBO(48, 51, 212, 0.25),
+      blurRadius: 120,
+      offset: Offset(0, 20),
+    ),
   });
 
   final bool isActive;
@@ -141,6 +149,10 @@ class WaveAmplitude extends StatefulWidget {
   final double seedMinGap;
   final double humpHalfWidthPxMin;
   final double humpHalfWidthPxMax;
+
+  // оформление контейнера
+  final Color backgroundColor;
+  final BoxShadow containerShadow;
 
   @override
   State<WaveAmplitude> createState() => _WaveAmplitudeState();
@@ -289,7 +301,6 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
     _timer = Timer.periodic(widget.burstPeriod, (_) => _tick());
   }
 
-  // сгенерировать случайный набор X с минимальным зазором
   List<double> _randomSeeds({
     required double width,
     required int target,
@@ -297,7 +308,6 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   }) {
     final xs = <double>[];
     if (width <= 0 || target <= 0) return xs;
-
     int attempts = 0;
     final maxAttempts = target * 30;
     while (xs.length < target && attempts < maxAttempts) {
@@ -319,23 +329,19 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   void _tick() {
     if (!mounted || _suspended || _lastSize.width <= 0) return;
 
-    // предохранитель
     const hardMaxBursts = 90;
     if (_bursts.length >= hardMaxBursts) return;
 
-    // случайное количество «кандидатных» X-точек для ЭТОГО тика
     final seedsTarget =
         _rnd.nextInt((widget.seedsPerTickMax - widget.seedsPerTickMin + 1)) +
             widget.seedsPerTickMin;
 
-    // набор уникальных X с минимальным зазором
     final seeds = _randomSeeds(
       width: _lastSize.width,
       target: seedsTarget,
       minGap: widget.seedMinGap,
     );
 
-    // вспомогательный пул доступных точек (чтобы не дублировать X в разные слои)
     final availableXs = List<double>.from(seeds)..shuffle(_rnd);
 
     int alive(_Band band) => _bursts.where((b) => b.band == band).length;
@@ -344,7 +350,6 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
       ..sort((a, b) => a.z.compareTo(b.z));
 
     for (final layer in layersOrdered) {
-      // текущий «уровень» для слоя
       final level = switch (layer.band) {
         _Band.low => _bands.low,
         _Band.mid => _bands.mid,
@@ -356,7 +361,6 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
       final already = alive(layer.band);
       if (already >= widget.maxBurstsPerLayer) continue;
 
-      // базовое кол-во стартов — пропорционально числу seeds и уровню
       final base = (seeds.length / 2).ceil();
       final toStartRaw = (base * (0.6 + 0.8 * level)).round();
       final toStart = toStartRaw.clamp(
@@ -437,18 +441,25 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
         });
       }
 
-      return SizedBox(
-        width: c.maxWidth,
-        height: widget.height,
-        child: CustomPaint(
-          painter: _ReactivePainter(size: _lastSize, bursts: _bursts),
+      return Container(
+        // Общий фон и ЕДИНАЯ падающая тень для всего блока волн
+        decoration: BoxDecoration(
+          color: widget.backgroundColor,
+          boxShadow: [widget.containerShadow],
+        ),
+        child: SizedBox(
+          width: c.maxWidth,
+          height: widget.height,
+          child: CustomPaint(
+            painter: _ReactivePainter(size: _lastSize, bursts: _bursts),
+          ),
         ),
       );
     });
   }
 }
 
-/// ===== Painter =====
+/// ===== Painter (без теней у каждой волны!) =====
 
 class _ReactivePainter extends CustomPainter {
   _ReactivePainter({required this.size, required this.bursts});
@@ -483,14 +494,7 @@ class _ReactivePainter extends CustomPainter {
         ..lineTo(endX, baseY)
         ..close();
 
-      final shadowPaint = Paint()
-        ..color = b.shadow
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 120);
-      canvas.save();
-      canvas.translate(0, 20);
-      canvas.drawPath(path, shadowPaint);
-      canvas.restore();
-
+      // БЕЗ пер-волновых теней — только заливка
       final paint = Paint()..color = b.color;
       canvas.drawPath(path, paint);
     }
@@ -520,7 +524,7 @@ class _WaveBurst {
     required this.halfWidth,
     required this.maxAmplitude,
     required this.color,
-    required this.shadow,
+    required this.shadow, // оставил, если захочешь вернуть локальные тени
     required this.anim,
     required this.ctrl,
   });
@@ -533,7 +537,8 @@ class _WaveBurst {
   final double maxAmplitude;
 
   final Color color;
-  final Color shadow;
+  final Color shadow; // не используется сейчас в painter
+
   final Animation<double> anim;
   final AnimationController ctrl;
 }
