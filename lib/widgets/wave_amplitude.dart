@@ -113,11 +113,11 @@ class WaveAmplitude extends StatefulWidget {
 
     // Минимум/максимум активных волн на слой
     this.minBurstsPerLayer = 0,
-    this.maxBurstsPerLayer = 20,
+    this.maxBurstsPerLayer = 10,
 
     // === генерация случайных точек (seed) на тик ===
     this.seedsPerTickMin = 6,
-    this.seedsPerTickMax = 16,
+    this.seedsPerTickMax = 10,
     this.seedMinGap = 28.0, // минимальный зазор между точками, px
     this.humpHalfWidthPxMin = 24.0, // половина ширины «горба» (минимум), px
     this.humpHalfWidthPxMax = 72.0, // половина ширины «горба» (максимум), px
