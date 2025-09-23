@@ -69,7 +69,7 @@ class WaveAmplitude extends StatefulWidget {
     required this.isActive,
     this.maxAmplitude = 92.0,
     this.height = 92.0,
-    this.minSlotWidth = 120.0,
+    this.minSlotWidth = 60.0,
     this.burstPeriod = const Duration(milliseconds: 220),
     this.palette = const [
       (Color.fromRGBO(67, 70, 243, 0.4), Color.fromRGBO(58, 51, 253, 0.25)),
