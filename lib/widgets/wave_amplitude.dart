@@ -4,16 +4,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:record/record.dart';
 
-/// -------------------------
-/// Микро-сервис амплитуды
-/// -------------------------
+/// =========================
+///  MIC SERVICE (tri-band)
+/// =========================
+
+class TriBandLevel {
+  const TriBandLevel(this.low, this.mid, this.high);
+  final double low; // «бас» (медленная огибающая)
+  final double mid; // «середина»
+  final double high; // «вч» (быстрая огибающая)
+}
+
 class MicAmplitudeService {
   final AudioRecorder _record = AudioRecorder();
   StreamSubscription<Amplitude>? _sub;
-  final _controller = StreamController<double>.broadcast();
-  Stream<double> get stream => _controller.stream;
 
-  double _smooth = 0.0;
+  final _controller = StreamController<TriBandLevel>.broadcast();
+  Stream<TriBandLevel> get stream => _controller.stream;
+
+  double _base = 0.0;
+  double _low = 0.0, _mid = 0.0, _high = 0.0;
+
+  static const _samplePeriod = Duration(milliseconds: 80);
+  static const _tauLow = 0.60; // сек
+  static const _tauMid = 0.25; // сек
+  static const _tauHigh = 0.10; // сек
+
+  double _alpha(double tauSec) {
+    final dt = _samplePeriod.inMilliseconds / 1000.0;
+    return 1.0 - math.exp(-dt / tauSec);
+  }
 
   Future<void> start() async {
     final ok = await _record.hasPermission();
@@ -29,12 +49,16 @@ class MicAmplitudeService {
       ),
     );
 
-    _sub = _record
-        .onAmplitudeChanged(const Duration(milliseconds: 80))
-        .listen((amp) {
-      final a = _dbTo01(amp.current);
-      _smooth = 0.6 * _smooth + 0.4 * a;
-      _controller.add(_smooth);
+    final aLow = _alpha(_tauLow);
+    final aMid = _alpha(_tauMid);
+    final aHigh = _alpha(_tauHigh);
+
+    _sub = _record.onAmplitudeChanged(_samplePeriod).listen((amp) {
+      _base = _dbTo01(amp.current); // 0..1
+      _low = _low + aLow * (_base - _low);
+      _mid = _mid + aMid * (_base - _mid);
+      _high = _high + aHigh * (_base - _high);
+      _controller.add(TriBandLevel(_low, _mid, _high));
     });
   }
 
@@ -44,7 +68,8 @@ class MicAmplitudeService {
     if (await _record.isRecording()) {
       await _record.stop();
     }
-    _controller.add(0.0);
+    _base = _low = _mid = _high = 0.0;
+    _controller.add(const TriBandLevel(0, 0, 0));
   }
 
   void dispose() {
@@ -60,30 +85,62 @@ class MicAmplitudeService {
   }
 }
 
-/// -------------------------
-/// Виджет волн
-/// -------------------------
+/// =========================
+///  WIDGET (tri-layer waves)
+/// =========================
+
 class WaveAmplitude extends StatefulWidget {
   const WaveAmplitude({
     super.key,
     required this.isActive,
-    this.maxAmplitude = 92.0,
     this.height = 92.0,
-    this.minSlotWidth = 60.0,
+    this.maxAmplitude = 92.0,
     this.burstPeriod = const Duration(milliseconds: 220),
-    this.palette = const [
-      (Color.fromRGBO(67, 70, 243, 0.4), Color.fromRGBO(58, 51, 253, 0.25)),
-      (Color.fromRGBO(48, 51, 212, 0.4), Color.fromRGBO(48, 51, 212, 0.25)),
-      (Color.fromRGBO(140, 141, 227, 0.3), Color.fromRGBO(51, 169, 253, 0.25)),
-    ],
+
+    // Порядок — задний, средний, передний (низкие, средние, высокие):
+    this.lowColors = const (
+      Color.fromRGBO(48, 51, 212, 0.40),
+      Color.fromRGBO(48, 51, 212, 0.25)
+    ),
+    this.midColors = const (
+      Color.fromRGBO(67, 70, 243, 0.40),
+      Color.fromRGBO(58, 51, 253, 0.25)
+    ),
+    this.highColors = const (
+      Color.fromRGBO(140, 141, 227, 0.30),
+      Color.fromRGBO(51, 169, 253, 0.25)
+    ),
+
+    // Минимум/максимум активных волн на слой
+    this.minBurstsPerLayer = 0,
+    this.maxBurstsPerLayer = 20,
+
+    // === генерация случайных точек (seed) на тик ===
+    this.seedsPerTickMin = 6,
+    this.seedsPerTickMax = 10,
+    this.seedMinGap = 28.0, // минимальный зазор между точками, px
+    this.humpHalfWidthPxMin = 24.0, // половина ширины «горба» (минимум), px
+    this.humpHalfWidthPxMax = 72.0, // половина ширины «горба» (максимум), px
   });
 
   final bool isActive;
-  final double maxAmplitude;
   final double height;
-  final double minSlotWidth;
+  final double maxAmplitude;
   final Duration burstPeriod;
-  final List<(Color fill, Color shadow)> palette;
+
+  final (Color fill, Color shadow) lowColors;
+  final (Color fill, Color shadow) midColors;
+  final (Color fill, Color shadow) highColors;
+
+  final int minBurstsPerLayer;
+  final int maxBurstsPerLayer;
+
+  // случайные точки появления
+  final int seedsPerTickMin;
+  final int seedsPerTickMax;
+  final double seedMinGap;
+  final double humpHalfWidthPxMin;
+  final double humpHalfWidthPxMax;
 
   @override
   State<WaveAmplitude> createState() => _WaveAmplitudeState();
@@ -96,14 +153,20 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
 
   Timer? _timer;
   Size _lastSize = Size.zero;
-  double _level = 0.0;
+
+  TriBandLevel _bands = const TriBandLevel(0, 0, 0);
   final List<_WaveBurst> _bursts = [];
-  StreamSubscription<double>? _micSub;
+  StreamSubscription<TriBandLevel>? _micSub;
 
   bool _disposed = false;
   bool _suspended = false;
 
-  // Безопасный setState: если мы внутри build/layout/paint — переносим на post-frame
+  final _layers = <_LayerCfg>[
+    _LayerCfg(band: _Band.low, ampMul: 1.15, z: 0), // задний — выше
+    _LayerCfg(band: _Band.mid, ampMul: 0.90, z: 1),
+    _LayerCfg(band: _Band.high, ampMul: 0.75, z: 2), // передний — ниже
+  ];
+
   void _safeSetState(VoidCallback fn) {
     if (_disposed || !mounted) return;
     final phase = SchedulerBinding.instance.schedulerPhase;
@@ -173,10 +236,8 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
 
     _timer?.cancel();
     _timer = null;
-
     await _micSub?.cancel();
     _micSub = null;
-
     await _mic.stop();
 
     _safeSetState(() {
@@ -185,7 +246,7 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
         b.ctrl.dispose();
       }
       _bursts.clear();
-      _level = 0.0;
+      _bands = const TriBandLevel(0, 0, 0);
     });
   }
 
@@ -196,7 +257,6 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
 
     await _startMic();
     if (_lastSize.width > 0 && _timer == null) {
-      // запуск расписания после кадра, чтобы не попасть в build
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted && !_suspended && _timer == null) _startScheduling();
       });
@@ -206,15 +266,15 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   Future<void> _startMic() async {
     await _mic.start();
     await _micSub?.cancel();
-    _micSub = _mic.stream.listen((a) {
-      _level = a;
+    _micSub = _mic.stream.listen((bands) {
+      _bands = bands;
       if (_timer == null && _lastSize.width > 0 && !_suspended) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted && !_suspended && _timer == null) _startScheduling();
         });
       }
     });
-    // на случай, если размер уже известен
+
     if (_lastSize.width > 0 && !_suspended && _timer == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted && !_suspended && _timer == null) _startScheduling();
@@ -225,71 +285,142 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   void _startScheduling() {
     if (_suspended) return;
     _timer?.cancel();
-    _tick(); // сразу
+    _tick();
     _timer = Timer.periodic(widget.burstPeriod, (_) => _tick());
+  }
+
+  // сгенерировать случайный набор X с минимальным зазором
+  List<double> _randomSeeds({
+    required double width,
+    required int target,
+    required double minGap,
+  }) {
+    final xs = <double>[];
+    if (width <= 0 || target <= 0) return xs;
+
+    int attempts = 0;
+    final maxAttempts = target * 30;
+    while (xs.length < target && attempts < maxAttempts) {
+      attempts++;
+      final x = _rnd.nextDouble() * width;
+      bool ok = true;
+      for (final s in xs) {
+        if ((s - x).abs() < minGap) {
+          ok = false;
+          break;
+        }
+      }
+      if (ok) xs.add(x);
+    }
+    xs.sort();
+    return xs;
   }
 
   void _tick() {
     if (!mounted || _suspended || _lastSize.width <= 0) return;
 
-    // предохранитель на случай сбоев: ограничим число активных анимаций
-    const hardMaxBursts = 60;
+    // предохранитель
+    const hardMaxBursts = 90;
     if (_bursts.length >= hardMaxBursts) return;
 
-    // тишина — не спавним новые
-    if (_level <= 0.03) return;
+    // случайное количество «кандидатных» X-точек для ЭТОГО тика
+    final seedsTarget =
+        _rnd.nextInt((widget.seedsPerTickMax - widget.seedsPerTickMin + 1)) +
+            widget.seedsPerTickMin;
 
-    final slotCount =
-        math.max(1, (_lastSize.width / widget.minSlotWidth).floor());
-    final toStart = math.max(1, (slotCount / 2).floor());
+    // набор уникальных X с минимальным зазором
+    final seeds = _randomSeeds(
+      width: _lastSize.width,
+      target: seedsTarget,
+      minGap: widget.seedMinGap,
+    );
 
-    final slots = List<int>.generate(slotCount, (i) => i)..shuffle(_rnd);
+    // вспомогательный пул доступных точек (чтобы не дублировать X в разные слои)
+    final availableXs = List<double>.from(seeds)..shuffle(_rnd);
 
-    for (int i = 0; i < toStart; i++) {
-      final slot = slots[i];
-      final centerX = (slot + 0.5) * (_lastSize.width / slotCount);
-      final halfWidth =
-          (_lastSize.width / slotCount) * _lerp(0.8, 1.2, _rnd.nextDouble());
+    int alive(_Band band) => _bursts.where((b) => b.band == band).length;
 
-      final ampRand = _lerp(0.85, 1.15, _rnd.nextDouble());
-      final amp = (widget.maxAmplitude * _level * ampRand)
-          .clamp(0.0, widget.maxAmplitude);
+    final layersOrdered = List<_LayerCfg>.from(_layers)
+      ..sort((a, b) => a.z.compareTo(b.z));
 
-      final (fill, shadow) =
-          widget.palette[_rnd.nextInt(widget.palette.length)];
+    for (final layer in layersOrdered) {
+      // текущий «уровень» для слоя
+      final level = switch (layer.band) {
+        _Band.low => _bands.low,
+        _Band.mid => _bands.mid,
+        _Band.high => _bands.high,
+      };
 
-      final durMS = _lerp(320, 680, _rnd.nextDouble()).toInt();
-      final ctrl = AnimationController(
-        vsync: this,
-        duration: Duration(milliseconds: durMS),
+      if (level <= 0.03) continue;
+
+      final already = alive(layer.band);
+      if (already >= widget.maxBurstsPerLayer) continue;
+
+      // базовое кол-во стартов — пропорционально числу seeds и уровню
+      final base = (seeds.length / 2).ceil();
+      final toStartRaw = (base * (0.6 + 0.8 * level)).round();
+      final toStart = toStartRaw.clamp(
+        widget.minBurstsPerLayer - already,
+        widget.maxBurstsPerLayer - already,
       );
-      final anim = CurvedAnimation(parent: ctrl, curve: Curves.easeInOut);
+      if (toStart <= 0 || availableXs.isEmpty) continue;
 
-      final burst = _WaveBurst(
-        centerX: centerX,
-        halfWidth: halfWidth,
-        maxAmplitude: amp,
-        color: fill,
-        shadow: shadow,
-        anim: anim,
-        ctrl: ctrl,
-      );
+      int started = 0;
+      while (started < toStart && availableXs.isNotEmpty) {
+        final centerX = availableXs.removeLast();
 
-      ctrl.addStatusListener((st) {
-        if (st == AnimationStatus.completed) ctrl.reverse();
-        if (st == AnimationStatus.dismissed) {
-          burst.ctrl.dispose();
-          _bursts.remove(burst);
-          if (mounted && !_suspended) _safeSetState(() {});
-        }
-      });
+        final halfWidth = _lerp(
+          widget.humpHalfWidthPxMin,
+          widget.humpHalfWidthPxMax,
+          _rnd.nextDouble(),
+        );
 
-      ctrl.addListener(() {
-        if (!_suspended) _safeSetState(() {});
-      });
+        final ampRand = _lerp(0.85, 1.15, _rnd.nextDouble());
+        final amp = (widget.maxAmplitude * layer.ampMul * level * ampRand)
+            .clamp(0.0, widget.maxAmplitude * 1.3);
 
-      _bursts.add(burst);
-      ctrl.forward();
+        final (fill, shadow) = switch (layer.band) {
+          _Band.low => widget.lowColors,
+          _Band.mid => widget.midColors,
+          _Band.high => widget.highColors,
+        };
+
+        final durMS = _lerp(300, 650, _rnd.nextDouble()).toInt();
+        final ctrl = AnimationController(
+          vsync: this,
+          duration: Duration(milliseconds: durMS),
+        );
+        final anim = CurvedAnimation(parent: ctrl, curve: Curves.easeInOut);
+
+        final burst = _WaveBurst(
+          band: layer.band,
+          z: layer.z,
+          centerX: centerX,
+          halfWidth: halfWidth,
+          maxAmplitude: amp,
+          color: fill,
+          shadow: shadow,
+          anim: anim,
+          ctrl: ctrl,
+        );
+
+        ctrl.addStatusListener((st) {
+          if (st == AnimationStatus.completed) ctrl.reverse();
+          if (st == AnimationStatus.dismissed) {
+            burst.ctrl.dispose();
+            _bursts.remove(burst);
+            if (mounted && !_suspended) _safeSetState(() {});
+          }
+        });
+
+        ctrl.addListener(() {
+          if (!_suspended) _safeSetState(() {});
+        });
+
+        _bursts.add(burst);
+        ctrl.forward();
+        started++;
+      }
     }
 
     _safeSetState(() {});
@@ -300,7 +431,6 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
     return LayoutBuilder(builder: (context, c) {
       _lastSize = Size(c.maxWidth, widget.height);
 
-      // НЕ запускаем расписание прямо в build.
       if (widget.isActive && !_suspended && _timer == null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted && !_suspended && _timer == null) _startScheduling();
@@ -318,7 +448,8 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   }
 }
 
-/// Отрисовка волн
+/// ===== Painter =====
+
 class _ReactivePainter extends CustomPainter {
   _ReactivePainter({required this.size, required this.bursts});
   final Size size;
@@ -326,7 +457,10 @@ class _ReactivePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size _) {
-    for (final b in bursts) {
+    final items = List<_WaveBurst>.from(bursts)
+      ..sort((a, b) => a.z.compareTo(b.z));
+
+    for (final b in items) {
       final ampNow = b.maxAmplitude * b.anim.value;
       if (ampNow <= 0.1 || b.halfWidth <= 1) continue;
 
@@ -367,8 +501,21 @@ class _ReactivePainter extends CustomPainter {
       old.bursts != bursts || old.size != size;
 }
 
+/// ===== Models =====
+
+enum _Band { low, mid, high }
+
+class _LayerCfg {
+  const _LayerCfg({required this.band, required this.ampMul, required this.z});
+  final _Band band;
+  final double ampMul; // множитель высоты для слоя
+  final int z; // порядок рисования (0 — задник)
+}
+
 class _WaveBurst {
   _WaveBurst({
+    required this.band,
+    required this.z,
     required this.centerX,
     required this.halfWidth,
     required this.maxAmplitude,
@@ -378,13 +525,18 @@ class _WaveBurst {
     required this.ctrl,
   });
 
+  final _Band band;
+  final int z;
+
   final double centerX;
   final double halfWidth;
   final double maxAmplitude;
+
   final Color color;
   final Color shadow;
   final Animation<double> anim;
   final AnimationController ctrl;
 }
 
+/// утилита
 double _lerp(num a, num b, double t) => a + (b - a) * t;
