@@ -1,15 +1,12 @@
 import 'dart:async';
 import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:record/record.dart';
 
-// TODO: ASK PERMISSIONS FOR NATIVE PLATFORMS (ANDROID, IOS)
-
 /// -------------------------
-/// Микро-сервис амплитуды (общий для mobile/web/desktop)
+/// Микро-сервис амплитуды
 /// -------------------------
-
 class MicAmplitudeService {
   final AudioRecorder _record = AudioRecorder();
   StreamSubscription<Amplitude>? _sub;
@@ -19,11 +16,9 @@ class MicAmplitudeService {
   double _smooth = 0.0;
 
   Future<void> start() async {
-    // 1) Разрешение
     final ok = await _record.hasPermission();
     if (!ok) return;
 
-    // 2) Старт «тихой» записи (файл нам не нужен)
     await _record.start(
       path: "null",
       const RecordConfig(
@@ -34,12 +29,11 @@ class MicAmplitudeService {
       ),
     );
 
-    // 3) Поток амплитуды
     _sub = _record
         .onAmplitudeChanged(const Duration(milliseconds: 80))
-        .listen((Amplitude amp) {
-      final a = _dbTo01(amp.current); // 0..1
-      _smooth = 0.6 * _smooth + 0.4 * a; // сглаживание
+        .listen((amp) {
+      final a = _dbTo01(amp.current);
+      _smooth = 0.6 * _smooth + 0.4 * a;
       _controller.add(_smooth);
     });
   }
@@ -58,7 +52,6 @@ class MicAmplitudeService {
     _controller.close();
   }
 
-  // dB (~[-60..0]) -> 0..1
   double _dbTo01(double db) {
     if (!db.isFinite) return 0.0;
     const minDb = -60.0;
@@ -68,20 +61,17 @@ class MicAmplitudeService {
 }
 
 /// -------------------------
-/// Виджет волн, реагирующий на громкость
+/// Виджет волн
 /// -------------------------
 class WaveAmplitude extends StatefulWidget {
   const WaveAmplitude({
     super.key,
-    required this.isActive, // включает/выключает микрофон
-    this.maxAmplitude = 92.0, // пиковая высота «шапки»
-    this.height = 92.0, // высота холста
-    this.minSlotWidth =
-        120.0, // адаптивная сетка (чем меньше — тем больше «позиций»)
-    this.burstPeriod = const Duration(
-        milliseconds: 220), // как часто пробуем запустить «шапки»
+    required this.isActive,
+    this.maxAmplitude = 92.0,
+    this.height = 92.0,
+    this.minSlotWidth = 120.0,
+    this.burstPeriod = const Duration(milliseconds: 220),
     this.palette = const [
-      // (заливка, тень)
       (Color.fromRGBO(67, 70, 243, 0.4), Color.fromRGBO(58, 51, 253, 0.25)),
       (Color.fromRGBO(48, 51, 212, 0.4), Color.fromRGBO(48, 51, 212, 0.25)),
       (Color.fromRGBO(140, 141, 227, 0.3), Color.fromRGBO(51, 169, 253, 0.25)),
@@ -100,102 +90,159 @@ class WaveAmplitude extends StatefulWidget {
 }
 
 class _WaveAmplitudeState extends State<WaveAmplitude>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   final _rnd = math.Random();
   final _mic = MicAmplitudeService();
-  bool _disposed = false;
-
-  void _safeSetState(VoidCallback fn) {
-    if (!_disposed || mounted) setState(fn);
-  }
 
   Timer? _timer;
   Size _lastSize = Size.zero;
-  double _level = 0.0; // 0..1 нормированная громкость
-
-  // Активные волны (каждая — с собственным контроллером появления/исчезания)
+  double _level = 0.0;
   final List<_WaveBurst> _bursts = [];
   StreamSubscription<double>? _micSub;
+
+  bool _disposed = false;
+  bool _suspended = false;
+
+  // Безопасный setState: если мы внутри build/layout/paint — переносим на post-frame
+  void _safeSetState(VoidCallback fn) {
+    if (_disposed || !mounted) return;
+    final phase = SchedulerBinding.instance.schedulerPhase;
+    final canNow = phase == SchedulerPhase.idle ||
+        phase == SchedulerPhase.postFrameCallbacks;
+    if (canNow) {
+      setState(fn);
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!_disposed && mounted) setState(fn);
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     if (widget.isActive) _startMic();
   }
 
   @override
-  void didUpdateWidget(covariant WaveAmplitude old) {
-    super.didUpdateWidget(old);
-    if (old.isActive != widget.isActive) {
-      if (widget.isActive) {
-        _startMic();
-      } else {
-        _stopMic();
-      }
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        _resume();
+        break;
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.hidden:
+      case AppLifecycleState.detached:
+        _suspend();
+        break;
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant WaveAmplitude oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isActive != widget.isActive) {
+      widget.isActive ? _resume() : _suspend();
     }
   }
 
   @override
   void dispose() {
-    _timer?.cancel(); // планировщик
+    WidgetsBinding.instance.removeObserver(this);
+    _timer?.cancel();
     _timer = null;
 
-    // остановить/освободить все контроллеры волн
     for (final b in List<_WaveBurst>.from(_bursts)) {
-      // снимаем слушатели, чтобы они не дернули setState после dispose
       b.ctrl.stop();
       b.ctrl.dispose();
     }
     _bursts.clear();
 
-    _disposed = true; // <- только после чистки
+    _micSub?.cancel();
+    _mic.stop();
+
+    _disposed = true;
     super.dispose();
+  }
+
+  Future<void> _suspend() async {
+    if (_suspended) return;
+    _suspended = true;
+
+    _timer?.cancel();
+    _timer = null;
+
+    await _micSub?.cancel();
+    _micSub = null;
+
+    await _mic.stop();
+
+    _safeSetState(() {
+      for (final b in _bursts) {
+        b.ctrl.stop();
+        b.ctrl.dispose();
+      }
+      _bursts.clear();
+      _level = 0.0;
+    });
+  }
+
+  Future<void> _resume() async {
+    if (!_suspended && _micSub != null) return;
+    _suspended = false;
+    if (!widget.isActive) return;
+
+    await _startMic();
+    if (_lastSize.width > 0 && _timer == null) {
+      // запуск расписания после кадра, чтобы не попасть в build
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_suspended && _timer == null) _startScheduling();
+      });
+    }
   }
 
   Future<void> _startMic() async {
     await _mic.start();
-    _micSub?.cancel();
+    await _micSub?.cancel();
     _micSub = _mic.stream.listen((a) {
-      _level = a; // запоминаем текущую громкость 0..1
-      // запуск «расписания» при первом валидном размере
-      if (_timer == null && _lastSize.width > 0) {
-        _startScheduling();
+      _level = a;
+      if (_timer == null && _lastSize.width > 0 && !_suspended) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && !_suspended && _timer == null) _startScheduling();
+        });
       }
     });
-    _startScheduling(); // на случай, если размер уже известен
-  }
-
-  Future<void> _stopMic() async {
-    await _micSub?.cancel();
-    _micSub = null;
-    await _mic.stop();
-    _timer?.cancel();
-    _timer = null;
-    if (!mounted || _disposed) return;
-    setState(() {
-      _level =
-          0.0; // заставим текущие волны плавно затухнуть (reverse в контроллерах)
-    });
+    // на случай, если размер уже известен
+    if (_lastSize.width > 0 && !_suspended && _timer == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_suspended && _timer == null) _startScheduling();
+      });
+    }
   }
 
   void _startScheduling() {
+    if (_suspended) return;
     _timer?.cancel();
-    // первая попытка сразу
-    _tick();
+    _tick(); // сразу
     _timer = Timer.periodic(widget.burstPeriod, (_) => _tick());
   }
 
   void _tick() {
-    if (!mounted || _lastSize.width <= 0) return;
+    if (!mounted || _suspended || _lastSize.width <= 0) return;
 
-    // При тишине — не добавляем новые бусты (старые сами дойдут до нуля).
+    // предохранитель на случай сбоев: ограничим число активных анимаций
+    const hardMaxBursts = 60;
+    if (_bursts.length >= hardMaxBursts) return;
+
+    // тишина — не спавним новые
     if (_level <= 0.03) return;
 
     final slotCount =
         math.max(1, (_lastSize.width / widget.minSlotWidth).floor());
     final toStart = math.max(1, (slotCount / 2).floor());
 
-    // случайные слоты
     final slots = List<int>.generate(slotCount, (i) => i)..shuffle(_rnd);
 
     for (int i = 0; i < toStart; i++) {
@@ -204,7 +251,6 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
       final halfWidth =
           (_lastSize.width / slotCount) * _lerp(0.8, 1.2, _rnd.nextDouble());
 
-      // высота зависит от уровня + немного случайности
       final ampRand = _lerp(0.85, 1.15, _rnd.nextDouble());
       final amp = (widget.maxAmplitude * _level * ampRand)
           .clamp(0.0, widget.maxAmplitude);
@@ -212,7 +258,6 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
       final (fill, shadow) =
           widget.palette[_rnd.nextInt(widget.palette.length)];
 
-      // индивидуальная длительность появления/затухания
       final durMS = _lerp(320, 680, _rnd.nextDouble()).toInt();
       final ctrl = AnimationController(
         vsync: this,
@@ -235,11 +280,14 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
         if (st == AnimationStatus.dismissed) {
           burst.ctrl.dispose();
           _bursts.remove(burst);
-          if (mounted) _safeSetState(() {}); // перерисовать без него
+          if (mounted && !_suspended) _safeSetState(() {});
         }
       });
 
-      ctrl.addListener(() => setState(() {}));
+      ctrl.addListener(() {
+        if (!_suspended) _safeSetState(() {});
+      });
+
       _bursts.add(burst);
       ctrl.forward();
     }
@@ -252,8 +300,12 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
     return LayoutBuilder(builder: (context, c) {
       _lastSize = Size(c.maxWidth, widget.height);
 
-      // если микрофон активен и ещё не крутится таймер — запустим
-      if (widget.isActive && _timer == null) _startScheduling();
+      // НЕ запускаем расписание прямо в build.
+      if (widget.isActive && !_suspended && _timer == null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && !_suspended && _timer == null) _startScheduling();
+        });
+      }
 
       return SizedBox(
         width: c.maxWidth,
@@ -266,7 +318,7 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   }
 }
 
-/// Рисуем независимые «шапки» (raised-cosine) с собственной тенью/цветом
+/// Отрисовка волн
 class _ReactivePainter extends CustomPainter {
   _ReactivePainter({required this.size, required this.bursts});
   final Size size;
@@ -278,14 +330,13 @@ class _ReactivePainter extends CustomPainter {
       final ampNow = b.maxAmplitude * b.anim.value;
       if (ampNow <= 0.1 || b.halfWidth <= 1) continue;
 
-      final baseY = size.height; // «линия воды»
+      final baseY = size.height;
       final startX = (b.centerX - b.halfWidth).clamp(0.0, size.width);
       final endX = (b.centerX + b.halfWidth).clamp(0.0, size.width);
       if (endX <= startX) continue;
 
       final path = Path()..moveTo(startX, baseY);
 
-      // Raised-cosine: гладкий колокол (похожа на параболу/полусинус)
       const step = 4.0;
       for (double x = startX; x <= endX; x += step) {
         final t = ((x - (b.centerX - b.halfWidth)) / (2 * b.halfWidth))
@@ -298,7 +349,6 @@ class _ReactivePainter extends CustomPainter {
         ..lineTo(endX, baseY)
         ..close();
 
-      // Тень (смещение + сильный blur)
       final shadowPaint = Paint()
         ..color = b.shadow
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 120);
@@ -307,7 +357,6 @@ class _ReactivePainter extends CustomPainter {
       canvas.drawPath(path, shadowPaint);
       canvas.restore();
 
-      // Заливка
       final paint = Paint()..color = b.color;
       canvas.drawPath(path, paint);
     }
@@ -338,5 +387,4 @@ class _WaveBurst {
   final AnimationController ctrl;
 }
 
-// утилита
 double _lerp(num a, num b, double t) => a + (b - a) * t;
