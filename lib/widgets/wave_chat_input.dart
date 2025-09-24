@@ -204,8 +204,8 @@ class _WaveChatInputState extends State<WaveChatInput> {
                         thumbVisibility: true,
                         thickness: 8,
                         radius: const Radius.circular(8),
-                        mainAxisMargin: 5,
                         crossAxisMargin: 7,
+                        padding: const EdgeInsets.only(top: 5),
                         child: TextField(
                           scrollController: _scrollCtrl,
                           focusNode: _focus,
