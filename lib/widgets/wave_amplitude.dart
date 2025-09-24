@@ -174,9 +174,9 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   bool _suspended = false;
 
   final _layers = <_LayerCfg>[
-    _LayerCfg(band: _Band.low, ampMul: 1.15, z: 0), // задний — выше
-    _LayerCfg(band: _Band.mid, ampMul: 0.90, z: 1),
-    _LayerCfg(band: _Band.high, ampMul: 0.75, z: 2), // передний — ниже
+    const _LayerCfg(band: _Band.low, ampMul: 1.15, z: 0), // задний — выше
+    const _LayerCfg(band: _Band.mid, ampMul: 0.90, z: 1),
+    const _LayerCfg(band: _Band.high, ampMul: 0.75, z: 2), // передний — ниже
   ];
 
   void _safeSetState(VoidCallback fn) {
@@ -403,7 +403,6 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
           halfWidth: halfWidth,
           maxAmplitude: amp,
           color: fill,
-          shadow: shadow,
           anim: anim,
           ctrl: ctrl,
         );
@@ -441,11 +440,14 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
         });
       }
 
-      return Container(
-        // Общий фон и ЕДИНАЯ падающая тень для всего блока волн
+      final hasWaves = _bursts.isNotEmpty;
+
+      return AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOut,
         decoration: BoxDecoration(
           color: widget.backgroundColor,
-          boxShadow: [widget.containerShadow],
+          boxShadow: hasWaves ? [widget.containerShadow] : const [],
         ),
         child: SizedBox(
           width: c.maxWidth,
@@ -494,7 +496,6 @@ class _ReactivePainter extends CustomPainter {
         ..lineTo(endX, baseY)
         ..close();
 
-      // БЕЗ пер-волновых теней — только заливка
       final paint = Paint()..color = b.color;
       canvas.drawPath(path, paint);
     }
@@ -524,7 +525,6 @@ class _WaveBurst {
     required this.halfWidth,
     required this.maxAmplitude,
     required this.color,
-    required this.shadow, // оставил, если захочешь вернуть локальные тени
     required this.anim,
     required this.ctrl,
   });
@@ -537,7 +537,6 @@ class _WaveBurst {
   final double maxAmplitude;
 
   final Color color;
-  final Color shadow; // не используется сейчас в painter
 
   final Animation<double> anim;
   final AnimationController ctrl;
