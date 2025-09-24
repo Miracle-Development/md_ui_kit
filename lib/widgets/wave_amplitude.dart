@@ -68,8 +68,7 @@ class MicAmplitudeService {
     if (await _record.isRecording()) {
       await _record.stop();
     }
-    _base = _low = _mid = _high = 0.0;
-    _controller.add(const TriBandLevel(0, 0, 0));
+    // Не пушим нули — UI хранит последний кадр сам.
   }
 
   void dispose() {
@@ -160,6 +159,8 @@ class WaveAmplitude extends StatefulWidget {
 
 class _WaveAmplitudeState extends State<WaveAmplitude>
     with TickerProviderStateMixin, WidgetsBindingObserver {
+  static const _eps = 1e-4;
+
   final _rnd = math.Random();
   final _mic = MicAmplitudeService();
 
@@ -174,10 +175,12 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   bool _suspended = false;
 
   final _layers = <_LayerCfg>[
-    const _LayerCfg(band: _Band.low, ampMul: 1.15, z: 0), // задний — выше
+    const _LayerCfg(band: _Band.low, ampMul: 1.15, z: 0),
     const _LayerCfg(band: _Band.mid, ampMul: 0.90, z: 1),
-    const _LayerCfg(band: _Band.high, ampMul: 0.75, z: 2), // передний — ниже
+    const _LayerCfg(band: _Band.high, ampMul: 0.75, z: 2),
   ];
+
+  // ---------- helpers ----------
 
   void _safeSetState(VoidCallback fn) {
     if (_disposed || !mounted) return;
@@ -192,6 +195,36 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
       });
     }
   }
+
+  double _nudge(double v) => v.clamp(_eps, 1.0 - _eps);
+
+  void _resumeBurst(_WaveBurst b) {
+    if (b.isDisposed) return; // уже удалён/освобождён
+
+    double from = _nudge((b.frozenValue ?? b.ctrl.value).clamp(0.0, 1.0));
+    int dir = b.frozenDir ?? b.lastDir;
+
+    // если стоим на границе — разворачиваем направление
+    if (from >= 1.0 - _eps && dir >= 0) dir = -1;
+    if (from <= _eps && dir <= 0) dir = 1;
+
+    b.ctrl.value = from;
+
+    // Запуск строго после кадра — чтобы исключить гонки с фреймворком
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _suspended || b.isDisposed) return;
+      if (dir >= 0) {
+        b.ctrl.forward(from: from);
+      } else {
+        b.ctrl.reverse(from: from);
+      }
+    });
+
+    b.frozenValue = null;
+    b.frozenDir = null;
+  }
+
+  // ---------- lifecycle ----------
 
   @override
   void initState() {
@@ -230,8 +263,11 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
     _timer = null;
 
     for (final b in List<_WaveBurst>.from(_bursts)) {
-      b.ctrl.stop();
-      b.ctrl.dispose();
+      if (!b.isDisposed) {
+        b.isDisposed = true;
+        b.ctrl.stop();
+        b.ctrl.dispose();
+      }
     }
     _bursts.clear();
 
@@ -252,14 +288,13 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
     _micSub = null;
     await _mic.stop();
 
-    _safeSetState(() {
-      for (final b in _bursts) {
-        b.ctrl.stop();
-        b.ctrl.dispose();
-      }
-      _bursts.clear();
-      _bands = const TriBandLevel(0, 0, 0);
-    });
+    // заморозить значения/направление, но НЕ dispose
+    for (final b in _bursts) {
+      if (b.isDisposed) continue;
+      b.frozenValue = b.ctrl.value;
+      b.frozenDir = b.lastDir;
+      b.ctrl.stop(canceled: false);
+    }
   }
 
   Future<void> _resume() async {
@@ -268,12 +303,22 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
     if (!widget.isActive) return;
 
     await _startMic();
+
+    // продолжить все живые анимации «с того же места»
+    for (final b in _bursts) {
+      _resumeBurst(b);
+    }
+
     if (_lastSize.width > 0 && _timer == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted && !_suspended && _timer == null) _startScheduling();
       });
     }
+
+    _safeSetState(() {});
   }
+
+  // ---------- mic / schedule ----------
 
   Future<void> _startMic() async {
     await _mic.start();
@@ -344,9 +389,10 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
 
     final availableXs = List<double>.from(seeds)..shuffle(_rnd);
 
-    int alive(_Band band) => _bursts.where((b) => b.band == band).length;
+    int alive(_Band band) =>
+        _bursts.where((b) => b.band == band && !b.isDisposed).length;
 
-    final layersOrdered = List<_LayerCfg>.from(_layers)
+    final layersOrdered = <_LayerCfg>[..._layers]
       ..sort((a, b) => a.z.compareTo(b.z));
 
     for (final layer in layersOrdered) {
@@ -383,7 +429,7 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
         final amp = (widget.maxAmplitude * layer.ampMul * level * ampRand)
             .clamp(0.0, widget.maxAmplitude * 1.3);
 
-        final (fill, shadow) = switch (layer.band) {
+        final (fill, _) = switch (layer.band) {
           _Band.low => widget.lowColors,
           _Band.mid => widget.midColors,
           _Band.high => widget.highColors,
@@ -393,6 +439,7 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
         final ctrl = AnimationController(
           vsync: this,
           duration: Duration(milliseconds: durMS),
+          animationBehavior: AnimationBehavior.preserve,
         );
         final anim = CurvedAnimation(parent: ctrl, curve: Curves.easeInOut);
 
@@ -407,21 +454,33 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
           ctrl: ctrl,
         );
 
+        // направление и живость
+        ctrl.addListener(() {
+          if (burst.isDisposed) return;
+          final v = ctrl.value;
+          if (v > burst.lastValue)
+            burst.lastDir = 1;
+          else if (v < burst.lastValue) burst.lastDir = -1;
+          burst.lastValue = v;
+
+          if (!_suspended) _safeSetState(() {});
+        });
+
         ctrl.addStatusListener((st) {
+          if (burst.isDisposed) return;
           if (st == AnimationStatus.completed) ctrl.reverse();
           if (st == AnimationStatus.dismissed) {
-            burst.ctrl.dispose();
+            // помечаем удаление и чистим из списка прежде, чем dispose()
+            burst.isDisposed = true;
             _bursts.remove(burst);
+            ctrl.dispose();
             if (mounted && !_suspended) _safeSetState(() {});
           }
         });
 
-        ctrl.addListener(() {
-          if (!_suspended) _safeSetState(() {});
-        });
-
         _bursts.add(burst);
         ctrl.forward();
+
         started++;
       }
     }
@@ -440,7 +499,7 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
         });
       }
 
-      final hasWaves = _bursts.isNotEmpty;
+      final hasWaves = _bursts.any((b) => !b.isDisposed);
 
       return AnimatedContainer(
         duration: const Duration(milliseconds: 180),
@@ -461,7 +520,7 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   }
 }
 
-/// ===== Painter (без теней у каждой волны!) =====
+/// ===== Painter =====
 
 class _ReactivePainter extends CustomPainter {
   _ReactivePainter({required this.size, required this.bursts});
@@ -470,7 +529,7 @@ class _ReactivePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size _) {
-    final items = List<_WaveBurst>.from(bursts)
+    final items = bursts.where((b) => !b.isDisposed).toList()
       ..sort((a, b) => a.z.compareTo(b.z));
 
     for (final b in items) {
@@ -540,6 +599,15 @@ class _WaveBurst {
 
   final Animation<double> anim;
   final AnimationController ctrl;
+
+  // для восстановления анимации после возврата
+  double lastValue = 0.0;
+  int lastDir = 1; // +1 = forward, -1 = reverse
+  double? frozenValue;
+  int? frozenDir;
+
+  // защита от use-after-dispose
+  bool isDisposed = false;
 }
 
 /// утилита
