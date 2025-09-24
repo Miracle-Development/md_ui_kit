@@ -121,6 +121,10 @@ class WaveAmplitude extends StatefulWidget {
     this.humpHalfWidthPxMin = 24.0, // половина ширины «горба» (минимум), px
     this.humpHalfWidthPxMax = 72.0, // половина ширины «горба» (максимум), px
 
+    // === «анти-обрезание» по краям ===
+    this.edgePadding = 0.001, // гарантированный запас внутри холста, px
+    this.edgeFadePx = 0, // ширина мягкого фейда у краёв; 0 — отключить
+
     // === контейнер ===
     this.backgroundColor = Colors.transparent,
     this.containerShadow = const BoxShadow(
@@ -148,6 +152,10 @@ class WaveAmplitude extends StatefulWidget {
   final double seedMinGap;
   final double humpHalfWidthPxMin;
   final double humpHalfWidthPxMax;
+
+  // анти-обрезание
+  final double edgePadding;
+  final double edgeFadePx;
 
   // оформление контейнера
   final Color backgroundColor;
@@ -199,25 +207,22 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   double _nudge(double v) => v.clamp(_eps, 1.0 - _eps);
 
   void _resumeBurst(_WaveBurst b) {
-    if (b.isDisposed) return; // уже удалён/освобождён
+    if (b.isDisposed) return;
 
     double from = _nudge((b.frozenValue ?? b.ctrl.value).clamp(0.0, 1.0));
     int dir = b.frozenDir ?? b.lastDir;
 
-    // если стоим на границе — разворачиваем направление
     if (from >= 1.0 - _eps && dir >= 0) dir = -1;
     if (from <= _eps && dir <= 0) dir = 1;
 
     b.ctrl.value = from;
 
-    // Запуск строго после кадра — чтобы исключить гонки с фреймворком
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || _suspended || b.isDisposed) return;
-      if (dir >= 0) {
+      if (dir >= 0)
         b.ctrl.forward(from: from);
-      } else {
+      else
         b.ctrl.reverse(from: from);
-      }
     });
 
     b.frozenValue = null;
@@ -288,7 +293,6 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
     _micSub = null;
     await _mic.stop();
 
-    // заморозить значения/направление, но НЕ dispose
     for (final b in _bursts) {
       if (b.isDisposed) continue;
       b.frozenValue = b.ctrl.value;
@@ -304,7 +308,6 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
 
     await _startMic();
 
-    // продолжить все живые анимации «с того же места»
     for (final b in _bursts) {
       _resumeBurst(b);
     }
@@ -350,14 +353,17 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
     required double width,
     required int target,
     required double minGap,
+    required double edgePad, // NEW: не генерим у краёв
   }) {
     final xs = <double>[];
     if (width <= 0 || target <= 0) return xs;
+    final left = edgePad.clamp(0.0, width / 2);
+    final right = width - left;
     int attempts = 0;
     final maxAttempts = target * 30;
     while (xs.length < target && attempts < maxAttempts) {
       attempts++;
-      final x = _rnd.nextDouble() * width;
+      final x = left + _rnd.nextDouble() * (right - left);
       bool ok = true;
       for (final s in xs) {
         if ((s - x).abs() < minGap) {
@@ -385,6 +391,7 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
       width: _lastSize.width,
       target: seedsTarget,
       minGap: widget.seedMinGap,
+      edgePad: widget.edgePadding, // NEW
     );
 
     final availableXs = List<double>.from(seeds)..shuffle(_rnd);
@@ -417,13 +424,17 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
 
       int started = 0;
       while (started < toStart && availableXs.isNotEmpty) {
-        final centerX = availableXs.removeLast();
+        double centerX = availableXs.removeLast();
 
         final halfWidth = _lerp(
           widget.humpHalfWidthPxMin,
           widget.humpHalfWidthPxMax,
           _rnd.nextDouble(),
         );
+
+        // NEW: гарантируем запас от краёв = halfWidth + edgePadding
+        final margin = halfWidth + widget.edgePadding;
+        centerX = centerX.clamp(margin, _lastSize.width - margin);
 
         final ampRand = _lerp(0.85, 1.15, _rnd.nextDouble());
         final amp = (widget.maxAmplitude * layer.ampMul * level * ampRand)
@@ -454,7 +465,6 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
           ctrl: ctrl,
         );
 
-        // направление и живость
         ctrl.addListener(() {
           if (burst.isDisposed) return;
           final v = ctrl.value;
@@ -470,7 +480,6 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
           if (burst.isDisposed) return;
           if (st == AnimationStatus.completed) ctrl.reverse();
           if (st == AnimationStatus.dismissed) {
-            // помечаем удаление и чистим из списка прежде, чем dispose()
             burst.isDisposed = true;
             _bursts.remove(burst);
             ctrl.dispose();
@@ -480,7 +489,6 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
 
         _bursts.add(burst);
         ctrl.forward();
-
         started++;
       }
     }
@@ -512,7 +520,11 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
           width: c.maxWidth,
           height: widget.height,
           child: CustomPaint(
-            painter: _ReactivePainter(size: _lastSize, bursts: _bursts),
+            painter: _ReactivePainter(
+              size: _lastSize,
+              bursts: _bursts,
+              edgeFadePx: widget.edgeFadePx,
+            ),
           ),
         ),
       );
@@ -523,9 +535,25 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
 /// ===== Painter =====
 
 class _ReactivePainter extends CustomPainter {
-  _ReactivePainter({required this.size, required this.bursts});
+  _ReactivePainter({
+    required this.size,
+    required this.bursts,
+    required this.edgeFadePx,
+  });
+
   final Size size;
   final List<_WaveBurst> bursts;
+  final double edgeFadePx; // 0 => без фейда
+
+  double _edgeWindow(double x) {
+    if (edgeFadePx <= 0) return 1.0;
+    final left = (x / edgeFadePx).clamp(0.0, 1.0);
+    final right = ((size.width - x) / edgeFadePx).clamp(0.0, 1.0);
+    // берём минимум — заглушаем ближний край
+    final m = math.min(left, right);
+    // чуть «мягче»
+    return math.pow(m, 0.9).toDouble();
+  }
 
   @override
   void paint(Canvas canvas, Size _) {
@@ -533,26 +561,28 @@ class _ReactivePainter extends CustomPainter {
       ..sort((a, b) => a.z.compareTo(b.z));
 
     for (final b in items) {
-      final ampNow = b.maxAmplitude * b.anim.value;
-      if (ampNow <= 0.1 || b.halfWidth <= 1) continue;
+      final ampBase = b.maxAmplitude * b.anim.value;
+      if (ampBase <= 0.1 || b.halfWidth <= 1) continue;
 
       final baseY = size.height;
-      final startX = (b.centerX - b.halfWidth).clamp(0.0, size.width);
-      final endX = (b.centerX + b.halfWidth).clamp(0.0, size.width);
-      if (endX <= startX) continue;
+      final startX = (b.centerX - b.halfWidth);
+      final endX = (b.centerX + b.halfWidth);
+      if (endX <= 0 || startX >= size.width) continue;
 
-      final path = Path()..moveTo(startX, baseY);
+      final path = Path()..moveTo(math.max(startX, 0), baseY);
 
       const step = 4.0;
-      for (double x = startX; x <= endX; x += step) {
-        final t = ((x - (b.centerX - b.halfWidth)) / (2 * b.halfWidth))
-            .clamp(0.0, 1.0);
+      for (double x = math.max(0.0, startX);
+          x <= math.min(endX, size.width);
+          x += step) {
+        final t = ((x - startX) / (2 * b.halfWidth)).clamp(0.0, 1.0);
         final window = 0.5 * (1.0 + math.cos(math.pi * (t * 2 - 1)));
-        final y = baseY - ampNow * window;
+        final edgeW = _edgeWindow(x);
+        final y = baseY - ampBase * window * edgeW;
         path.lineTo(x, y);
       }
       path
-        ..lineTo(endX, baseY)
+        ..lineTo(math.min(endX, size.width), baseY)
         ..close();
 
       final paint = Paint()..color = b.color;
@@ -562,7 +592,7 @@ class _ReactivePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _ReactivePainter old) =>
-      old.bursts != bursts || old.size != size;
+      old.bursts != bursts || old.size != size || old.edgeFadePx != edgeFadePx;
 }
 
 /// ===== Models =====
@@ -591,7 +621,7 @@ class _WaveBurst {
   final _Band band;
   final int z;
 
-  final double centerX;
+  double centerX;
   final double halfWidth;
   final double maxAmplitude;
 
