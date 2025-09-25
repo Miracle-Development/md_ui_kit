@@ -43,9 +43,7 @@ class MicAmplitudeService {
       path: "null",
       const RecordConfig(
         encoder: AudioEncoder.wav,
-        sampleRate: 44100,
         numChannels: 1,
-        bitRate: 128000,
       ),
     );
 
@@ -220,10 +218,11 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || _suspended || b.isDisposed) return;
-      if (dir >= 0)
+      if (dir >= 0) {
         b.ctrl.forward(from: from);
-      else
+      } else {
         b.ctrl.reverse(from: from);
+      }
     });
 
     b.frozenValue = null;
@@ -461,10 +460,6 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
           _rnd.nextDouble(),
         );
 
-        // NEW: гарантируем запас от краёв = halfWidth + edgePadding
-        final margin = halfWidth + widget.edgePadding;
-        centerX = centerX.clamp(margin, _lastSize.width - margin);
-
         final ampRand = _lerp(0.85, 1.15, _rnd.nextDouble());
         final amp = (widget.maxAmplitude * layer.ampMul * level * ampRand)
             .clamp(0.0, widget.maxAmplitude * 1.3);
@@ -497,9 +492,11 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
         ctrl.addListener(() {
           if (burst.isDisposed) return;
           final v = ctrl.value;
-          if (v > burst.lastValue)
+          if (v > burst.lastValue) {
             burst.lastDir = 1;
-          else if (v < burst.lastValue) burst.lastDir = -1;
+          } else if (v < burst.lastValue) {
+            burst.lastDir = -1;
+          }
           burst.lastValue = v;
 
           if (!_suspended) _safeSetState(() {});
@@ -588,16 +585,6 @@ class _ReactivePainter extends CustomPainter {
   final List<_WaveBurst> bursts;
   final double edgeFadePx; // 0 => без фейда
 
-  double _edgeWindow(double x) {
-    if (edgeFadePx <= 0) return 1.0;
-    final left = (x / edgeFadePx).clamp(0.0, 1.0);
-    final right = ((size.width - x) / edgeFadePx).clamp(0.0, 1.0);
-    // берём минимум — заглушаем ближний край
-    final m = math.min(left, right);
-    // чуть «мягче»
-    return math.pow(m, 0.9).toDouble();
-  }
-
   @override
   void paint(Canvas canvas, Size _) {
     final items = bursts.where((b) => !b.isDisposed).toList()
@@ -608,25 +595,50 @@ class _ReactivePainter extends CustomPainter {
       if (ampBase <= 0.1 || b.halfWidth <= 1) continue;
 
       final baseY = size.height;
-      final startX = (b.centerX - b.halfWidth);
-      final endX = (b.centerX + b.halfWidth);
-      if (endX <= 0 || startX >= size.width) continue;
+      final startX = b.centerX - b.halfWidth;
+      final endX = b.centerX + b.halfWidth;
 
-      final path = Path()..moveTo(math.max(startX, 0), baseY);
+// Полностью вне экрана — ничего не рисуем
+      if (endX <= 0 || startX >= size.width) return;
 
+      final path = Path();
       const step = 4.0;
-      for (double x = math.max(0.0, startX);
-          x <= math.min(endX, size.width);
-          x += step) {
+      final xMin = math.max(0.0, startX);
+      final xMax = math.min(endX, size.width);
+
+// 1) Левый край: если волна заходит влево — рисуем вертикальный срез
+      if (startX < 0) {
+        final t0 = ((0.0 - startX) / (2 * b.halfWidth)).clamp(0.0, 1.0);
+        final w0 = 0.5 * (1.0 + math.cos(math.pi * (t0 * 2 - 1)));
+        final y0 = baseY - ampBase * w0;
+        path
+          ..moveTo(0, baseY)
+          ..lineTo(0, y0); // вертикальный «срез» слева
+      } else {
+        path.moveTo(startX, baseY);
+      }
+
+// 2) Центральная часть — без edgeFade, чистая форма горба
+      for (double x = xMin; x <= xMax; x += step) {
         final t = ((x - startX) / (2 * b.halfWidth)).clamp(0.0, 1.0);
-        final window = 0.5 * (1.0 + math.cos(math.pi * (t * 2 - 1)));
-        final edgeW = _edgeWindow(x);
-        final y = baseY - ampBase * window * edgeW;
+        final w = 0.5 * (1.0 + math.cos(math.pi * (t * 2 - 1)));
+        final y = baseY - ampBase * w;
         path.lineTo(x, y);
       }
-      path
-        ..lineTo(math.min(endX, size.width), baseY)
-        ..close();
+
+// 3) Правый край: если волна уходит за экран — вертикальный срез справа
+      if (endX > size.width) {
+        final t1 = ((size.width - startX) / (2 * b.halfWidth)).clamp(0.0, 1.0);
+        final w1 = 0.5 * (1.0 + math.cos(math.pi * (t1 * 2 - 1)));
+        final y1 = baseY - ampBase * w1;
+        path
+          ..lineTo(size.width, y1) // вертикальный «срез» справа
+          ..lineTo(size.width, baseY);
+      } else {
+        path.lineTo(endX, baseY);
+      }
+
+      path.close();
 
       final paint = Paint()..color = b.color;
       canvas.drawPath(path, paint);
