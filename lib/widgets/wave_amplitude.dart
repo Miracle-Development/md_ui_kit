@@ -181,6 +181,7 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
 
   bool _disposed = false;
   bool _suspended = false;
+  bool _fadingOut = false;
 
   final _layers = <_LayerCfg>[
     const _LayerCfg(band: _Band.low, ampMul: 1.15, z: 0),
@@ -229,6 +230,32 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
     b.frozenDir = null;
   }
 
+  Future<void> _fadeOut() async {
+    // включаем режим затухания: не спавнить новые
+    _fadingOut = true;
+
+    // Останавливаем расписание и микрофон, но НЕ стопаем контроллеры.
+    _timer?.cancel();
+    _timer = null;
+    await _micSub?.cancel();
+    _micSub = null;
+    await _mic.stop();
+
+    // Каждую живую волну мягко "уводим" вниз
+    for (final b in _bursts) {
+      if (b.isDisposed) continue;
+      final from =
+          (((b.ctrl.value.isNaN ? 0.0 : b.ctrl.value))).clamp(0.0, 1.0);
+      // если уже в нуле — ничего
+      if (from > 0.0) {
+        b.ctrl.reverse(from: from);
+      }
+    }
+
+    // принудительно перерисуемся
+    _safeSetState(() {});
+  }
+
   // ---------- lifecycle ----------
 
   @override
@@ -257,7 +284,7 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   void didUpdateWidget(covariant WaveAmplitude oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.isActive != widget.isActive) {
-      widget.isActive ? _resume() : _suspend();
+      widget.isActive ? _resume() : _fadeOut();
     }
   }
 
@@ -304,6 +331,7 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   Future<void> _resume() async {
     if (!_suspended && _micSub != null) return;
     _suspended = false;
+    _fadingOut = false;
     if (!widget.isActive) return;
 
     await _startMic();
@@ -379,6 +407,7 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
 
   void _tick() {
     if (!mounted || _suspended || _lastSize.width <= 0) return;
+    if (_fadingOut) return;
 
     const hardMaxBursts = 90;
     if (_bursts.length >= hardMaxBursts) return;
@@ -483,6 +512,10 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
             burst.isDisposed = true;
             _bursts.remove(burst);
             ctrl.dispose();
+            if (_fadingOut && _bursts.every((b) => b.isDisposed)) {
+              _fadingOut = false;
+            }
+
             if (mounted && !_suspended) _safeSetState(() {});
           }
         });
@@ -509,12 +542,22 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
 
       final hasWaves = _bursts.any((b) => !b.isDisposed);
 
+// Целевая непрозрачность тени (0..1)
+      final baseAlpha = widget.containerShadow.color.opacity;
+      final targetAlpha = baseAlpha * (hasWaves ? 1.0 : 0.0);
+
+// Та же тень, но с анимируемой альфой
+      final fadingShadow = widget.containerShadow.copyWith(
+        color: widget.containerShadow.color.withOpacity(targetAlpha),
+      );
+
       return AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        curve: Curves.easeOut,
+        duration:
+            const Duration(milliseconds: 300), // можно увеличить до 300–400ms
+        curve: Curves.easeOut, // или Curves.easeOutCubic
         decoration: BoxDecoration(
           color: widget.backgroundColor,
-          boxShadow: hasWaves ? [widget.containerShadow] : const [],
+          boxShadow: [fadingShadow], // <-- всегда один BoxShadow
         ),
         child: SizedBox(
           width: c.maxWidth,
