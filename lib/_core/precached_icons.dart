@@ -15,15 +15,14 @@ class PrecachedIcons {
   static const navBarPhoneIcon = 'assets/icons/nav_bar/phone.svg';
   static const navBarPlanetIcon = 'assets/icons/nav_bar/planet.svg';
   static const sendMsgIcon = 'assets/icons/chat_input/arrow_up_md.svg.svg';
-  static const deviceMenuArrow = 'assets/icons/menu/Caret_Down_MD.svg';
+  static const deviceMenuArrow = 'assets/icons/menu/shevron_down.svg';
   static const inputOpenedEyeIcon = 'assets/icons/input/opened_eye.svg';
   static const inputClosedEyeIcon = 'assets/icons/input/closed_eye.svg';
   static const micButton = 'assets/icons/mic/microphone_button.svg';
   static const settingsButton = 'assets/icons/circle_button/settings.svg';
   static const leaveCallButton = 'assets/icons/circle_button/leave_call.svg';
   static const startCallButton = 'assets/icons/circle_button/start_call.svg';
-  static const participantMicIcon =
-      'assets/icons/participants/mic_muted_mini.svg';
+  static const participantMicIcon = 'assets/icons/participants/mic_muted_mini.svg';
 
   List<SvgAssetLoader> get iconsToPrecache => const [
         SvgAssetLoader(copyDefaultIcon),
