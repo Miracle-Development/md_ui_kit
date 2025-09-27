@@ -79,6 +79,30 @@ class MdColors {
   static const Color notificationsUnselectedText =
       Color.fromRGBO(67, 70, 243, 1);
 
+  /// WaveChatInput Colors
+  static const Color selectionTextChatInputColor =
+      Color.fromRGBO(177, 172, 255, 0.6);
+  static const Color defaultTextChatInputColor =
+      Color.fromRGBO(220, 218, 255, 0.9);
+  static const Color defaultBorderChatInputColor =
+      Color.fromRGBO(67, 70, 243, 0.8);
+  static const Color selectedBorderChatInputColor =
+      Color.fromRGBO(177, 172, 255, 0.8);
+  static const Color disabledChatInputColor = Color.fromRGBO(52, 53, 91, 0.8);
+  static const Color disabledTextChatInputColor =
+      Color.fromRGBO(52, 53, 91, 0.9);
+  static const Color errorChatInputColor = Color.fromRGBO(130, 50, 50, 0.8);
+  static const Color defaultIconChatInputColor =
+      Color.fromRGBO(67, 70, 243, 0.8);
+  static const Color hoverIconChatInputColor =
+      Color.fromRGBO(177, 172, 255, 0.8);
+  static const Color pressedIconChatInputColor =
+      Color.fromRGBO(220, 218, 255, 0.8);
+  static const Color generalContaiterChatInputColor =
+      Color.fromRGBO(17, 17, 30, 0.95);
+  static const Color fieldAndButtonBgChatInputColor =
+      Color.fromRGBO(17, 17, 30, 0.9);
+
   /// WaveInput Colors
   static const Color selectionTextInputColor = Color.fromRGBO(58, 89, 238, 0.4);
   static const Color defaultTextInputColor = Color.fromRGBO(220, 218, 255, 0.9);
@@ -169,7 +193,6 @@ class MdColors {
   // Subtitle Color
   static const circleButtonSubtitleColor = Color.fromRGBO(179, 179, 202, 1);
 
-  
   /// WaveParticipantLoader Colors
   static const Color participantLoaderFirstPointColor =
       Color.fromRGBO(223, 222, 251, 0.6);

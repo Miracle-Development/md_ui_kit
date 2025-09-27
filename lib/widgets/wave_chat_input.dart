@@ -1,0 +1,355 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:md_ui_kit/_core/colors.dart';
+import 'package:md_ui_kit/_core/precached_icons.dart';
+
+class WaveChatInput extends StatefulWidget {
+  const WaveChatInput({
+    super.key,
+    this.controller,
+    this.hintText,
+    this.onSend,
+    this.enabled = true,
+    this.borderRadiusContent = const BorderRadius.only(
+      bottomLeft: Radius.circular(12),
+      bottomRight: Radius.circular(6),
+      topLeft: Radius.circular(6),
+      topRight: Radius.circular(6),
+    ),
+    this.borderRadiusNoContent = const BorderRadius.only(
+      bottomLeft: Radius.circular(12),
+      bottomRight: Radius.circular(6),
+      topLeft: Radius.circular(6),
+      topRight: Radius.circular(12),
+    ),
+    this.contentPadding =
+        const EdgeInsets.only(top: 8, bottom: 8, right: 10, left: 10),
+  });
+  final BorderRadius borderRadiusContent;
+  final BorderRadius borderRadiusNoContent;
+  final EdgeInsets contentPadding;
+  final bool enabled;
+  final TextEditingController? controller;
+  final String? hintText;
+  final VoidCallback? onSend;
+
+  @override
+  State<WaveChatInput> createState() => _WaveChatInputState();
+}
+
+class _WaveChatInputState extends State<WaveChatInput> {
+  late final TextEditingController _controller;
+  late final FocusNode _focus = FocusNode();
+  bool _showArrow = false;
+  bool _iconHover = false;
+  bool _iconPressed = false;
+  late final ScrollController _scrollCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollCtrl = ScrollController();
+    _focus.addListener(() => setState(() {}));
+    _controller = widget.controller ?? TextEditingController();
+    _showArrow = _controller.text.trim().isNotEmpty;
+    _controller.addListener(() {
+      final textNotEmpty = _controller.text.trim().isNotEmpty;
+      if (textNotEmpty != _showArrow) {
+        setState(() {
+          _showArrow = textNotEmpty;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
+    _focus.dispose();
+    super.dispose();
+    _scrollCtrl.dispose();
+  }
+
+  void _handleSend() {
+    final text = _controller.text;
+    if (text.trim().isEmpty) return;
+    widget.onSend?.call();
+    _controller.clear();
+    _iconHover = false;
+    _iconPressed = false;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _focus.requestFocus();
+    });
+  }
+
+  void _setFocus() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _focus.requestFocus();
+    });
+  }
+
+  Color _resolveIconColor() {
+    if (_iconPressed) {
+      return MdColors.pressedIconChatInputColor;
+    } else if (_iconHover) {
+      return MdColors.hoverIconChatInputColor;
+    }
+    return MdColors.defaultIconChatInputColor;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final enabledBorder = OutlineInputBorder(
+      borderRadius: widget.enabled
+          ? (_controller.text.trim().isEmpty
+              ? widget.borderRadiusNoContent
+              : widget.borderRadiusContent)
+          : widget.borderRadiusNoContent,
+      borderSide: BorderSide(
+        color: !widget.enabled
+            ? MdColors.disabledChatInputColor
+            : _controller.text.trim().isEmpty
+                ? MdColors.disabledChatInputColor
+                : MdColors.defaultBorderChatInputColor,
+        width: 2,
+      ),
+    );
+    final focusedBorder = OutlineInputBorder(
+      borderRadius: widget.enabled
+          ? (_controller.text.trim().isEmpty
+              ? widget.borderRadiusNoContent
+              : widget.borderRadiusContent)
+          : widget.borderRadiusNoContent,
+      borderSide: BorderSide(
+        color: widget.enabled
+            ? MdColors.selectedBorderChatInputColor
+            : MdColors.disabledChatInputColor,
+        width: 2,
+      ),
+    );
+    final disabledBorder = OutlineInputBorder(
+      borderRadius: widget.enabled
+          ? (_controller.text.trim().isEmpty
+              ? widget.borderRadiusNoContent
+              : widget.borderRadiusContent)
+          : widget.borderRadiusNoContent,
+      borderSide:
+          const BorderSide(color: MdColors.disabledChatInputColor, width: 2),
+    );
+
+    final inputTextColor = widget.enabled
+        ? MdColors.defaultTextChatInputColor
+        : MdColors.disabledTextChatInputColor;
+
+    return Theme(
+      data: Theme.of(context).copyWith(
+        textSelectionTheme: const TextSelectionThemeData(
+          selectionColor: MdColors.selectionTextChatInputColor,
+        ),
+        scrollbarTheme: ScrollbarThemeData(
+          thumbVisibility: WidgetStateProperty.all(false),
+          trackVisibility: WidgetStateProperty.all(false),
+          thickness: WidgetStateProperty.all(0),
+          radius: Radius.zero,
+          thumbColor: WidgetStateProperty.all(Colors.transparent),
+          trackColor: WidgetStateProperty.all(Colors.transparent),
+          trackBorderColor: WidgetStateProperty.all(Colors.transparent),
+        ),
+      ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: IgnorePointer(
+              child: ClipRRect(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: MdColors.generalContaiterChatInputColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
+                child: AnimatedPadding(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.ease,
+                  padding: EdgeInsets.only(
+                    left: 20,
+                    top: 20,
+                    bottom: 12,
+                    right: (_showArrow && widget.enabled) ? 12 : 0,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: _controller.text.isEmpty
+                        ? widget.borderRadiusNoContent
+                        : widget.borderRadiusContent,
+                    child: Container(
+                      constraints:
+                          const BoxConstraints(minHeight: 32, maxHeight: 130),
+                      decoration: const BoxDecoration(
+                        color: MdColors.fieldAndButtonBgChatInputColor,
+                      ),
+                      child: RawScrollbar(
+                        controller: _scrollCtrl,
+                        thumbVisibility: true,
+                        thickness: 8,
+                        radius: const Radius.circular(8),
+                        crossAxisMargin: 7,
+                        padding: const EdgeInsets.only(top: 5),
+                        child: TextField(
+                          scrollController: _scrollCtrl,
+                          focusNode: _focus,
+                          controller: _controller,
+                          enabled: true,
+                          readOnly: !widget.enabled,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          style: TextStyle(
+                            color: widget.enabled
+                                ? MdColors.defaultTextChatInputColor
+                                : MdColors.disabledChatInputColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Play',
+                            letterSpacing: 1,
+                          ),
+                          cursorColor: inputTextColor,
+                          decoration: InputDecoration(
+                            isCollapsed: true,
+                            isDense: true,
+                            filled: true,
+                            hoverColor: Colors.transparent,
+                            fillColor: Colors.transparent,
+                            suffixIcon: const SizedBox(width: 12),
+                            suffixIconConstraints: const BoxConstraints(
+                              minWidth: 12,
+                            ),
+                            contentPadding: widget.contentPadding.copyWith(
+                              right: widget.contentPadding.right + 4,
+                            ),
+                            hintText: widget.hintText,
+                            hintStyle: const TextStyle(
+                              color: MdColors.disabledTextChatInputColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'Play',
+                              letterSpacing: 1,
+                            ),
+                            enabledBorder: enabledBorder,
+                            focusedBorder: focusedBorder,
+                            disabledBorder: disabledBorder,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.ease,
+                width: (_showArrow && widget.enabled) ? 32 : 0,
+                height: 32,
+                margin: const EdgeInsets.only(
+                  top: 20,
+                  right: 20,
+                  bottom: 12,
+                ),
+                child: IgnorePointer(
+                  ignoring: !_showArrow || !widget.enabled,
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.ease,
+                    opacity: (_showArrow && widget.enabled) ? 1 : 0,
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      onEnter: (_) => setState(() => _iconHover = true),
+                      onExit: (_) => setState(() => _iconHover = false),
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTapDown: (_) => setState(() {
+                          _iconPressed = true;
+                          _iconHover = false;
+                        }),
+                        onTapUp: (_) => setState(
+                          () {
+                            _iconPressed = false;
+                            _iconHover = false;
+                          },
+                        ),
+                        onTapCancel: () {
+                          setState(
+                            () {
+                              _iconPressed = false;
+                              _iconHover = false;
+                            },
+                          );
+                          _setFocus();
+                        },
+                        onTap: widget.enabled ? _handleSend : null,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 150),
+                          curve: Curves.ease,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(6),
+                              bottomRight: Radius.circular(12),
+                              topLeft: Radius.circular(6),
+                              topRight: Radius.circular(6),
+                            ),
+                            color: MdColors.fieldAndButtonBgChatInputColor,
+                            border: Border.all(
+                              color: _resolveIconColor(),
+                              width: 2,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: TweenAnimationBuilder<Color?>(
+                              tween: ColorTween(end: _resolveIconColor()),
+                              duration: const Duration(milliseconds: 150),
+                              curve: Curves.ease,
+                              builder: (context, color, _) {
+                                return IconButton(
+                                  iconSize: 24,
+                                  padding: EdgeInsets.zero,
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  icon: SvgPicture.asset(
+                                    PrecachedIcons.sendMsgIcon,
+                                    colorFilter: ColorFilter.mode(
+                                      color ?? _resolveIconColor(),
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                  onPressed:
+                                      widget.enabled ? _handleSend : null,
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
