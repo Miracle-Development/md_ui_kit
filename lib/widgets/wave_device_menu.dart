@@ -4,25 +4,27 @@ import 'package:md_ui_kit/_core/colors.dart';
 import 'package:md_ui_kit/_core/precached_icons.dart';
 import 'package:md_ui_kit/md_ui_kit.dart';
 
-class WaveDeviceMenu extends StatefulWidget {
+class WaveDeviceMenu<T> extends StatefulWidget {
   const WaveDeviceMenu({
     super.key,
     required this.items,
     this.subtitle,
     this.onChanged,
     this.initialIndex = 0,
+    this.labelBuilder,
   });
 
-  final List<String> items;
+  final List<T> items;
   final String? subtitle;
-  final VoidCallback? onChanged;
+  final ValueChanged<T>? onChanged;
   final int initialIndex;
+  final String Function(T item)? labelBuilder;
 
   @override
-  State<WaveDeviceMenu> createState() => _WaveDeviceMenuState();
+  State<WaveDeviceMenu<T>> createState() => _WaveDeviceMenuState<T>();
 }
 
-class _WaveDeviceMenuState extends State<WaveDeviceMenu>
+class _WaveDeviceMenuState<T> extends State<WaveDeviceMenu<T>>
     with SingleTickerProviderStateMixin {
   static const double _radius = 12;
   static const double _headerHeight = 41;
@@ -42,6 +44,10 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
   double _panelWidth = 0;
   int? _hoveredIndex;
   int? _pressedIndex;
+
+  String _labelOf(T item) => widget.labelBuilder != null
+      ? widget.labelBuilder!(item)
+      : item.toString();
 
   @override
   void initState() {
@@ -68,7 +74,7 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
   @override
   Widget build(BuildContext context) {
     final selected =
-        widget.items.isNotEmpty ? widget.items[_selectedIndex] : '';
+        widget.items.isNotEmpty ? _labelOf(widget.items[_selectedIndex]) : '';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -200,10 +206,8 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
   }
 
   void _select(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    widget.onChanged?.call();
+    setState(() => _selectedIndex = index);
+    widget.onChanged?.call(widget.items[index]);
   }
 
   void _setPressed(int? i) {
@@ -353,7 +357,7 @@ class _WaveDeviceMenuState extends State<WaveDeviceMenu>
                                               Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: WaveText(
-                                                  widget.items[i],
+                                                  _labelOf(widget.items[i]),
                                                   type: WaveTextType.subtitle,
                                                   color:
                                                       _resolveItemTextColor(i),

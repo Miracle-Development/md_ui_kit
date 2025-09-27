@@ -16,10 +16,10 @@ class WaveDeviceMenuStory extends StatelessWidget {
       label: 'Text',
       initial: "Select input device",
     );
-    return WaveDeviceMenu(
+    return WaveDeviceMenu<String>(
       items: const ['Device 1', 'Device 2', 'Device 3', 'Device 4', 'Device 5'],
       subtitle: subtitle,
-      onChanged: () => print("Test WaveDeviceMenu"),
+      onChanged: (device) => print('Selected: $device'),
     );
   }
 }
