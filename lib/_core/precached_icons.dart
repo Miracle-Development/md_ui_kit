@@ -14,6 +14,7 @@ class PrecachedIcons {
   static const navBarMicOffLineIcon = 'assets/icons/nav_bar/line_mic_off.svg';
   static const navBarPhoneIcon = 'assets/icons/nav_bar/phone.svg';
   static const navBarPlanetIcon = 'assets/icons/nav_bar/planet.svg';
+  static const sendMsgIcon = 'assets/icons/chat_input/arrow_up_md.svg.svg';
   static const deviceMenuArrow = 'assets/icons/menu/Caret_Down_MD.svg';
   static const inputOpenedEyeIcon = 'assets/icons/input/opened_eye.svg';
   static const inputClosedEyeIcon = 'assets/icons/input/closed_eye.svg';
@@ -34,6 +35,7 @@ class PrecachedIcons {
         SvgAssetLoader(navBarMicOffLineIcon),
         SvgAssetLoader(navBarPhoneIcon),
         SvgAssetLoader(navBarPlanetIcon),
+        SvgAssetLoader(sendMsgIcon),
         SvgAssetLoader(deviceMenuArrow),
         SvgAssetLoader(inputOpenedEyeIcon),
         SvgAssetLoader(inputClosedEyeIcon),

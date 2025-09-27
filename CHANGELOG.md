@@ -2,6 +2,10 @@
 
 - Добавлен компонент WaveAmplitude
 
+## [2.14.0]
+
+- Добавлен компонент WaveChatInput
+
 ## [2.13.0]
 
 - Добавлен компонент WaveCircleButton
