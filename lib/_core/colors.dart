@@ -169,7 +169,6 @@ class MdColors {
   // Subtitle Color
   static const circleButtonSubtitleColor = Color.fromRGBO(179, 179, 202, 1);
 
-  
   /// WaveParticipantLoader Colors
   static const Color participantLoaderFirstPointColor =
       Color.fromRGBO(223, 222, 251, 0.6);
@@ -225,4 +224,15 @@ class MdColors {
   static const deviceMenuItemTextHoverPressedColor =
       Color.fromRGBO(220, 218, 255, 1);
   static const deviceMenuItemsBorderColor = Color.fromRGBO(177, 172, 255, 0.8);
+
+  /// WaveAmplitude Colors
+  static const Color backWaveColor = Color.fromRGBO(48, 51, 212, 0.40);
+  static const Color backWaveShadowColor = Color.fromRGBO(48, 51, 212, 0.25);
+  static const Color middleWaveColor = Color.fromRGBO(67, 70, 243, 0.40);
+  static const Color middleWaveShadowColor = Color.fromRGBO(58, 51, 253, 0.25);
+  static const Color frontWaveColor = Color.fromRGBO(140, 141, 227, 0.30);
+  static const Color frontWaveShadowColor = Color.fromRGBO(51, 169, 253, 0.25);
+
+  static const Color generalContainerShadowColor =
+      Color.fromRGBO(48, 51, 212, 0.25);
 }

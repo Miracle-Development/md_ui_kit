@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:md_ui_kit/_core/colors.dart';
 import 'package:record/record.dart';
 
 /// =========================
@@ -96,16 +97,16 @@ class WaveAmplitude extends StatefulWidget {
 
     // Порядок — задний, средний, передний (низкие, средние, высокие):
     this.lowColors = const (
-      Color.fromRGBO(48, 51, 212, 0.40),
-      Color.fromRGBO(48, 51, 212, 0.25)
+      MdColors.backWaveColor,
+      MdColors.backWaveShadowColor,
     ),
     this.midColors = const (
-      Color.fromRGBO(67, 70, 243, 0.40),
-      Color.fromRGBO(58, 51, 253, 0.25)
+      MdColors.middleWaveColor,
+      MdColors.middleWaveShadowColor
     ),
     this.highColors = const (
-      Color.fromRGBO(140, 141, 227, 0.30),
-      Color.fromRGBO(51, 169, 253, 0.25)
+      MdColors.frontWaveColor,
+      MdColors.frontWaveShadowColor,
     ),
 
     // Минимум/максимум активных волн на слой
@@ -126,7 +127,7 @@ class WaveAmplitude extends StatefulWidget {
     // === контейнер ===
     this.backgroundColor = Colors.transparent,
     this.containerShadow = const BoxShadow(
-      color: Color.fromRGBO(48, 51, 212, 0.25),
+      color: MdColors.generalContainerShadowColor,
       blurRadius: 120,
       offset: Offset(0, 20),
     ),
