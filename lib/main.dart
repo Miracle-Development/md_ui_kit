@@ -145,7 +145,7 @@ class StorybookApp extends StatelessWidget {
                 builder: (context) => WaveStatusStory(knobs: context.knobs),
               ),
               Story(
-                name: 'Wave/WaveAplitude',
+                name: 'Wave/WaveAmplitude',
                 builder: (context) => WaveAmplitudeStory(knobs: context.knobs),
               ),
               Story(
