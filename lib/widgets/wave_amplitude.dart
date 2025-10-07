@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:ui' show lerpDouble;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:md_ui_kit/_core/colors.dart';
 import 'package:record/record.dart';
+import 'package:wave/config.dart';
+import 'package:wave/wave.dart';
+import 'package:md_ui_kit/_core/colors.dart';
 
 /// =========================
 ///  MIC SERVICE (tri-band)
@@ -67,7 +70,7 @@ class MicAmplitudeService {
     if (await _record.isRecording()) {
       await _record.stop();
     }
-    // Не пушим нули — UI хранит последний кадр сам.
+    // UI сам хранит последний кадр.
   }
 
   void dispose() {
@@ -84,25 +87,108 @@ class MicAmplitudeService {
 }
 
 /// =========================
-///  WIDGET (tri-layer waves)
+///  SUB-WIDGET: первая версия волны (для состояния загрузки)
+/// =========================
+
+class WaveAmplitudeLoading extends StatelessWidget {
+  const WaveAmplitudeLoading({
+    super.key,
+    required this.level, // 0..1
+    this.height = 92,
+    this.width,
+  });
+
+  final double level;
+  final double height;
+  final double? width;
+
+  @override
+  Widget build(BuildContext context) {
+    // Амплитуды:
+    final ampNear = lerpDouble(2, 14, level)!.toDouble();
+    final ampMiddle = lerpDouble(1, 10, level)!.toDouble();
+    final ampFar = lerpDouble(0, 6, level)!.toDouble();
+
+    // «Линия воды»:
+    final baseNear = lerpDouble(0.62, 0.45, level)!;
+    final baseMiddle = lerpDouble(0.66, 0.55, level)!;
+    final baseFar = lerpDouble(0.70, 0.62, level)!;
+
+    return SizedBox(
+      width: width ?? double.infinity,
+      height: height,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          const IgnorePointer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(
+                  color: Color.fromRGBO(48, 51, 212, 0.25),
+                  blurRadius: 120,
+                  offset: Offset(0, 20),
+                ),
+              ]),
+            ),
+          ),
+          WaveWidget(
+            config: CustomConfig(
+              colors: const [Color.fromRGBO(48, 51, 212, 0.18)],
+              durations: const [9000],
+              heightPercentages: [baseFar],
+            ),
+            waveAmplitude: ampFar,
+            backgroundColor: Colors.transparent,
+            size: Size.infinite,
+          ),
+          WaveWidget(
+            config: CustomConfig(
+              colors: const [Color.fromRGBO(67, 70, 243, 0.30)],
+              durations: const [6500],
+              heightPercentages: [baseMiddle],
+            ),
+            waveAmplitude: ampMiddle,
+            backgroundColor: Colors.transparent,
+            size: Size.infinite,
+          ),
+          WaveWidget(
+            config: CustomConfig(
+              colors: const [Color.fromRGBO(140, 141, 227, 0.40)],
+              durations: const [4800],
+              heightPercentages: [baseNear],
+            ),
+            waveAmplitude: ampNear,
+            backgroundColor: Colors.transparent,
+            size: Size.infinite,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// =========================
+///  MAIN WIDGET (tri-layer waves, реактивный)
 /// =========================
 
 class WaveAmplitude extends StatefulWidget {
   const WaveAmplitude({
     super.key,
     required this.isActive,
+    this.isLoading = false, // NEW: показать режим загрузки
+    this.loadingLevel = 1, // NEW: уровень 0..1 для загрузочной волны
     this.height = 92.0,
     this.maxAmplitude = 92.0,
     this.burstPeriod = const Duration(milliseconds: 220),
 
-    // Порядок — задний, средний, передний (низкие, средние, высокие):
+    // Порядок — задний, средний, передний:
     this.lowColors = const (
       MdColors.backWaveColor,
       MdColors.backWaveShadowColor,
     ),
     this.midColors = const (
       MdColors.middleWaveColor,
-      MdColors.middleWaveShadowColor
+      MdColors.middleWaveShadowColor,
     ),
     this.highColors = const (
       MdColors.frontWaveColor,
@@ -113,18 +199,18 @@ class WaveAmplitude extends StatefulWidget {
     this.minBurstsPerLayer = 0,
     this.maxBurstsPerLayer = 10,
 
-    // === генерация случайных точек (seed) на тик ===
+    // генерация случайных точек
     this.seedsPerTickMin = 6,
     this.seedsPerTickMax = 10,
-    this.seedMinGap = 28.0, // минимальный зазор между точками, px
-    this.humpHalfWidthPxMin = 24.0, // половина ширины «горба» (минимум), px
-    this.humpHalfWidthPxMax = 72.0, // половина ширины «горба» (максимум), px
+    this.seedMinGap = 28.0,
+    this.humpHalfWidthPxMin = 24.0,
+    this.humpHalfWidthPxMax = 72.0,
 
-    // === «анти-обрезание» по краям ===
-    this.edgePadding = 0.001, // гарантированный запас внутри холста, px
-    this.edgeFadePx = 0, // ширина мягкого фейда у краёв; 0 — отключить
+    // «анти-обрезание» (оставлены для обратной совместимости — в рисовании не используются)
+    this.edgePadding = 0.001,
+    this.edgeFadePx = 0,
 
-    // === контейнер ===
+    // контейнер
     this.backgroundColor = Colors.transparent,
     this.containerShadow = const BoxShadow(
       color: MdColors.generalContainerShadowColor,
@@ -134,6 +220,9 @@ class WaveAmplitude extends StatefulWidget {
   });
 
   final bool isActive;
+  final bool isLoading; // NEW
+  final double loadingLevel; // NEW
+
   final double height;
   final double maxAmplitude;
   final Duration burstPeriod;
@@ -145,18 +234,15 @@ class WaveAmplitude extends StatefulWidget {
   final int minBurstsPerLayer;
   final int maxBurstsPerLayer;
 
-  // случайные точки появления
   final int seedsPerTickMin;
   final int seedsPerTickMax;
   final double seedMinGap;
   final double humpHalfWidthPxMin;
   final double humpHalfWidthPxMax;
 
-  // анти-обрезание
   final double edgePadding;
   final double edgeFadePx;
 
-  // оформление контейнера
   final Color backgroundColor;
   final BoxShadow containerShadow;
 
@@ -231,28 +317,20 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   }
 
   Future<void> _fadeOut() async {
-    // включаем режим затухания: не спавнить новые
     _fadingOut = true;
 
-    // Останавливаем расписание и микрофон, но НЕ стопаем контроллеры.
     _timer?.cancel();
     _timer = null;
     await _micSub?.cancel();
     _micSub = null;
     await _mic.stop();
 
-    // Каждую живую волну мягко "уводим" вниз
     for (final b in _bursts) {
       if (b.isDisposed) continue;
-      final from =
-          (((b.ctrl.value.isNaN ? 0.0 : b.ctrl.value))).clamp(0.0, 1.0);
-      // если уже в нуле — ничего
-      if (from > 0.0) {
-        b.ctrl.reverse(from: from);
-      }
+      final from = ((b.ctrl.value.isNaN ? 0.0 : b.ctrl.value)).clamp(0.0, 1.0);
+      if (from > 0.0) b.ctrl.reverse(from: from);
     }
 
-    // принудительно перерисуемся
     _safeSetState(() {});
   }
 
@@ -262,7 +340,9 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    if (widget.isActive) _startMic();
+    if (widget.isActive && !widget.isLoading) {
+      _startMic();
+    }
   }
 
   @override
@@ -283,8 +363,18 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   @override
   void didUpdateWidget(covariant WaveAmplitude oldWidget) {
     super.didUpdateWidget(oldWidget);
+
     if (oldWidget.isActive != widget.isActive) {
       widget.isActive ? _resume() : _fadeOut();
+    }
+
+    // переключение загрузочного режима
+    if (oldWidget.isLoading != widget.isLoading) {
+      if (widget.isLoading) {
+        _fadeOut();
+      } else {
+        if (widget.isActive) _resume();
+      }
     }
   }
 
@@ -332,6 +422,7 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
     if (!_suspended && _micSub != null) return;
     _suspended = false;
     _fadingOut = false;
+    if (widget.isLoading) return; // в режиме загрузки не запускаем микрофон
     if (!widget.isActive) return;
 
     await _startMic();
@@ -371,7 +462,7 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   }
 
   void _startScheduling() {
-    if (_suspended) return;
+    if (_suspended || widget.isLoading) return;
     _timer?.cancel();
     _tick();
     _timer = Timer.periodic(widget.burstPeriod, (_) => _tick());
@@ -381,7 +472,7 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
     required double width,
     required int target,
     required double minGap,
-    required double edgePad, // NEW: не генерим у краёв
+    required double edgePad,
   }) {
     final xs = <double>[];
     if (width <= 0 || target <= 0) return xs;
@@ -406,7 +497,8 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
   }
 
   void _tick() {
-    if (!mounted || _suspended || _lastSize.width <= 0) return;
+    if (!mounted || _suspended || widget.isLoading || _lastSize.width <= 0)
+      return;
     if (_fadingOut) return;
 
     const hardMaxBursts = 90;
@@ -420,7 +512,7 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
       width: _lastSize.width,
       target: seedsTarget,
       minGap: widget.seedMinGap,
-      edgePad: widget.edgePadding, // NEW
+      edgePad: widget.edgePadding,
     );
 
     final availableXs = List<double>.from(seeds)..shuffle(_rnd);
@@ -513,7 +605,6 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
             if (_fadingOut && _bursts.every((b) => b.isDisposed)) {
               _fadingOut = false;
             }
-
             if (mounted && !_suspended) _safeSetState(() {});
           }
         });
@@ -532,6 +623,15 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
     return LayoutBuilder(builder: (context, c) {
       _lastSize = Size(c.maxWidth, widget.height);
 
+      // --- РЕЖИМ ЗАГРУЗКИ: первая версия волны ---
+      if (widget.isLoading) {
+        return WaveAmplitudeLoading(
+          level: widget.loadingLevel,
+          height: widget.height,
+          width: c.maxWidth,
+        );
+      }
+
       if (widget.isActive && !_suspended && _timer == null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted && !_suspended && _timer == null) _startScheduling();
@@ -540,22 +640,19 @@ class _WaveAmplitudeState extends State<WaveAmplitude>
 
       final hasWaves = _bursts.any((b) => !b.isDisposed);
 
-// Целевая непрозрачность тени (0..1)
+      // Мягкое «включение/выключение» тени альфой
       final baseAlpha = widget.containerShadow.color.opacity;
       final targetAlpha = baseAlpha * (hasWaves ? 1.0 : 0.0);
-
-// Та же тень, но с анимируемой альфой
       final fadingShadow = widget.containerShadow.copyWith(
         color: widget.containerShadow.color.withOpacity(targetAlpha),
       );
 
       return AnimatedContainer(
-        duration:
-            const Duration(milliseconds: 300), // можно увеличить до 300–400ms
-        curve: Curves.easeOut, // или Curves.easeOutCubic
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
         decoration: BoxDecoration(
           color: widget.backgroundColor,
-          boxShadow: [fadingShadow], // <-- всегда один BoxShadow
+          boxShadow: [fadingShadow],
         ),
         child: SizedBox(
           width: c.maxWidth,
@@ -584,7 +681,7 @@ class _ReactivePainter extends CustomPainter {
 
   final Size size;
   final List<_WaveBurst> bursts;
-  final double edgeFadePx; // 0 => без фейда
+  final double edgeFadePx; // 0 => без фейда (в этой версии не используется)
 
   @override
   void paint(Canvas canvas, Size _) {
@@ -599,27 +696,27 @@ class _ReactivePainter extends CustomPainter {
       final startX = b.centerX - b.halfWidth;
       final endX = b.centerX + b.halfWidth;
 
-// Полностью вне экрана — ничего не рисуем
-      if (endX <= 0 || startX >= size.width) return;
+      // Полностью вне экрана — ничего не рисуем
+      if (endX <= 0 || startX >= size.width) continue;
 
       final path = Path();
       const step = 4.0;
       final xMin = math.max(0.0, startX);
       final xMax = math.min(endX, size.width);
 
-// 1) Левый край: если волна заходит влево — рисуем вертикальный срез
+      // Левый «вертикальный» срез
       if (startX < 0) {
         final t0 = ((0.0 - startX) / (2 * b.halfWidth)).clamp(0.0, 1.0);
         final w0 = 0.5 * (1.0 + math.cos(math.pi * (t0 * 2 - 1)));
         final y0 = baseY - ampBase * w0;
         path
           ..moveTo(0, baseY)
-          ..lineTo(0, y0); // вертикальный «срез» слева
+          ..lineTo(0, y0);
       } else {
         path.moveTo(startX, baseY);
       }
 
-// 2) Центральная часть — без edgeFade, чистая форма горба
+      // Основная часть «горба»
       for (double x = xMin; x <= xMax; x += step) {
         final t = ((x - startX) / (2 * b.halfWidth)).clamp(0.0, 1.0);
         final w = 0.5 * (1.0 + math.cos(math.pi * (t * 2 - 1)));
@@ -627,13 +724,13 @@ class _ReactivePainter extends CustomPainter {
         path.lineTo(x, y);
       }
 
-// 3) Правый край: если волна уходит за экран — вертикальный срез справа
+      // Правый «вертикальный» срез
       if (endX > size.width) {
         final t1 = ((size.width - startX) / (2 * b.halfWidth)).clamp(0.0, 1.0);
         final w1 = 0.5 * (1.0 + math.cos(math.pi * (t1 * 2 - 1)));
         final y1 = baseY - ampBase * w1;
         path
-          ..lineTo(size.width, y1) // вертикальный «срез» справа
+          ..lineTo(size.width, y1)
           ..lineTo(size.width, baseY);
       } else {
         path.lineTo(endX, baseY);
@@ -651,7 +748,7 @@ class _ReactivePainter extends CustomPainter {
       old.bursts != bursts || old.size != size || old.edgeFadePx != edgeFadePx;
 }
 
-/// ===== Models =====
+/// ===== Models / utils =====
 
 enum _Band { low, mid, high }
 
@@ -696,5 +793,4 @@ class _WaveBurst {
   bool isDisposed = false;
 }
 
-/// утилита
 double _lerp(num a, num b, double t) => a + (b - a) * t;
