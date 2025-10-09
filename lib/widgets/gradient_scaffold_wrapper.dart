@@ -8,11 +8,15 @@ class GradientScaffoldWrapper extends StatelessWidget {
     required this.child,
     required this.showLogo,
     this.iosTopPadding = 80,
+    this.onTapBack,
+    this.showArrow = true,
   });
 
   final Widget child;
   final bool showLogo;
   final double? iosTopPadding;
+  final VoidCallback? onTapBack;
+  final bool showArrow;
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +30,37 @@ class GradientScaffoldWrapper extends StatelessWidget {
             children: [
               if (showLogo)
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
                         top: iosTopPadding != null ? iosTopPadding! : 20,
                         bottom: 20,
                       ),
+                      child: IconButton(
+                        onPressed: onTapBack?.call,
+                        icon: Icon(Icons.chevron_left),
+                        iconSize: 24,
+                        color: showArrow ? Colors.white : Colors.transparent,
+                        splashColor: Colors.transparent,
+                        enableFeedback: false,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: iosTopPadding != null ? iosTopPadding! : 20,
+                        bottom: 20,
+                      ),
                       child: const WaveLogo(),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.chevron_left),
+                      color: Colors.transparent,
+                      splashColor: Colors.transparent,
                     ),
                   ],
                 ),
