@@ -1,3 +1,7 @@
+## [3.0.0]
+
+- GradientScaffoldWrapper slider error fixed, FlexColorTheme package removed
+
 ## [2.15.3]
 
 - Исправлено наименование иконки arrow_up

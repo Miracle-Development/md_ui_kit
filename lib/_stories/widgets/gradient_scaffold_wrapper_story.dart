@@ -31,14 +31,15 @@ class _GradientScaffoldWrapperStoryState
       initial: true,
     );
 
-    final iosTopPadding = context.knobs.slider(
+    final iosTopPadding = context.knobs.sliderInt(
       label: 'ios Top Padding',
       initial: 80,
+      max: 200,
     );
 
     return GradientScaffoldWrapper(
       showLogo: showLogo,
-      iosTopPadding: iosTopPadding,
+      iosTopPadding: iosTopPadding.toDouble(),
       child: showScroll
           ? Stack(
               children: [

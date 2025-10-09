@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:md_ui_kit/_core/precached_icons.dart';
-import 'package:md_ui_kit/_core/theme.dart';
 import 'package:md_ui_kit/_stories/screens/counter_screen_story.dart';
 import 'package:md_ui_kit/_stories/screens/initial_screen_story.dart';
 import 'package:md_ui_kit/_stories/widgets/blurred_circle_story.dart';
@@ -44,8 +43,7 @@ class StorybookApp extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark, // Uncomment to use the dark theme
+      theme: ThemeData.dark(),
       home: Directionality(
         textDirection: TextDirection.ltr,
         child: Material(

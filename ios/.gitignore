@@ -11,6 +11,10 @@
 **/DerivedData/
 Icon?
 **/Pods/
+**/build/
+**/Flutter/flutter_export_environment.sh
+**/Flutter/ephemeral/
+**/Flutter/Generated.xcconfig
 **/.symlinks/
 profile
 xcuserdata
