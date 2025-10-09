@@ -56,12 +56,7 @@ class GradientScaffoldWrapper extends StatelessWidget {
                       ),
                       child: const WaveLogo(),
                     ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.chevron_left),
-                      color: Colors.transparent,
-                      splashColor: Colors.transparent,
-                    ),
+                    const SizedBox(width: 48),
                   ],
                 ),
 
