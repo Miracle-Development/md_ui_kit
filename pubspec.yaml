@@ -43,6 +43,7 @@ flutter:
     - assets/icons/mic/
     - assets/icons/circle_button/
     - assets/icons/participants/
+    - assets/icons/gradient_scaffold_wrapper/
 
   fonts:
     - family: Play

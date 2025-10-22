@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:md_ui_kit/_core/precached_icons.dart';
 import 'package:md_ui_kit/widgets/blurred_circle.dart';
 import 'package:md_ui_kit/widgets/wave_logo.dart';
 
@@ -36,17 +38,17 @@ class GradientScaffoldWrapper extends StatelessWidget {
                       padding: EdgeInsets.only(
                         top: iosTopPadding != null ? iosTopPadding! : 20,
                         bottom: 20,
+                        left: 20,
                       ),
-                      child: IconButton(
-                        onPressed: onTapBack?.call,
-                        icon: Icon(Icons.chevron_left),
-                        iconSize: 24,
-                        color: showArrow ? Colors.white : Colors.transparent,
-                        splashColor: Colors.transparent,
-                        enableFeedback: false,
-                        hoverColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
+                      child: InkWell(
+                        onTap: onTapBack?.call,
+                        child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: SvgPicture.asset(
+                            PrecachedIcons.backArrow,
+                          ),
+                        ),
                       ),
                     ),
                     Padding(
@@ -56,7 +58,7 @@ class GradientScaffoldWrapper extends StatelessWidget {
                       ),
                       child: const WaveLogo(),
                     ),
-                    const SizedBox(width: 48),
+                    const SizedBox(width: 24),
                   ],
                 ),
 
