@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:md_ui_kit/_core/precached_icons.dart';
 import 'package:md_ui_kit/widgets/blurred_circle.dart';
 import 'package:md_ui_kit/widgets/wave_logo.dart';
 
@@ -8,11 +10,15 @@ class GradientScaffoldWrapper extends StatelessWidget {
     required this.child,
     required this.showLogo,
     this.iosTopPadding = 80,
+    this.onTapBack,
+    this.showArrow = true,
   });
 
   final Widget child;
   final bool showLogo;
   final double? iosTopPadding;
+  final VoidCallback? onTapBack;
+  final bool showArrow;
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +32,25 @@ class GradientScaffoldWrapper extends StatelessWidget {
             children: [
               if (showLogo)
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: iosTopPadding != null ? iosTopPadding! : 20,
+                        bottom: 20,
+                        left: 20,
+                      ),
+                      child: InkWell(
+                        onTap: onTapBack?.call,
+                        child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: SvgPicture.asset(
+                            PrecachedIcons.backArrow,
+                          ),
+                        ),
+                      ),
+                    ),
                     Padding(
                       padding: EdgeInsets.only(
                         top: iosTopPadding != null ? iosTopPadding! : 20,
@@ -35,6 +58,7 @@ class GradientScaffoldWrapper extends StatelessWidget {
                       ),
                       child: const WaveLogo(),
                     ),
+                    const SizedBox(width: 24),
                   ],
                 ),
 

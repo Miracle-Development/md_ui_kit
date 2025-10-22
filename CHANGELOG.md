@@ -1,3 +1,7 @@
+## [3.0.1]
+
+- GradientScaffoldWrapper backarrow added
+
 ## [3.0.0]
 
 - GradientScaffoldWrapper slider error fixed, FlexColorTheme package removed

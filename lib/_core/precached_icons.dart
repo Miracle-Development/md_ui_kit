@@ -22,7 +22,10 @@ class PrecachedIcons {
   static const settingsButton = 'assets/icons/circle_button/settings.svg';
   static const leaveCallButton = 'assets/icons/circle_button/leave_call.svg';
   static const startCallButton = 'assets/icons/circle_button/start_call.svg';
-  static const participantMicIcon = 'assets/icons/participants/mic_muted_mini.svg';
+  static const participantMicIcon =
+      'assets/icons/participants/mic_muted_mini.svg';
+  static const backArrow =
+      'assets/icons/gradient_scaffold_wrapper/back_arrow.svg';
 
   List<SvgAssetLoader> get iconsToPrecache => const [
         SvgAssetLoader(copyDefaultIcon),
@@ -43,6 +46,7 @@ class PrecachedIcons {
         SvgAssetLoader(leaveCallButton),
         SvgAssetLoader(startCallButton),
         SvgAssetLoader(participantMicIcon),
+        SvgAssetLoader(backArrow),
       ];
 
   void precache(BuildContext context) {

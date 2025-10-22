@@ -40,6 +40,10 @@ class _GradientScaffoldWrapperStoryState
     return GradientScaffoldWrapper(
       showLogo: showLogo,
       iosTopPadding: iosTopPadding.toDouble(),
+      onTapBack: () {
+        // ignore: avoid_print
+        print('Back tapped');
+      },
       child: showScroll
           ? Stack(
               children: [
