@@ -9,8 +9,10 @@ class WaveAmplitudeStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isSpeaking = knobs.boolean(label: "Speak", initial: false);
+    final isLoading = knobs.boolean(label: "Loading", initial: false);
     return WaveAmplitude(
       isActive: isSpeaking,
+      isLoading: isLoading,
     );
   }
 }
